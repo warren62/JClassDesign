@@ -47,7 +47,7 @@ public class AppGUI implements AppStyleArbiter {
     protected FlowPane fileToolbarPane;
     protected Button newButton;
     protected Button loadButton;
-    protected Button saveButton;
+    protected Button saveAsButton;
     protected Button exitButton;
     
     // HERE ARE OUR DIALOGS
@@ -112,7 +112,7 @@ public class AppGUI implements AppStyleArbiter {
     public void updateToolbarControls(boolean saved) {
         // THIS TOGGLES WITH WHETHER THE CURRENT COURSE
         // HAS BEEN SAVED OR NOT
-        saveButton.setDisable(saved);
+        saveAsButton.setDisable(saved);
 
         // ALL THE OTHER BUTTONS ARE ALWAYS ENABLED
         // ONCE EDITING THAT FIRST COURSE BEGINS
@@ -141,7 +141,7 @@ public class AppGUI implements AppStyleArbiter {
         // START AS ENABLED (false), WHILE OTHERS DISABLED (true)
         newButton = initChildButton(fileToolbarPane,	NEW_ICON.toString(),	    NEW_TOOLTIP.toString(),	false);
         loadButton = initChildButton(fileToolbarPane,	LOAD_ICON.toString(),	    LOAD_TOOLTIP.toString(),	false);
-        saveButton = initChildButton(fileToolbarPane,	SAVE_ICON.toString(),	    SAVE_TOOLTIP.toString(),	true);
+        saveAsButton = initChildButton(fileToolbarPane,	SAVE_AS_ICON.toString(),	    SAVE_TOOLTIP.toString(),	true);
         exitButton = initChildButton(fileToolbarPane,	EXIT_ICON.toString(),	    EXIT_TOOLTIP.toString(),	false);
 
 	// AND NOW SETUP THEIR EVENT HANDLERS
@@ -152,7 +152,7 @@ public class AppGUI implements AppStyleArbiter {
         loadButton.setOnAction(e -> {
             fileController.handleLoadRequest();
         });
-        saveButton.setOnAction(e -> {
+        saveAsButton.setOnAction(e -> {
             fileController.handleSaveRequest();
         });
         exitButton.setOnAction(e -> {
@@ -166,7 +166,7 @@ public class AppGUI implements AppStyleArbiter {
     
     public Button getLoadButton() { return loadButton; }
     
-    public Button getSaveButton() { return saveButton; }
+    public Button getSaveAsButton() { return saveAsButton; }
     
     public Button getExitButton() { return exitButton; }
     
@@ -258,7 +258,7 @@ public class AppGUI implements AppStyleArbiter {
 	fileToolbarPane.getStyleClass().add(CLASS_BORDERED_PANE);
 	newButton.getStyleClass().add(CLASS_FILE_BUTTON);
 	loadButton.getStyleClass().add(CLASS_FILE_BUTTON);
-	saveButton.getStyleClass().add(CLASS_FILE_BUTTON);
+	saveAsButton.getStyleClass().add(CLASS_FILE_BUTTON);
 	exitButton.getStyleClass().add(CLASS_FILE_BUTTON);
     }
 }

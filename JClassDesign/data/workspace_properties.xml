@@ -14,6 +14,17 @@
 	<property name="MOVE_TO_FRONT_ICON"	value="MoveToFront.png"></property>
 	<property name="MOVE_TO_BACK_ICON"	value="MoveToBack.png"></property>
 	<property name="SNAPSHOT_ICON"		value="Snapshot.png"></property>
+        <property name="PHOTO_ICON"		value="glyphicons-12-camera.png"></property>
+        <property name="CODE_ICON"		value="glyphicons-223-share.png"></property>
+        <property name="SELECT_ICON"		value="glyphicons-214-arrow-up.png"></property>
+        <property name="RESIZE_ICON"		value="glyphicons-216-resize-full.png"></property>
+        <property name="ADD_CLASS_ICON"		value="glyphicons-155-more-windows.png"></property>
+        <property name="ADD_INTERFACE_ICON"	value="glyphicons-485-send-backward.png"></property>
+        <property name="UNDO_ICON"              value="glyphicons-436-undo.png"></property>
+        <property name="REDO_ICON"              value="glyphicons-435-redo.png"></property>
+        <property name="ZOOM_IN_ICON"           value="glyphicons-237-zoom-in.png"></property>
+        <property name="ZOOM_OUT_ICON"          value="glyphicons-238-zoom-out.png"></property>
+
         
         <!-- TOOLTIPS FOR BUTTONS -->
 	<property name="SELECTION_TOOL_TOOLTIP"	    value="Use Shape Selection Tool"></property>
@@ -26,6 +37,16 @@
 	<property name="FILL_TOOLTIP"		    value="Select Fill Color"></property>
 	<property name="OUTLINE_TOOLTIP"	    value="Select Outline Color"></property>
 	<property name="SNAPSHOT_TOOLTIP"	    value="Take Snapshot"></property>
+        <property name="PHOTO_TOOLTIP"              value="Save as .png"></property>
+        <property name="CODE_TOOLTIP"               value="Export to code"></property>
+        <property name="CODE_TOOLTIP"               value="Select"></property>
+        <property name="RESIZE_TOOLTIP"             value="Resize"></property>
+        <property name="ADD_CLASS_TOOLTIP"          value="Add class"></property>
+        <property name="ADD_INTERFACE_TOOLTIP"      value="Add interface"></property>
+        <property name="UNDO_TOOLTIP"               value="Undo"></property>
+        <property name="REDO_TOOLTIP"               value="Redo"></property>
+        <property name="ZOOM_IN_TOOLTIP"            value="Zoom in"></property>
+        <property name="ZOOM_OUT_TOOLTIP"           value="Zoom out"></property>
 	
 	<!-- MESSAGES -->
 	<property name="REMOVE_ELEMENT_MESSAGE"	    value="Are you sure you wish to remove that element?"></property>
