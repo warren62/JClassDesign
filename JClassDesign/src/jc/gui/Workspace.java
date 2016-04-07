@@ -55,6 +55,9 @@ import saf.ui.AppGUI;
  * @author Steve
  */
 public class Workspace extends AppWorkspaceComponent {
+    
+    static final String CLASS_EDIT_TOOLBAR = "edit_toolbar";
+    static final String CLASS_EDIT_TOOLBAR_ROW = "edit_toolbar_row";
 
     // HERE'S THE APP
     AppTemplate app;
@@ -220,6 +223,8 @@ public class Workspace extends AppWorkspaceComponent {
     @Override
     public void initStyle() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        topToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
     }
 
 }
