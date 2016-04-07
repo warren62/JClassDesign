@@ -9,6 +9,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.Node;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import properties_manager.PropertiesManager;
@@ -70,7 +71,7 @@ public class AppGUI implements AppStyleArbiter {
 	// SAVE THESE FOR LATER
 	primaryStage = initPrimaryStage;
 	appTitle = initAppTitle;
-	       
+        
         // INIT THE TOOLBAR
         initFileToolbar(app);
 		
@@ -168,6 +169,15 @@ public class AppGUI implements AppStyleArbiter {
     public Button getSaveButton() { return saveButton; }
     
     public Button getExitButton() { return exitButton; }
+    
+    public Node getTopToolbar() { return appPane.getTop(); }
+    
+    public void setTopToolbar(Pane pane) {
+        
+        appPane.setTop(pane);
+    }
+    
+    
 
     // INITIALIZE THE WINDOW (i.e. STAGE) PUTTING ALL THE CONTROLS
     // THERE EXCEPT THE WORKSPACE, WHICH WILL BE ADDED THE FIRST

@@ -30,12 +30,18 @@ public class Workspace extends AppWorkspaceComponent{
     // IT KNOWS THE GUI IT IS PLACED INSIDE
     AppGUI gui;
     
-    VBox topToolBar;
-    VBox fileToolBar;
-    VBox editToolBar;
-    VBox viewToolBar;
+    HBox topToolBar;
+    HBox fileToolBar;
+    HBox editToolBar;
+    HBox viewToolBar;
     
     HBox componentToolBar;
+    
+    Button saveBtn;
+    Button saveAsBtn;
+    Button newBtn;
+    Button loadBtn;
+    Button exitBtn;
     
     Pane designRenderer;
     ScrollPane designeRendererScroll;
@@ -57,18 +63,25 @@ public class Workspace extends AppWorkspaceComponent{
     
     private void buildGui() {
        
-        fileToolBar = new VBox();
-        editToolBar = new VBox();
-        viewToolBar = new VBox();
+        fileToolBar = new HBox();
+        editToolBar = new HBox();
+        viewToolBar = new HBox();
+        
+        saveAsBtn = gui.getSaveButton();
+        newBtn = gui.getNewButton();
+        exitBtn = gui.getExitButton();
+        loadBtn = gui.getLoadButton();
         
         
-        topToolBar = new VBox();
+        fileToolBar.getChildren().addAll(newBtn, saveAsBtn, loadBtn, exitBtn);
+        
+        topToolBar = new HBox();
         topToolBar.getChildren().addAll(fileToolBar, editToolBar, viewToolBar);
         
-        
+        gui.setTopToolbar(topToolBar);
         
         workspace  = new BorderPane();
-       ((BorderPane)workspace).setTop(topToolBar);
+//       ((BorderPane)workspace).setTop(topToolBar);
        ((BorderPane)workspace).setRight(componentToolBarScroll);
        ((BorderPane)workspace).setLeft(designeRendererScroll);
     } 
