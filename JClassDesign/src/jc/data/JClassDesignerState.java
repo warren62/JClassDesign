@@ -10,7 +10,11 @@ package jc.data;
  * @author Steve
  */
 public enum JClassDesignerState {
-    SELECTING_ITEM,
-    DRAGGING_ITEM,
-    DRAGGING_NOTHING
+    SELECTING_CLASS,
+    DRAGGING_CLASS,
+    DRAGGING_NOTHING, 
+    STARTING_CLASS,
+    SELECTING_INTERFACE,
+    DRAGGING_INTERFACE,
+    STARTING_INTERFACE
 }

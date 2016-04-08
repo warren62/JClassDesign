@@ -141,7 +141,7 @@ public class AppGUI implements AppStyleArbiter {
         // START AS ENABLED (false), WHILE OTHERS DISABLED (true)
         newButton = initChildButton(fileToolbarPane,	NEW_ICON.toString(),	    NEW_TOOLTIP.toString(),	false);
         loadButton = initChildButton(fileToolbarPane,	LOAD_ICON.toString(),	    LOAD_TOOLTIP.toString(),	false);
-        saveAsButton = initChildButton(fileToolbarPane,	SAVE_AS_ICON.toString(),	    SAVE_TOOLTIP.toString(),	true);
+        saveAsButton = initChildButton(fileToolbarPane,	SAVE_AS_ICON.toString(),    SAVE_AS_TOOLTIP.toString(),	true);
         exitButton = initChildButton(fileToolbarPane,	EXIT_ICON.toString(),	    EXIT_TOOLTIP.toString(),	false);
 
 	// AND NOW SETUP THEIR EVENT HANDLERS

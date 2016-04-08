@@ -43,6 +43,8 @@ import static jc.PropertyType.ZOOM_IN_ICON;
 import static jc.PropertyType.ZOOM_IN_TOOLTIP;
 import static jc.PropertyType.ZOOM_OUT_ICON;
 import static jc.PropertyType.ZOOM_OUT_TOOLTIP;
+import jc.controller.DesignRendererController;
+import jc.controller.EditToolbarController;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
 import static saf.settings.AppPropertyType.SAVE_AS_ICON;
@@ -119,6 +121,9 @@ public class Workspace extends AppWorkspaceComponent {
     ScrollPane designRendererScroll;
     SplitPane splitPane;
     GridPane grid;
+    
+    DesignRendererController designRendererController;
+    EditToolbarController  editToolBarController;
 
     public Workspace(AppTemplate initApp) {
 
@@ -203,7 +208,7 @@ public class Workspace extends AppWorkspaceComponent {
         designRendererScroll = new ScrollPane();
         designRendererScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         designRendererScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        designRendererScroll.setContent(grid);
+        designRendererScroll.setContent(designRenderer);
         
         splitPane = new SplitPane();
         splitPane.getItems().addAll(designRendererScroll, componentToolBar);
@@ -213,6 +218,33 @@ public class Workspace extends AppWorkspaceComponent {
 //       ((BorderPane)workspace).setTop(topToolBar);
         ((BorderPane) workspace).setCenter(splitPane);
         
+    }
+    
+    public void buildHandlers() {
+        
+        addClassBtn.setOnAction(e -> {
+            editToolBarController.handleAddClass();
+        });
+        selectBtn.setOnAction(e -> {
+            editToolBarController.handleSelect();
+        });
+        
+        designRendererController = new DesignRendererController(app);
+        designRenderer.setOnMousePressed(e -> {
+            designRendererController.processCanvasMousePress((int)e.getX(), (int)e.getY());
+        });
+        designRenderer.setOnMouseReleased(e -> {
+            designRendererController.processCanvasMouseRelease((int)e.getX(), (int)e.getY());
+        });
+        designRenderer.setOnMouseDragged(e -> {
+            designRendererController.processCanvasMouseDragged((int)e.getX(), (int)e.getY());
+        });
+//        designRenderer.setOnMouseExited(e -> {
+//            designRendererController.processCanvasMouseExited((int)e.getX(), (int)e.getY());
+//        });
+//        designRenderer.setOnMouseMoved(e -> {
+//            designRendererController.processCanvasMouseMoved((int)e.getX(), (int)e.getY());
+//        });
     }
 
     @Override
@@ -225,6 +257,9 @@ public class Workspace extends AppWorkspaceComponent {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
         topToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
+        viewToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
+        fileToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
+        editToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
     }
 
 }

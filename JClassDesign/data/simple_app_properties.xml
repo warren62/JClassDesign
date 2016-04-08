@@ -9,9 +9,9 @@
 <properties>
     <property_list>
         <property name="APP_TITLE"	    value="Pose Maker"></property>
-	<property name="APP_LOGO"	    value="PoseMakerLogo.png"></property>
-	<property name="APP_PATH_CSS"	    value="./css/"></property>
-	<property name="APP_CSS"	    value="jc_style.css"></property>
+        <property name="APP_LOGO"	    value="PoseMakerLogo.png"></property>
+        <property name="APP_PATH_CSS"	    value="./css/"></property>
+        <property name="APP_CSS"	    value="jc_style.css"></property>
         
         <!-- PROGRAM ICON FILES -->
         <property name="NEW_ICON"	    value="New.png"></property>
@@ -23,7 +23,7 @@
         <!-- TOOLTIPS FOR BUTTONS -->
         <property name="NEW_TOOLTIP"		value="Create a New Pose"></property>
         <property name="LOAD_TOOLTIP"		value="Load an Existing Pose"></property>
-        <property name="SAVE_TOOLTIP"		value="Save this Pose"></property>
+        <property name="SAVE_AS_TOOLTIP"	value="Save As"></property>
         <property name="EXIT_TOOLTIP"		value="Exit the Application"></property>
         
         <!-- ERROR MESSAGES -->
@@ -53,10 +53,10 @@
         <property name="WORK_LOADED_MESSAGE"		value="The Work has been Loaded"></property>
         <property name="WORK_SAVED_MESSAGE"		value="The Work has been Saved"></property>
         <property name="SAVE_UNSAVED_WORK_MESSAGE"	value="Do you want to save your unsaved work first?"></property>
-	<property name="SAVE_WORK_TITLE"		value="Save your work"></property>
-	<property name="LOAD_WORK_TITLE"		value="Select work file to load"></property>
-	<property name="WORK_FILE_EXT"			value="jc"></property>
-	<property name="WORK_FILE_EXT_DESC"		value="JClassDesigner Files"></property>
+        <property name="SAVE_WORK_TITLE"		value="Save your work"></property>
+        <property name="LOAD_WORK_TITLE"		value="Select work file to load"></property>
+        <property name="WORK_FILE_EXT"			value="jc"></property>
+        <property name="WORK_FILE_EXT_DESC"		value="JClassDesigner Files"></property>
     </property_list>
     <property_options_list>
     </property_options_list>
