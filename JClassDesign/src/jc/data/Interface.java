@@ -17,7 +17,7 @@ public class Interface extends VBox implements Draggable{
     
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
-    VBox  nameBox, methodVBox;
+    VBox  nameVBox, methodVBox;
     String name = "DefaultClassName";
     ArrayList<String> methods;
      
@@ -28,9 +28,12 @@ public class Interface extends VBox implements Draggable{
         orgSceneX = 0;
         orgSceneY = 0;
         
-        nameBox.getChildren().add(new Label(name));
+        nameVBox = new VBox();
+        methodVBox = new VBox();
         
-        getChildren().addAll(nameBox, methodVBox);
+        nameVBox.getChildren().add(new Label(name));
+        
+        getChildren().addAll(nameVBox, methodVBox);
         
         this.getStyleClass().add("vbox");
     }

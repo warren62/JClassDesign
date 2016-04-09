@@ -36,6 +36,9 @@ and open the template in the editor.
 .vbox {
     -fx-width:100;
     -fx-height:150;
+    -fx-background-color: #ddddff;
+    -fx-border-width: 2px;
+    -fx-border-color: #7777dd;
 }
 
 

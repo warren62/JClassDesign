@@ -18,7 +18,7 @@ import saf.AppTemplate;
  */
 public class EditToolbarController {
     AppTemplate app;
-        
+    Class selectedItem;    
     DataManager dataManager;
     
     public EditToolbarController(AppTemplate initApp) {
@@ -32,7 +32,9 @@ public class EditToolbarController {
 	scene.setCursor(Cursor.DEFAULT);
 	
 	// CHANGE THE STATE
-	dataManager.setState(JClassDesignerState.SELECTING_CLASS);	
+	dataManager.setState(JClassDesignerState.SELECTING_CLASS);
+        System.out.println(dataManager.getState());
+        System.out.println("handle select set state after");
 	
 	// ENABLE/DISABLE THE PROPER BUTTONS
 	Workspace workspace = (Workspace)app.getWorkspaceComponent();
@@ -46,11 +48,14 @@ public class EditToolbarController {
 	
 	// CHANGE THE STATE
 	dataManager.setState(JClassDesignerState.STARTING_CLASS);
+        System.out.println("handle add class");
 
 	// ENABLE/DISABLE THE PROPER BUTTONS
 	Workspace workspace = (Workspace)app.getWorkspaceComponent();
 	workspace.reloadWorkspace();
     }
+    
+    
     
     public void handleAddInterface() {
         
@@ -71,4 +76,15 @@ public class EditToolbarController {
     public void handleRedo() {
         
     }
+    
+    public void handleClassName(String n) {
+        dataManager.getSelectedClass().setName(n);
+        System.out.println(dataManager.getSelectedClass().getName());
+    }
+    
+    public void handlePackageName(String n) {
+        dataManager.getSelectedClass().setPackage(n);
+        System.out.println(dataManager.getSelectedClass().getPackageName());
+    }
+    
 }

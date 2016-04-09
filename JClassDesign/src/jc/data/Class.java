@@ -10,31 +10,54 @@ import java.util.ArrayList;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import jc.gui.Workspace;
+import saf.AppTemplate;
 
 /**
  *
  * @author Steve
  */
 public class Class extends VBox implements Draggable{
+    
+    AppTemplate app;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     VBox  nameVBox, methodVBox, variableVBox;
-    String name = "DefaultClassName";
+    Label name = new Label("DefaultClassName");
+    Label pkg = new Label("DefaultPackageName");
     ArrayList<String> methods;
     ArrayList<String> variables;
+    
      
 
     
 
-    public Class() {
+    public Class(AppTemplate initApp) {
+        app = initApp;
         orgSceneX = 0;
         orgSceneY = 0;
         
-        nameVBox.getChildren().add(new Label(name));
+        nameVBox = new VBox();
+        methodVBox = new VBox();
+        variableVBox = new VBox();
+        
+        nameVBox.getChildren().add(name);
+        
+        nameVBox.getStyleClass().add("vbox");
+        methodVBox.getStyleClass().add("vbox");
+        methodVBox.setMinHeight(30);
+        methodVBox.setMinWidth(30);
+        variableVBox.getStyleClass().add("vbox");
+//        variableVBox.setMinHeight(30);
+//        variableVBox.setMinWidth(30);
+        initHandler();
         
         getChildren().addAll(nameVBox, methodVBox, variableVBox);
         
         this.getStyleClass().add("vbox");
+//        this.setPrefSize(100, 100);
+        this.setHeight(100);
+        this.setWidth(100);
     }
     
     @Override
@@ -43,6 +66,7 @@ public class Class extends VBox implements Draggable{
 	orgSceneY = y;
 	setLayoutX(x);
 	setLayoutY(y);
+        System.out.println(this.getPrefHeight() + "//" + this.getPrefWidth());
     }
 
     @Override
@@ -55,11 +79,33 @@ public class Class extends VBox implements Draggable{
 //	yProperty().set(newY);
 //	startX = x;
 //	startY = y;
-        double offsetX = x - orgSceneX;
-        double offsetY = y - orgSceneY;
-        double newTranslateX = orgTranslateX + offsetX;
-        double newTranslateY = orgTranslateY + offsetY;
+//        double offsetX = x - orgSceneX;
+//        double offsetY = y - orgSceneY;
+//        double newTranslateX = orgTranslateX + offsetX;
+//        double newTranslateY = orgTranslateY + offsetY;
+//
+//        this.setTranslateX(newTranslateX);
+//        this.setTranslateX(newTranslateY);
+         this.setTranslateX(x);
+         this.setTranslateY(y);
 
+    }
+    
+    public void initHandler() {
+        this.setOnMouseDragged(e -> {
+//            drag((int)e.getX(), (int)e.getY());
+           DataManager data = (DataManager)app.getDataComponent();
+//           data.setSelectedClass(this);
+//           data.highlightItem(this);
+           this.relocate(e.getSceneX(), e.getSceneY());
+        });
+        this.setOnMousePressed(e -> {
+            DataManager data = (DataManager)app.getDataComponent();
+            Workspace workspace = (Workspace)app.getWorkspaceComponent();
+            data.setSelectedClass(this);
+            workspace.setClassNameText(data.getSelectedClass().getName());
+            workspace.setPackageNameText(data.getSelectedClass().getPackageName());
+    });
 
     }
 
@@ -93,7 +139,11 @@ public class Class extends VBox implements Draggable{
 //    }
     
     public void setName(String name) {
-        this.name = name;
+        this.name.setText(name);
+    }
+    
+    public void setPackage(String name) {
+        this.pkg.setText(name);
     }
     
     public void addMethod(String method) {
@@ -110,6 +160,14 @@ public class Class extends VBox implements Draggable{
     
     public ArrayList getVariables() {
         return variables;
+    }
+    
+    public String getName() {
+        return name.getText();
+    }
+    
+    public String getPackageName() {
+        return pkg.getText();
     }
 
     @Override

@@ -30,11 +30,26 @@ public class DesignRendererController {
 	app = initApp;
     }
     
+    
+    public void processCanvasMouseExited(int x, int y) {
+	DataManager dataManager = (DataManager)app.getDataComponent();
+	if (dataManager.isInState(JClassDesignerState.DRAGGING_CLASS)) {
+	    
+	}
+//	else if (dataManager.isInState(JClassDesignerState.SIZING_SHAPE)) {
+//	    
+//	}
+    }
      public void processCanvasMousePress(int x, int y) {
 	DataManager dataManager = (DataManager)app.getDataComponent();
+        System.out.println("processCanvas pressed");
+        System.out.println("process mouse press before");
+        System.out.println("The State is" + dataManager.getState());
 	if (dataManager.isInState(SELECTING_CLASS)) {
 	    // SELECT THE TOP SHAPE
+            System.out.println("selectTopItem before");
 	    Class item = dataManager.selectTopItem(x, y);
+            System.out.println("selectTopItem after");
 	    Scene scene = app.getGUI().getPrimaryScene();
 
 	    // AND START DRAGGING IT
@@ -50,7 +65,9 @@ public class DesignRendererController {
 	    }
 	}
 	else if (dataManager.isInState(JClassDesignerState.STARTING_CLASS)) {
+            System.out.println("processmouse");
 	    dataManager.startNewItem(x, y);
+            System.out.println("processmouse after");
 	}
 	
 	Workspace workspace = (Workspace)app.getWorkspaceComponent();
@@ -64,8 +81,8 @@ public class DesignRendererController {
 //	    newDraggableShape.size(x, y);
 //	}
 	if (dataManager.isInState(DRAGGING_CLASS)) {
-	    Draggable selectedDraggableItem = (Draggable)dataManager.getSelectedItem();
-	    selectedDraggableItem.drag(x, y);
+	    Draggable selectedDraggableItem = (Draggable)dataManager.getSelectedClass();
+//	    selectedDraggableItem.drag(x, y);
 	    app.getGUI().updateToolbarControls(false);
 	}
     }

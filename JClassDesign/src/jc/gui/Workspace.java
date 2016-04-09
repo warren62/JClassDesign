@@ -20,7 +20,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import static jc.PropertyType.ADD_CLASS_ICON;
 import static jc.PropertyType.ADD_CLASS_TOOLTIP;
 import static jc.PropertyType.ADD_INTERFACE_ICON;
@@ -45,6 +47,7 @@ import static jc.PropertyType.ZOOM_OUT_ICON;
 import static jc.PropertyType.ZOOM_OUT_TOOLTIP;
 import jc.controller.DesignRendererController;
 import jc.controller.EditToolbarController;
+import jc.data.DataManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
 import static saf.settings.AppPropertyType.SAVE_AS_ICON;
@@ -57,7 +60,7 @@ import saf.ui.AppGUI;
  * @author Steve
  */
 public class Workspace extends AppWorkspaceComponent {
-    
+
     static final String CLASS_EDIT_TOOLBAR = "edit_toolbar";
     static final String CLASS_EDIT_TOOLBAR_ROW = "edit_toolbar_row";
 
@@ -73,7 +76,7 @@ public class Workspace extends AppWorkspaceComponent {
     HBox viewToolBar;
 
     VBox componentToolBar;
-    
+
     HBox classHBox;
     HBox packageHBox;
     HBox parentHBox;
@@ -104,7 +107,7 @@ public class Workspace extends AppWorkspaceComponent {
     Label parentLbl;
     Label variableLbl;
     Label methodLbl;
-    
+
     TextField classNameField;
     TextField packageField;
     ComboBox parentComboBox;
@@ -121,9 +124,12 @@ public class Workspace extends AppWorkspaceComponent {
     ScrollPane designRendererScroll;
     SplitPane splitPane;
     GridPane grid;
-    
+
     DesignRendererController designRendererController;
-    EditToolbarController  editToolBarController;
+    EditToolbarController editToolBarController;
+    DataManager dataManager;
+    
+    Text debugText;
 
     public Workspace(AppTemplate initApp) {
 
@@ -134,6 +140,7 @@ public class Workspace extends AppWorkspaceComponent {
         gui = app.getGUI();
 
         buildGui();
+        buildHandlers();
 
     }
 
@@ -142,15 +149,15 @@ public class Workspace extends AppWorkspaceComponent {
         fileToolBar = new HBox();
         editToolBar = new HBox();
         viewToolBar = new HBox();
-        
+
         classHBox = new HBox();
         packageHBox = new HBox();
         parentHBox = new HBox();
-        
+
         gridControls = new VBox();
 
         componentToolBar = new VBox();
-        
+
         saveAsBtn = gui.getSaveAsButton();
         newBtn = gui.getNewButton();
         exitBtn = gui.getExitButton();
@@ -159,22 +166,22 @@ public class Workspace extends AppWorkspaceComponent {
         photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), true);
         codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), true);
 
-        selectBtn = gui.initChildButton(editToolBar, SELECT_ICON.toString(), SELECT_TOOLTIP.toString(), true);
+        selectBtn = gui.initChildButton(editToolBar, SELECT_ICON.toString(), SELECT_TOOLTIP.toString(), false);
         resizeBtn = gui.initChildButton(editToolBar, RESIZE_ICON.toString(), RESIZE_TOOLTIP.toString(), true);
-        addClassBtn = gui.initChildButton(editToolBar, ADD_CLASS_ICON.toString(), ADD_CLASS_TOOLTIP.toString(), true);
+        addClassBtn = gui.initChildButton(editToolBar, ADD_CLASS_ICON.toString(), ADD_CLASS_TOOLTIP.toString(), false);
         addInterfaceBtn = gui.initChildButton(editToolBar, ADD_INTERFACE_ICON.toString(), ADD_INTERFACE_TOOLTIP.toString(), true);
         removeBtn = gui.initChildButton(editToolBar, REMOVE_ICON.toString(), REMOVE_TOOLTIP.toString(), true);
         undoBtn = gui.initChildButton(editToolBar, UNDO_ICON.toString(), UNDO_TOOLTIP.toString(), true);
         redoBtn = gui.initChildButton(editToolBar, REDO_ICON.toString(), REDO_TOOLTIP.toString(), true);
-        
+
         zoomInBtn = gui.initChildButton(viewToolBar, ZOOM_IN_ICON.toString(), ZOOM_IN_TOOLTIP.toString(), true);
         zoomOutBtn = gui.initChildButton(viewToolBar, ZOOM_OUT_ICON.toString(), ZOOM_OUT_TOOLTIP.toString(), true);
-        
+
         gridCheckBox = new CheckBox("Grid");
         gridSnapCheckBox = new CheckBox("Snap");
-        
+
         gridControls.getChildren().addAll(gridCheckBox, gridSnapCheckBox);
-        
+
         viewToolBar.getChildren().add(gridControls);
 
         fileToolBar.getChildren().addAll(newBtn, loadBtn, saveAsBtn, exitBtn);
@@ -183,65 +190,93 @@ public class Workspace extends AppWorkspaceComponent {
         topToolBar.getChildren().addAll(fileToolBar, editToolBar, viewToolBar);
 
         gui.setTopToolbar(topToolBar);
-        
+
         classNameLbl = new Label("Class Name: ");
         packageLbl = new Label("Package: ");
         parentLbl = new Label("Parent: ");
-        
+
         classNameField = new TextField();
         packageField = new TextField();
-        
+
         parentComboBox = new ComboBox();
-        
+
         classHBox.getChildren().addAll(classNameLbl, classNameField);
         packageHBox.getChildren().addAll(packageLbl, packageField);
         classHBox.getChildren().addAll(parentLbl, parentComboBox);
-        
+
         variableTable = new TableView();
         methodTable = new TableView();
-        
+
         componentToolBar.setAlignment(Pos.CENTER);
         componentToolBar.getChildren().addAll(classHBox, packageHBox, parentHBox, variableTable, methodTable);
-        
+
         grid = new GridPane();
-        
+        designRenderer = new Pane();
+        designRenderer.setStyle("-fx-background: black;");
+        designRenderer.setMinSize(100, 100);
+        designRenderer.setPrefSize(2500, 2500);
+
         designRendererScroll = new ScrollPane();
-        designRendererScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        designRendererScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
-        designRendererScroll.setContent(designRenderer);
         
+//        designRendererScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+//        designRendererScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
+        designRendererScroll.setContent(designRenderer);
+
         splitPane = new SplitPane();
         splitPane.getItems().addAll(designRendererScroll, componentToolBar);
         splitPane.setDividerPositions(.75);
+        
+	debugText = new Text();
+	designRenderer.getChildren().add(debugText);
+	debugText.setX(100);
+	debugText.setY(100);
+        
+        DataManager data = (DataManager)app.getDataComponent();
+//	data.addClass(redoBtn);
 
         workspace = new BorderPane();
 //       ((BorderPane)workspace).setTop(topToolBar);
         ((BorderPane) workspace).setCenter(splitPane);
-        
+
     }
-    
+
     public void buildHandlers() {
-        
+
+        editToolBarController = new EditToolbarController(app);
         addClassBtn.setOnAction(e -> {
+            System.out.println("add class handler" +  editToolBarController.toString());
             editToolBarController.handleAddClass();
+            
         });
         selectBtn.setOnAction(e -> {
+            System.out.println("select class handler");
             editToolBarController.handleSelect();
         });
         
+        classNameField.textProperty().addListener((a,e,o) -> {
+            editToolBarController.handleClassName(o);
+        });
+        
+        packageField.textProperty().addListener((a,e,o) -> {
+            editToolBarController.handlePackageName(o);
+        });
+
         designRendererController = new DesignRendererController(app);
         designRenderer.setOnMousePressed(e -> {
-            designRendererController.processCanvasMousePress((int)e.getX(), (int)e.getY());
+            System.out.println("mouse pressed handler");
+            designRendererController.processCanvasMousePress((int) e.getX(), (int) e.getY());
+            System.out.println("mouse pressed handler after");
+            
         });
         designRenderer.setOnMouseReleased(e -> {
-            designRendererController.processCanvasMouseRelease((int)e.getX(), (int)e.getY());
+            designRendererController.processCanvasMouseRelease((int) e.getX(), (int) e.getY());
         });
         designRenderer.setOnMouseDragged(e -> {
-            designRendererController.processCanvasMouseDragged((int)e.getX(), (int)e.getY());
+            designRendererController.processCanvasMouseDragged((int) e.getX(), (int) e.getY());
         });
-//        designRenderer.setOnMouseExited(e -> {
-//            designRendererController.processCanvasMouseExited((int)e.getX(), (int)e.getY());
-//        });
+        designRenderer.setOnMouseExited(e -> {
+            designRendererController.processCanvasMouseExited((int)e.getX(), (int)e.getY());
+        });
 //        designRenderer.setOnMouseMoved(e -> {
 //            designRendererController.processCanvasMouseMoved((int)e.getX(), (int)e.getY());
 //        });
@@ -249,17 +284,34 @@ public class Workspace extends AppWorkspaceComponent {
 
     @Override
     public void reloadWorkspace() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+//        if (dataManager.getItems() != null) {
+//            ObservableList<Node> items = dataManager.getItems();
+//            for (Node node : items) {
+//                designRenderer.getChildren().add(node);
+//            }
+//        }
     }
 
     @Override
     public void initStyle() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
+        
         topToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         viewToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         fileToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         editToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
     }
+    
+    public AppTemplate getApp() {
+        return app;
+    }
+    
+    public void setClassNameText(String s) {
+        classNameField.setText(s);
+    }
 
+    public void setPackageNameText(String s) {
+        packageField.setText(s);
+    }
 }

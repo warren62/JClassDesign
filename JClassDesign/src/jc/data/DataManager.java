@@ -5,11 +5,14 @@
  */
 package jc.data;
 
+import java.util.ArrayList;
+import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import jc.file.FileManager;
 import jc.gui.Workspace;
@@ -28,7 +31,7 @@ public class DataManager implements AppDataComponent {
     
     JClassDesignerState state;
     
-    ObservableList<Node> items;
+    ArrayList<Node> items;
     
     Class newItem;
     
@@ -50,6 +53,8 @@ public class DataManager implements AppDataComponent {
 	dropShadowEffect.setRadius(15);
 	highlightedEffect = dropShadowEffect;
         
+        items = new ArrayList<Node>();
+        
         
     }
     
@@ -61,16 +66,16 @@ public class DataManager implements AppDataComponent {
 	state = initState;
     }
     
-    public Class getNewItem() {
+    public Node getNewClass() {
 	return newItem;
     }
 
-    public Class getSelectedItem() {
+    public Class getSelectedClass() {
 	return selectedItem;
     }
 
-    public void setSelectedItem(Class initSelectedItem) {
-	selectedItem = initSelectedItem;
+    public void setSelectedClass(Class initSelectedClass) {
+	selectedItem = initSelectedClass;
     }
 
 
@@ -87,10 +92,12 @@ public class DataManager implements AppDataComponent {
     }
     
     public void startNewItem(int x, int y) {
-	Class newItem = new Class();
-	newItem.start(x, y);
-	newItem = newItem;
+        System.out.println("start new item");
+	Class newClass = new Class(app);
+	newClass.start(x, y);
+	newItem = newClass;
 	initNewItem();
+        System.out.println("start item after");
     }
     
     public void initNewItem() {
@@ -105,13 +112,18 @@ public class DataManager implements AppDataComponent {
 	
 	
 	// ADD THE SHAPE TO THE CANVAS
+        System.out.println(items.toString() + "//" + items.size());
 	items.add(newItem);
+        System.out.println(newItem.toString() + "//" + items.size());
+        workspace.getWorkspace().getChildren().add(newItem);
+        System.out.println("initnew item debug" + workspace.getWorkspace().getChildren().size());
 	
 	// GO INTO SHAPE SIZING MODE
 	
     }
     
      public Class selectTopItem(int x, int y) {
+        System.out.println("select top item before");
 	Class item = getTopItem(x, y);
 	if (item == selectedItem)
 	    return item;
@@ -140,13 +152,36 @@ public class DataManager implements AppDataComponent {
 	}
 	return null;
     }
+    
+//     public void selectSizedShape() {
+//	if (selectedItem != null)
+//	    unhighlightItem(selectedItem);
+//	selectedShape = newItem;
+//	highlightShape(selectedShape);
+//	newShape = null;
+//	if (state == SIZING_SHAPE) {
+//	    state = ((Draggable)selectedShape).getStartingState();
+//	}
+//    }
 
-    public void addShape(Class itemToAdd) {
+    public void addClass(Node itemToAdd) {
+	items.add(itemToAdd);
+    }
+    
+//    public void setItems(ObservableList<Node> initItems, Pane pane) {
+//	items = initItems;
+//    }
+    
+    public void addInterface(Interface itemToAdd) {
 	items.add(itemToAdd);
     }
 
     public void removeItem(Class itemToRemove) {
 	items.remove(itemToRemove);
+    }
+    
+    public ArrayList getItems() {
+        return items;
     }
     
     @Override
