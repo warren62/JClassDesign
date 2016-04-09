@@ -17,7 +17,7 @@ import saf.AppTemplate;
  *
  * @author Steve
  */
-public class Class extends VBox implements Draggable{
+public class Class extends Item implements Draggable{
     
     AppTemplate app;
     double orgSceneX, orgSceneY;

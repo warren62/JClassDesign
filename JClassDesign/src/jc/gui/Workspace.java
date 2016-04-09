@@ -80,6 +80,8 @@ public class Workspace extends AppWorkspaceComponent {
     HBox classHBox;
     HBox packageHBox;
     HBox parentHBox;
+    HBox varHBox;
+    HBox methodHBox;
 
     Button saveBtn;
     Button saveAsBtn;
@@ -107,6 +109,7 @@ public class Workspace extends AppWorkspaceComponent {
     Label parentLbl;
     Label variableLbl;
     Label methodLbl;
+    
 
     TextField classNameField;
     TextField packageField;
@@ -153,11 +156,19 @@ public class Workspace extends AppWorkspaceComponent {
         classHBox = new HBox();
         packageHBox = new HBox();
         parentHBox = new HBox();
+        varHBox = new HBox();
+        methodHBox = new HBox();
 
         gridControls = new VBox();
 
         componentToolBar = new VBox();
 
+        
+        plusVarBtn = new Button("+");
+        minusVarBtn = new Button("-");
+        plusMethodBtn = new Button("+");
+        minusMethodBtn = new Button("-");
+        
         saveAsBtn = gui.getSaveAsButton();
         newBtn = gui.getNewButton();
         exitBtn = gui.getExitButton();
@@ -194,6 +205,8 @@ public class Workspace extends AppWorkspaceComponent {
         classNameLbl = new Label("Class Name: ");
         packageLbl = new Label("Package: ");
         parentLbl = new Label("Parent: ");
+        variableLbl = new Label("Variables: ");
+        methodLbl = new Label("Methods: ");
 
         classNameField = new TextField();
         packageField = new TextField();
@@ -203,6 +216,8 @@ public class Workspace extends AppWorkspaceComponent {
         classHBox.getChildren().addAll(classNameLbl, classNameField);
         packageHBox.getChildren().addAll(packageLbl, packageField);
         classHBox.getChildren().addAll(parentLbl, parentComboBox);
+        varHBox.getChildren().addAll(variableLbl, plusVarBtn, minusVarBtn);
+        methodHBox.getChildren().addAll(methodLbl, plusMethodBtn, minusMethodBtn);
 
         variableTable = new TableView();
         methodTable = new TableView();

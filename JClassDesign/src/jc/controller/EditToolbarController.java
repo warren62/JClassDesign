@@ -7,6 +7,7 @@ package jc.controller;
 
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import jc.data.Class;
 import jc.data.DataManager;
 import jc.data.JClassDesignerState;
 import jc.gui.Workspace;
@@ -78,6 +79,8 @@ public class EditToolbarController {
     }
     
     public void handleClassName(String n) {
+        
+        
         dataManager.getSelectedClass().setName(n);
         System.out.println(dataManager.getSelectedClass().getName());
     }

@@ -11,6 +11,7 @@ import javafx.scene.shape.Shape;
 import jc.data.DataManager;
 import jc.data.Draggable;
 import jc.data.Class;
+import jc.data.Item;
 import jc.data.JClassDesignerState;
 import static jc.data.JClassDesignerState.DRAGGING_NOTHING;
 import jc.gui.Workspace;
@@ -48,7 +49,7 @@ public class DesignRendererController {
 	if (dataManager.isInState(SELECTING_CLASS)) {
 	    // SELECT THE TOP SHAPE
             System.out.println("selectTopItem before");
-	    Class item = dataManager.selectTopItem(x, y);
+	    Item item = dataManager.selectTopItem(x, y);
             System.out.println("selectTopItem after");
 	    Scene scene = app.getGUI().getPrimaryScene();
 
