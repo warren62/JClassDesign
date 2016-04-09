@@ -14,6 +14,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
@@ -122,7 +123,20 @@ public class Workspace extends AppWorkspaceComponent {
 
     TableView variableTable;
     TableView methodTable;
+    
+    TableColumn varNameColumn = new TableColumn("Name");
+    TableColumn varTypeColumn = new TableColumn("Type");
+    TableColumn varStaticColumn = new TableColumn("Static");
+    TableColumn varAccessColumn = new TableColumn("Access");
 
+    TableColumn methNameColumn = new TableColumn("Name");
+    TableColumn methReturnColumn = new TableColumn("Return");
+    TableColumn methStaticColumn = new TableColumn("Static");
+    TableColumn methAbstractColumn = new TableColumn("Abstract");
+    TableColumn methAccessColumn = new TableColumn("Access");
+    TableColumn methArg1Column = new TableColumn("Arg1");
+    TableColumn methArg2Column = new TableColumn("Arg2");
+    
     Pane designRenderer;
     ScrollPane designRendererScroll;
     SplitPane splitPane;
@@ -165,28 +179,49 @@ public class Workspace extends AppWorkspaceComponent {
 
         
         plusVarBtn = new Button("+");
+        plusVarBtn.setMaxWidth(Double.MAX_VALUE);
         minusVarBtn = new Button("-");
+        minusVarBtn.setMaxWidth(Double.MAX_VALUE);
         plusMethodBtn = new Button("+");
+        plusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         minusMethodBtn = new Button("-");
+        minusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         
-        saveAsBtn = gui.getSaveAsButton();
-        newBtn = gui.getNewButton();
-        exitBtn = gui.getExitButton();
-        loadBtn = gui.getLoadButton();
+        
         saveBtn = gui.initChildButton(fileToolBar, SAVE_ICON.toString(), SAVE_TOOLTIP.toString(), true);
+        saveBtn.setMaxWidth(Double.MAX_VALUE);
         photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), true);
+        photoBtn.setMaxWidth(Double.MAX_VALUE);
         codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), true);
+        codeBtn.setMaxWidth(Double.MAX_VALUE);
+        saveAsBtn = gui.getSaveAsButton();
+        saveAsBtn.setMaxWidth(Double.MAX_VALUE);
+        newBtn = gui.getNewButton();
+        newBtn.setMaxWidth(Double.MAX_VALUE);
+        exitBtn = gui.getExitButton();
+        exitBtn.setMaxWidth(Double.MAX_VALUE);
+        loadBtn = gui.getLoadButton();
+        loadBtn.setMaxWidth(Double.MAX_VALUE);
 
         selectBtn = gui.initChildButton(editToolBar, SELECT_ICON.toString(), SELECT_TOOLTIP.toString(), false);
+        selectBtn.setMaxWidth(Double.MAX_VALUE);
         resizeBtn = gui.initChildButton(editToolBar, RESIZE_ICON.toString(), RESIZE_TOOLTIP.toString(), true);
+        resizeBtn.setMaxWidth(Double.MAX_VALUE);
         addClassBtn = gui.initChildButton(editToolBar, ADD_CLASS_ICON.toString(), ADD_CLASS_TOOLTIP.toString(), false);
+        addClassBtn.setMaxWidth(Double.MAX_VALUE);
         addInterfaceBtn = gui.initChildButton(editToolBar, ADD_INTERFACE_ICON.toString(), ADD_INTERFACE_TOOLTIP.toString(), true);
+        addInterfaceBtn.setMaxWidth(Double.MAX_VALUE);
         removeBtn = gui.initChildButton(editToolBar, REMOVE_ICON.toString(), REMOVE_TOOLTIP.toString(), true);
+        removeBtn.setMaxWidth(Double.MAX_VALUE);
         undoBtn = gui.initChildButton(editToolBar, UNDO_ICON.toString(), UNDO_TOOLTIP.toString(), true);
+        undoBtn.setMaxWidth(Double.MAX_VALUE);
         redoBtn = gui.initChildButton(editToolBar, REDO_ICON.toString(), REDO_TOOLTIP.toString(), true);
+        redoBtn.setMaxWidth(Double.MAX_VALUE);
 
         zoomInBtn = gui.initChildButton(viewToolBar, ZOOM_IN_ICON.toString(), ZOOM_IN_TOOLTIP.toString(), true);
+        zoomInBtn.setMaxWidth(Double.MAX_VALUE);
         zoomOutBtn = gui.initChildButton(viewToolBar, ZOOM_OUT_ICON.toString(), ZOOM_OUT_TOOLTIP.toString(), true);
+        zoomOutBtn.setMaxWidth(Double.MAX_VALUE);
 
         gridCheckBox = new CheckBox("Grid");
         gridSnapCheckBox = new CheckBox("Snap");
@@ -214,16 +249,38 @@ public class Workspace extends AppWorkspaceComponent {
         parentComboBox = new ComboBox();
 
         classHBox.getChildren().addAll(classNameLbl, classNameField);
+        classHBox.setAlignment(Pos.CENTER);
         packageHBox.getChildren().addAll(packageLbl, packageField);
-        classHBox.getChildren().addAll(parentLbl, parentComboBox);
+        packageHBox.setAlignment(Pos.CENTER);
+        parentHBox.getChildren().addAll(parentLbl, parentComboBox);
+        parentHBox.setAlignment(Pos.CENTER);
         varHBox.getChildren().addAll(variableLbl, plusVarBtn, minusVarBtn);
+        varHBox.setAlignment(Pos.CENTER);
         methodHBox.getChildren().addAll(methodLbl, plusMethodBtn, minusMethodBtn);
+        methodHBox.setAlignment(Pos.CENTER);
 
         variableTable = new TableView();
+        variableTable.getColumns().add(varNameColumn);
+        variableTable.getColumns().add(varTypeColumn);
+        variableTable.getColumns().add(varStaticColumn);
+        variableTable.getColumns().add(varAccessColumn);
         methodTable = new TableView();
+        methodTable.getColumns().add(methNameColumn);
+        methodTable.getColumns().add(methReturnColumn);
+        methodTable.getColumns().add(methStaticColumn);
+        methodTable.getColumns().add(methAbstractColumn);
+        methodTable.getColumns().add(methAccessColumn);
+        methodTable.getColumns().add(methArg1Column);
+        methodTable.getColumns().add(methArg2Column);
+        
+        
+        ScrollPane varTableScroll = new ScrollPane();
+        varTableScroll.setContent(variableTable);
+        ScrollPane methTableScroll = new ScrollPane();
+        methTableScroll.setContent(methodTable);
 
         componentToolBar.setAlignment(Pos.CENTER);
-        componentToolBar.getChildren().addAll(classHBox, packageHBox, parentHBox, variableTable, methodTable);
+        componentToolBar.getChildren().addAll(classHBox, packageHBox, parentHBox, varHBox, varTableScroll, methodHBox, methTableScroll);
 
         grid = new GridPane();
         designRenderer = new Pane();
@@ -311,7 +368,7 @@ public class Workspace extends AppWorkspaceComponent {
     public void initStyle() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 
-        
+        componentToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         topToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         viewToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         fileToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
