@@ -51,6 +51,7 @@ import jc.controller.EditToolbarController;
 import jc.data.DataManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
+import static saf.settings.AppPropertyType.NEW_ICON;
 import static saf.settings.AppPropertyType.SAVE_AS_ICON;
 import static saf.settings.AppPropertyType.SAVE_ICON;
 import static saf.settings.AppPropertyType.SAVE_TOOLTIP;
@@ -188,28 +189,36 @@ public class Workspace extends AppWorkspaceComponent {
         minusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         
         
-        saveBtn = gui.initChildButton(fileToolBar, SAVE_ICON.toString(), SAVE_TOOLTIP.toString(), true);
-        saveBtn.setMaxWidth(Double.MAX_VALUE);
-        photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), true);
-        photoBtn.setMaxWidth(Double.MAX_VALUE);
-        codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), true);
-        codeBtn.setMaxWidth(Double.MAX_VALUE);
-        saveAsBtn = gui.getSaveAsButton();
-        saveAsBtn.setMaxWidth(Double.MAX_VALUE);
         newBtn = gui.getNewButton();
         newBtn.setMaxWidth(Double.MAX_VALUE);
         exitBtn = gui.getExitButton();
         exitBtn.setMaxWidth(Double.MAX_VALUE);
+        saveAsBtn = gui.getSaveAsButton();
+        saveAsBtn.setMaxWidth(Double.MAX_VALUE);
         loadBtn = gui.getLoadButton();
         loadBtn.setMaxWidth(Double.MAX_VALUE);
+        
+        fileToolBar.getChildren().addAll(newBtn, loadBtn, saveAsBtn);
+        
+        saveBtn = gui.initChildButton(fileToolBar, SAVE_ICON.toString(), SAVE_TOOLTIP.toString(), true);
+        saveBtn.setMaxWidth(Double.MAX_VALUE);
+        fileToolBar.getChildren().add(exitBtn);
+        photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), true);
+        photoBtn.setMaxWidth(Double.MAX_VALUE);
+        codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), true);
+        codeBtn.setMaxWidth(Double.MAX_VALUE);
+        
+        
+        
 
+//        newBtn = gui.initChildButton(editToolBar, NEW_ICON.toString(), SELECT_TOOLTIP.toString(), false);
         selectBtn = gui.initChildButton(editToolBar, SELECT_ICON.toString(), SELECT_TOOLTIP.toString(), false);
         selectBtn.setMaxWidth(Double.MAX_VALUE);
         resizeBtn = gui.initChildButton(editToolBar, RESIZE_ICON.toString(), RESIZE_TOOLTIP.toString(), true);
         resizeBtn.setMaxWidth(Double.MAX_VALUE);
         addClassBtn = gui.initChildButton(editToolBar, ADD_CLASS_ICON.toString(), ADD_CLASS_TOOLTIP.toString(), false);
         addClassBtn.setMaxWidth(Double.MAX_VALUE);
-        addInterfaceBtn = gui.initChildButton(editToolBar, ADD_INTERFACE_ICON.toString(), ADD_INTERFACE_TOOLTIP.toString(), true);
+        addInterfaceBtn = gui.initChildButton(editToolBar, ADD_INTERFACE_ICON.toString(), ADD_INTERFACE_TOOLTIP.toString(), false);
         addInterfaceBtn.setMaxWidth(Double.MAX_VALUE);
         removeBtn = gui.initChildButton(editToolBar, REMOVE_ICON.toString(), REMOVE_TOOLTIP.toString(), true);
         removeBtn.setMaxWidth(Double.MAX_VALUE);
@@ -230,7 +239,7 @@ public class Workspace extends AppWorkspaceComponent {
 
         viewToolBar.getChildren().add(gridControls);
 
-        fileToolBar.getChildren().addAll(newBtn, loadBtn, saveAsBtn, exitBtn);
+        
 
         topToolBar = new HBox();
         topToolBar.getChildren().addAll(fileToolBar, editToolBar, viewToolBar);
@@ -264,6 +273,7 @@ public class Workspace extends AppWorkspaceComponent {
         variableTable.getColumns().add(varTypeColumn);
         variableTable.getColumns().add(varStaticColumn);
         variableTable.getColumns().add(varAccessColumn);
+        
         methodTable = new TableView();
         methodTable.getColumns().add(methNameColumn);
         methodTable.getColumns().add(methReturnColumn);
@@ -314,10 +324,20 @@ public class Workspace extends AppWorkspaceComponent {
 
     public void buildHandlers() {
 
+//        newBtn.setOnAction(e -> {
+//            designRenderer.getChildren().clear();
+//        });
+        
         editToolBarController = new EditToolbarController(app);
         addClassBtn.setOnAction(e -> {
             System.out.println("add class handler" +  editToolBarController.toString());
             editToolBarController.handleAddClass();
+            
+        });
+        
+        addInterfaceBtn.setOnAction(e -> {
+            System.out.println("add class handler" +  editToolBarController.toString());
+            editToolBarController.handleAddInterface();
             
         });
         selectBtn.setOnAction(e -> {
@@ -343,9 +363,9 @@ public class Workspace extends AppWorkspaceComponent {
         designRenderer.setOnMouseReleased(e -> {
             designRendererController.processCanvasMouseRelease((int) e.getX(), (int) e.getY());
         });
-        designRenderer.setOnMouseDragged(e -> {
-            designRendererController.processCanvasMouseDragged((int) e.getX(), (int) e.getY());
-        });
+//        designRenderer.setOnMouseDragged(e -> {
+//            designRendererController.processCanvasMouseDragged((int) e.getX(), (int) e.getY());
+//        });
         designRenderer.setOnMouseExited(e -> {
             designRendererController.processCanvasMouseExited((int)e.getX(), (int)e.getY());
         });
@@ -356,6 +376,8 @@ public class Workspace extends AppWorkspaceComponent {
 
     @Override
     public void reloadWorkspace() {
+//        designRenderer.getChildren().clear();
+        System.out.println("The # of objects is:  " + designRenderer.getChildren().size());
 //        if (dataManager.getItems() != null) {
 //            ObservableList<Node> items = dataManager.getItems();
 //            for (Node node : items) {
@@ -373,6 +395,10 @@ public class Workspace extends AppWorkspaceComponent {
         viewToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         fileToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         editToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
+    }
+    
+    public Pane getDesignRenderer() {
+        return designRenderer;
     }
     
     public AppTemplate getApp() {

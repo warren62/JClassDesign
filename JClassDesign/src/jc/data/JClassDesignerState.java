@@ -10,6 +10,7 @@ package jc.data;
  * @author Steve
  */
 public enum JClassDesignerState {
+    SIZING_CLASS,
     SELECTING_CLASS,
     DRAGGING_CLASS,
     DRAGGING_NOTHING, 

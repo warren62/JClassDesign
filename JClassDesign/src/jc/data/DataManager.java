@@ -14,6 +14,7 @@ import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import static jc.data.JClassDesignerState.SELECTING_CLASS;
 import jc.file.FileManager;
 import jc.gui.Workspace;
 import saf.AppTemplate;
@@ -33,9 +34,9 @@ public class DataManager implements AppDataComponent {
     
     ArrayList<Node> items;
     
-    Class newItem;
+    Item newItem;
     
-    Class selectedItem;
+    Item selectedItem;
     
     // USE THIS WHEN THE SHAPE IS SELECTED
     Effect highlightedEffect;
@@ -66,15 +67,15 @@ public class DataManager implements AppDataComponent {
 	state = initState;
     }
     
-    public Node getNewClass() {
+    public Item getNewClass() {
 	return newItem;
     }
 
-    public Class getSelectedClass() {
+    public Item getSelectedItem() {
 	return selectedItem;
     }
 
-    public void setSelectedClass(Class initSelectedClass) {
+    public void setSelectedItem(Item initSelectedClass) {
 	selectedItem = initSelectedClass;
     }
 
@@ -83,19 +84,28 @@ public class DataManager implements AppDataComponent {
 	return state == testState;
     }
     
-    public void unhighlightItem(Class item) {
+    public void unhighlightItem(Item item) {
 	selectedItem.setEffect(null);
     }
     
-    public void highlightItem(Class item) {
+    public void highlightItem(Item item) {
 	item.setEffect(highlightedEffect);
     }
     
-    public void startNewItem(int x, int y) {
+    public void startNewClass(int x, int y) {
         System.out.println("start new item");
-	Class newClass = new Class(app);
-	newClass.start(x, y);
-	newItem = newClass;
+	Class newItem1 = new Class(app);
+	newItem1.start(x, y);
+	newItem = newItem1;
+	initNewItem();
+        System.out.println("start item after");
+    }
+    
+    public void startNewInterface(int x, int y) {
+        System.out.println("start new item");
+	Interface newItem1 = new Interface(app);
+	newItem1.start(x, y);
+	newItem = newItem1;
 	initNewItem();
         System.out.println("start item after");
     }
@@ -115,16 +125,18 @@ public class DataManager implements AppDataComponent {
         System.out.println(items.toString() + "//" + items.size());
 	items.add(newItem);
         System.out.println(newItem.toString() + "//" + items.size());
-        workspace.getWorkspace().getChildren().add(newItem);
+        workspace.getDesignRenderer().getChildren().add(newItem);
+//        workspace.getWorkspace().getChildren().add(newItem);
         System.out.println("initnew item debug" + workspace.getWorkspace().getChildren().size());
 	
 	// GO INTO SHAPE SIZING MODE
 	
     }
     
-     public Class selectTopItem(int x, int y) {
+     public Item selectTopItem(int x, int y) {
         System.out.println("select top item before");
-	Class item = getTopItem(x, y);
+//	Class item = getTopItem(x, y);
+        Item item = getSelectedItem();
 	if (item == selectedItem)
 	    return item;
 	
@@ -137,15 +149,16 @@ public class DataManager implements AppDataComponent {
 //	    workspace.loadSelectedShapeSettings(item);
 	}
 	selectedItem = item;
+//        setSelectedClass(item);
 	if (item != null) {
 	    ((Draggable)item).start(x, y);
 	}
 	return item;
     }
 
-    public Class getTopItem(int x, int y) {
+    public Item getTopItem(int x, int y) {
 	for (int i = items.size() - 1; i >= 0; i--) {
-	    Class item = (Class)items.get(i);
+	    Item item = (Item)items.get(i);
 	    if (item.contains(x, y)) {
 		return item;
 	    }
@@ -153,18 +166,15 @@ public class DataManager implements AppDataComponent {
 	return null;
     }
     
-//     public void selectSizedShape() {
-//	if (selectedItem != null)
-//	    unhighlightItem(selectedItem);
-//	selectedShape = newItem;
-//	highlightShape(selectedShape);
-//	newShape = null;
-//	if (state == SIZING_SHAPE) {
-//	    state = ((Draggable)selectedShape).getStartingState();
-//	}
-//    }
+     public void selectSizedItem() {
+	if (selectedItem != null)
+	    unhighlightItem(selectedItem);
+	selectedItem = newItem;
+	highlightItem(selectedItem);
+	newItem = null;
+    }
 
-    public void addClass(Node itemToAdd) {
+    public void addClass(Class itemToAdd) {
 	items.add(itemToAdd);
     }
     
@@ -176,7 +186,7 @@ public class DataManager implements AppDataComponent {
 	items.add(itemToAdd);
     }
 
-    public void removeItem(Class itemToRemove) {
+    public void removeItem(Item itemToRemove) {
 	items.remove(itemToRemove);
     }
     
@@ -186,7 +196,16 @@ public class DataManager implements AppDataComponent {
     
     @Override
     public void reset() {
-//        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+
+        setState(SELECTING_CLASS);
+        newItem = null;
+	selectedItem = null;
+
+	
+	
+	items.clear();
+	((Workspace)app.getWorkspaceComponent()).getDesignRenderer().getChildren().clear();
+        
     }
     
 }

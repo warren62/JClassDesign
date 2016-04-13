@@ -9,6 +9,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Scene;
 import jc.data.Class;
 import jc.data.DataManager;
+import jc.data.Item;
 import jc.data.JClassDesignerState;
 import jc.gui.Workspace;
 import saf.AppTemplate;
@@ -19,7 +20,7 @@ import saf.AppTemplate;
  */
 public class EditToolbarController {
     AppTemplate app;
-    Class selectedItem;    
+    Item selectedItem;    
     DataManager dataManager;
     
     public EditToolbarController(AppTemplate initApp) {
@@ -56,10 +57,18 @@ public class EditToolbarController {
 	workspace.reloadWorkspace();
     }
     
-    
-    
-    public void handleAddInterface() {
-        
+     public void handleAddInterface() {
+        // CHANGE THE CURSOR
+	Scene scene = app.getGUI().getPrimaryScene();
+	scene.setCursor(Cursor.CROSSHAIR);
+	
+	// CHANGE THE STATE
+	dataManager.setState(JClassDesignerState.STARTING_INTERFACE);
+        System.out.println("handle add class");
+
+	// ENABLE/DISABLE THE PROPER BUTTONS
+	Workspace workspace = (Workspace)app.getWorkspaceComponent();
+	workspace.reloadWorkspace();
     }
     
     public void handleRemove() {
@@ -81,13 +90,13 @@ public class EditToolbarController {
     public void handleClassName(String n) {
         
         
-        dataManager.getSelectedClass().setName(n);
-        System.out.println(dataManager.getSelectedClass().getName());
+        dataManager.getSelectedItem().setName(n);
+        System.out.println(dataManager.getSelectedItem().getName());
     }
     
     public void handlePackageName(String n) {
-        dataManager.getSelectedClass().setPackage(n);
-        System.out.println(dataManager.getSelectedClass().getPackageName());
+        dataManager.getSelectedItem().setPackage(n);
+        System.out.println(dataManager.getSelectedItem().getPackageName());
     }
     
 }
