@@ -94,7 +94,7 @@ public class DesignRendererController {
 //            selectedDraggableItem.setOnMouseDragged(e -> {
 //                selectedDraggableItem.relocate(e.getSceneX(), e.getSceneY());
 //            });
-	    selectedDraggableItem.drag(x, y);
+//	    selectedDraggableItem.drag(x, y);
 	    app.getGUI().updateToolbarControls(false);
 	}
     }

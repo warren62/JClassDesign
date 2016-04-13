@@ -19,6 +19,8 @@ public class Item extends VBox implements Draggable {
     AppTemplate app;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
+    double x = 0;
+    double y = 0;
     Label name = new Label("DefaultClassName");
     Label pkg = new Label("DefaultPackageName");
     
@@ -47,8 +49,9 @@ public class Item extends VBox implements Draggable {
 
     @Override
     public void start(int x, int y) {
-        orgSceneX = x;
-        orgSceneY = y;
+//        orgSceneX = x;
+//        orgSceneY = y;
+        
         setLayoutX(x);
         setLayoutY(y);
         DataManager data = (DataManager) app.getDataComponent();
@@ -63,17 +66,19 @@ public class Item extends VBox implements Draggable {
     }
     
      public void initHandler() {
-        this.setOnMouseDragged(e -> {
-            DataManager data = (DataManager) app.getDataComponent();
+         
+          this.setOnMousePressed(e -> {
             
-//            drag((int)e.getX(), (int)e.getY());
+            orgSceneX = e.getSceneX();
+            orgSceneY = e.getSceneY();
+            
+             x = getLayoutX();
+             y = getLayoutY();
 
-            data.setSelectedItem(this);
+
             
-//            data.highlightItem(this);
-            this.relocate(e.getSceneX() - this.getWidth() / 2, e.getSceneY() - this.getHeight());
-        });
-        this.setOnMousePressed(e -> {
+//            orgTranslateY = ((Item)(e.getSource())).getTranslateY();
+//            orgTranslateY = ((Item)(e.getSource())).getTranslateY();
             DataManager data = (DataManager) app.getDataComponent();
             Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //            ObservableList<Node> list = workspace.getDesignRenderer().getChildren();
@@ -88,6 +93,33 @@ public class Item extends VBox implements Draggable {
 //            workspace.setPackageNameText(data.getSelectedClass().getPackageName());
             workspace.setClassNameText(this.getName());
             workspace.setPackageNameText(this.getPackageName());
+        });
+
+        this.setOnMouseDragged(e -> {
+            
+            x += e.getSceneX() - orgSceneX;
+            y += e.getSceneY() - orgSceneY;
+            
+            setLayoutX(x);
+            setLayoutY(y);
+            
+            orgSceneX = e.getSceneX();
+            orgSceneY = e.getSceneY();
+
+            
+//            double offsetX = e.getSceneX() - orgSceneX;
+//            double offsetY = e.getSceneY() - orgSceneY;
+//            double newTranslateX = orgTranslateX + offsetX;
+//            double newTranslateY = orgTranslateY + offsetY;
+            DataManager data = (DataManager) app.getDataComponent();
+            
+//            drag((int)e.getX(), (int)e.getY());
+
+            data.setSelectedItem(this);
+//            ((Item)(e.getSource())).setTranslateX(newTranslateX);
+//            ((Item)(e.getSource())).setTranslateY(newTranslateY);
+//            data.highlightItem(this);
+//            this.relocate(newTranslateX, newTranslateY);
         });
 
     }
