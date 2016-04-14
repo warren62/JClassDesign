@@ -38,6 +38,8 @@ public class DataManager implements AppDataComponent {
     
     Item selectedItem;
     
+    
+    
     // USE THIS WHEN THE SHAPE IS SELECTED
     Effect highlightedEffect;
     

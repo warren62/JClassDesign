@@ -5,6 +5,8 @@
  */
 package jc.data;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import jc.gui.Workspace;
@@ -21,6 +23,7 @@ public class Item extends VBox implements Draggable {
     double orgTranslateX, orgTranslateY;
     double x = 0;
     double y = 0;
+    StringProperty nameProp = new SimpleStringProperty("gg");
     Label name = new Label("DefaultClassName");
     Label pkg = new Label("DefaultPackageName");
     
@@ -46,6 +49,8 @@ public class Item extends VBox implements Draggable {
     public String getPackageName() {
         return pkg.getText();
     }
+    
+    
 
     @Override
     public void start(int x, int y) {
@@ -131,12 +136,16 @@ public class Item extends VBox implements Draggable {
 
     @Override
     public double getX() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return x;
+        
     }
 
     @Override
     public double getY() {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        return y;
+        
     }
 
     @Override

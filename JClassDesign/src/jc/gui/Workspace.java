@@ -17,6 +17,7 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -270,6 +271,7 @@ public class Workspace extends AppWorkspaceComponent {
 
         variableTable = new TableView();
         variableTable.getColumns().add(varNameColumn);
+//        varNameColumn.setCellValueFactory(new PropertyValueFactory("nameProp"));
         variableTable.getColumns().add(varTypeColumn);
         variableTable.getColumns().add(varStaticColumn);
         variableTable.getColumns().add(varAccessColumn);
@@ -312,6 +314,11 @@ public class Workspace extends AppWorkspaceComponent {
 	designRenderer.getChildren().add(debugText);
 	debugText.setX(100);
 	debugText.setY(100);
+        
+        variableTable.setItems(designRenderer.getChildren());
+        methodTable.setItems(designRenderer.getChildren());
+
+
         
         DataManager data = (DataManager)app.getDataComponent();
 //	data.addClass(redoBtn);
