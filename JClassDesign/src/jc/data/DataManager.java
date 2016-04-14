@@ -192,6 +192,10 @@ public class DataManager implements AppDataComponent {
 	items.remove(itemToRemove);
     }
     
+    public void addToWorkspace(Item i) {
+        ((Workspace)app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(i);
+    }
+    
     public ArrayList getItems() {
         return items;
     }

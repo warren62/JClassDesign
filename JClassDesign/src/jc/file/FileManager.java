@@ -21,8 +21,10 @@ import javafx.scene.Node;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonReader;
+import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
@@ -30,6 +32,7 @@ import jc.data.Class;
 import jc.data.DataManager;
 import jc.data.Interface;
 import jc.data.Item;
+import saf.AppTemplate;
 import saf.components.AppDataComponent;
 import saf.components.AppFileComponent;
 
@@ -38,6 +41,8 @@ import saf.components.AppFileComponent;
  * @author Steve
  */
 public class FileManager implements AppFileComponent {
+    
+    AppTemplate app;
 
     @Override
     public void saveData(AppDataComponent data, String filePath) throws IOException {
@@ -52,8 +57,8 @@ public class FileManager implements AppFileComponent {
                 String type = "Class";
                 String name = c.getName();
                 String packageName = c.getPackageName();
-                double x = c.getX();
-                double y = c.getY();
+                double x = c.getLayoutX();
+                double y = c.getLayoutY();
                 ArrayList<String> variables = c.getVariables();
                 ArrayList<String> methods = c.getMethods();
 //                JsonObject methodJson = makeJSONMethodObject(methods);
@@ -74,8 +79,8 @@ public class FileManager implements AppFileComponent {
                 String type = "Interface";
                 String name = c.getName();
                 String packageName = c.getPackageName();
-                double x = c.getX();
-                double y = c.getY();
+                double x = c.getLayoutX();
+                double y = c.getLayoutY();
                 ArrayList<String> methods = c.getMethods();
 //                JsonObject methodJson = makeJSONMethodObject(methods);
                 
@@ -109,7 +114,7 @@ public class FileManager implements AppFileComponent {
 	JsonWriter jsonFileWriter = Json.createWriter(os);
 	jsonFileWriter.writeObject(dataManagerJSO);
 	String prettyPrinted = sw.toString();
-	PrintWriter pw = new PrintWriter(filePath);
+	PrintWriter pw = new PrintWriter(filePath + ".json");
 	pw.write(prettyPrinted);
 	pw.close();
 
@@ -117,7 +122,55 @@ public class FileManager implements AppFileComponent {
 
     @Override
     public void loadData(AppDataComponent data, String filePath) throws IOException {
-        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+        
+        DataManager dataManager = (DataManager)data;
+	dataManager.reset();
+        
+        JsonObject json = loadJSONFile(filePath);
+        
+        JsonArray jsonItemArray = json.getJsonArray("uml");
+	for (int i = 0; i < jsonItemArray.size(); i++) {
+	    JsonObject jsonItem = jsonItemArray.getJsonObject(i);
+	    Item item = loadItem(jsonItem);
+	    dataManager.addToWorkspace(item);
+	}
+        
+    }
+    
+    public double getDataAsDouble(JsonObject json, String dataName) {
+	JsonValue value = json.get(dataName);
+	JsonNumber number = (JsonNumber)value;
+	return number.bigDecimalValue().doubleValue();	
+    }
+    
+    public Item loadItem(JsonObject jsonItem) {
+        
+        String type = jsonItem.getString("type");
+        Item i;
+        
+        if(type.equalsIgnoreCase("class" )) {
+            i = new Class(app);
+            String name = jsonItem.getString("name");
+            String packageName = jsonItem.getString("package_name");
+            double x = getDataAsDouble(jsonItem, "x");
+            double y = getDataAsDouble(jsonItem, "y");
+            i.setName(name);
+            i.setPackage(packageName);
+            i.setLayoutX(x);
+            i.setLayoutY(y);
+            
+        }else {
+            i = new Interface(app);
+            String name = jsonItem.getString("name");
+            String packageName = jsonItem.getString("package_name");
+            double x = getDataAsDouble(jsonItem, "x");
+            double y = getDataAsDouble(jsonItem, "y");
+            i.setName(name);
+            i.setPackage(packageName);
+            i.setLayoutX(x);
+            i.setLayoutY(y);
+        }
+        return i;
     }
 
     @Override

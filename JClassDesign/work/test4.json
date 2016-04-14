@@ -1,0 +1,40 @@
+
+{
+    "uml":[
+        {
+            "type":"Class",
+            "name":"DefaultClassName",
+            "package_name":"DefaultPackageName",
+            "x":0.0,
+            "y":0.0
+        },
+        {
+            "type":"Class",
+            "name":"DefaultClassName",
+            "package_name":"DefaultPackageName",
+            "x":0.0,
+            "y":0.0
+        },
+        {
+            "type":"Class",
+            "name":"DefaultClassName",
+            "package_name":"DefaultPackageName",
+            "x":0.0,
+            "y":0.0
+        },
+        {
+            "type":"Interface",
+            "name":"DefaultClassName",
+            "package_name":"DefaultPackageName",
+            "x":0.0,
+            "y":0.0
+        },
+        {
+            "type":"Interface",
+            "name":"DefaultClassName",
+            "package_name":"DefaultPackageName",
+            "x":0.0,
+            "y":0.0
+        }
+    ]
+}
