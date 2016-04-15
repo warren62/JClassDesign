@@ -121,8 +121,8 @@ public class FileManager implements AppFileComponent {
     }
 
     @Override
-    public void loadData(AppDataComponent data, String filePath) throws IOException {
-        
+    public void loadData(AppDataComponent data, String filePath, AppTemplate initApp) throws IOException {
+        app = initApp;
         DataManager dataManager = (DataManager)data;
 	dataManager.reset();
         

@@ -354,10 +354,14 @@ public class Workspace extends AppWorkspaceComponent {
         
         classNameField.textProperty().addListener((a,e,o) -> {
             editToolBarController.handleClassName(o);
+            System.out.println(packageField.getText());
+
         });
         
         packageField.textProperty().addListener((a,e,o) -> {
             editToolBarController.handlePackageName(o);
+            System.out.println(packageField.getText());
+
         });
 
         designRendererController = new DesignRendererController(app);
