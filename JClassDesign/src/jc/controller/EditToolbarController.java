@@ -7,7 +7,7 @@ package jc.controller;
 
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
-import jc.data.Class;
+import jc.data.JClass;
 import jc.data.DataManager;
 import jc.data.Item;
 import jc.data.JClassDesignerState;

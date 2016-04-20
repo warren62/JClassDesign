@@ -28,7 +28,7 @@ import javax.json.JsonValue;
 import javax.json.JsonWriter;
 import javax.json.JsonWriterFactory;
 import javax.json.stream.JsonGenerator;
-import jc.data.Class;
+import jc.data.JClass;
 import jc.data.DataManager;
 import jc.data.Interface;
 import jc.data.Item;
@@ -52,8 +52,8 @@ public class FileManager implements AppFileComponent {
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         ArrayList<Item> items = dataManager.getItems();
         for (Item i : items) {
-            if (i instanceof Class) {
-                Class c = (Class) i;
+            if (i instanceof JClass) {
+                JClass c = (JClass) i;
                 String type = "Class";
                 String name = c.getName();
                 String packageName = c.getPackageName();
@@ -149,7 +149,7 @@ public class FileManager implements AppFileComponent {
         Item i;
         
         if(type.equalsIgnoreCase("class" )) {
-            i = new Class(app);
+            i = new JClass(app);
             String name = jsonItem.getString("name");
             String packageName = jsonItem.getString("package_name");
             double x = getDataAsDouble(jsonItem, "x");

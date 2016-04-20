@@ -10,7 +10,7 @@ import javafx.scene.Scene;
 import javafx.scene.shape.Shape;
 import jc.data.DataManager;
 import jc.data.Draggable;
-import jc.data.Class;
+import jc.data.JClass;
 import jc.data.Item;
 import jc.data.JClassDesignerState;
 import static jc.data.JClassDesignerState.DRAGGING_NOTHING;

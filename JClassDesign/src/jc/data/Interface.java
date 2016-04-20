@@ -25,7 +25,7 @@ public class Interface extends Item {
 //    Label name = new Label("DefaultClassName");
 //    Label pkg = new Label("DefaultPackageName");
 
-    ArrayList<String> methods;
+    ArrayList<Method> methods;
 
     public Interface(AppTemplate initApp) {
         
@@ -129,7 +129,7 @@ public class Interface extends Item {
 //        this.pkg.setText(name);
 //    }
 
-    public void addMethod(String method) {
+    public void addMethod(Method method) {
         methods.add(method);
     }
 

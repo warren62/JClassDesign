@@ -15,9 +15,14 @@ public class Variable {
     
     private String access;
     private String accessUML;
+    public String name;
     public String type;
+    public final String FINAL_STRING = "static";
+    public final String STATIC_STRING = "final";
     private boolean f;
     private boolean s;
+
+    
     private boolean fUML;
     private boolean sUML;
 
@@ -25,7 +30,16 @@ public class Variable {
         return access;
     }
 
-    public void setAccess(String access) {
+    public void setAccess(String access) throws Exception{
+        if(access.equals("public")) {
+            accessUML = "+";
+        }else if(access.equals("private")) {
+            accessUML = "-";
+        }else if(access.equals("protected")) {
+            accessUML = "#";
+        }else {
+            throw new Exception("Incorrect Access Type");
+        }
         this.access = access;
     }
 
@@ -53,11 +67,29 @@ public class Variable {
         this.type = type;
     }
     
-    public String toCode() {
-        return access + " " + s + " " + f + " " + type;
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
     }
     
+    public String toCode() {
+        if (isF()) {
+            return access + " " + FINAL_STRING + " " + type + " " + name + ";";
+        }
+        if (isS()) {
+            return access + " " + STATIC_STRING + " " + type + " " + name + ";";
+        }
+        if (isS() && isF()) {
+            return access + " " + STATIC_STRING + " " + FINAL_STRING + " " + type + " " + name + ";";
+        }
+
+        return access + " " + type + " " + name + ";";
+    }
+
     public String toUml() {
-        
+        return accessUML + " " + name + " : " + type;
     }
 }

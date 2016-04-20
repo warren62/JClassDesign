@@ -6,11 +6,14 @@
 package jc.data;
 
 import java.util.ArrayList;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
+import javax.lang.model.util.ElementFilter;
 import jc.gui.Workspace;
 import saf.AppTemplate;
 
@@ -18,18 +21,20 @@ import saf.AppTemplate;
  *
  * @author Steve
  */
-public class Class extends Item {
+public class JClass extends Item {
 
     AppTemplate app;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
+    String access;
+
     VBox nameVBox, methodVBox, variableVBox;
 //    Label name = new Label("DefaultClassName");
 //    Label pkg = new Label("DefaultPackageName");
-    ArrayList<String> methods;
-    ArrayList<String> variables;
+    ArrayList<Method> methods;
+    ArrayList<Variable> variables;
 
-    public Class(AppTemplate initApp) {
+    public JClass(AppTemplate initApp) {
         super(initApp);
 //        app = initApp;
         orgSceneX = 0;
@@ -69,7 +74,6 @@ public class Class extends Item {
 ////        data.highlightItem(this);
 //        System.out.println(this.getPrefHeight() + "//" + this.getPrefWidth());
 //    }
-
 //    @Override
 //    public void drag(int x, int y) {
 ////        double diffX = x - (getLayoutX() + (getWidth()/2));
@@ -94,7 +98,6 @@ public class Class extends Item {
 //        relocate(x, y);
 //
 //    }
-
 //    public void initHandler() {
 //        this.setOnMouseDragged(e -> {
 //            DataManager data = (DataManager) app.getDataComponent();
@@ -124,7 +127,6 @@ public class Class extends Item {
 //        });
 //
 //    }
-
     public void clearHandlers() {
         this.setOnMouseDragged(e -> {
 //          
@@ -144,7 +146,6 @@ public class Class extends Item {
 ////	double height = y - getLayoutY();
 ////	heightProperty().set(height);
 //    }
-
 //    @Override
 //    public double getX() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
@@ -167,12 +168,10 @@ public class Class extends Item {
 //    public void setName(String name) {
 //        this.name.setText(name);
 //    }
-
 //    public void setPackage(String name) {
 //        this.pkg.setText(name);
 //    }
-
-    public void addMethod(String method) {
+    public void addMethod(Method method) {
         methods.add(method);
     }
 
@@ -180,22 +179,136 @@ public class Class extends Item {
         return methods;
     }
 
-    public void addVariable(String variable) {
+    public void addVariable(Variable variable) {
         variables.add(variable);
     }
 
     public ArrayList getVariables() {
         return variables;
     }
+    
+
+    public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
+    }
+
+    public String toCode() {
+        String s = new String();
+        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
+                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
+
+        return s;
+    }
+    
+    private String loadVar() {
+        String s = new String();
+        for(Variable v : variables) {
+            s += v + "\n";
+        }
+        return s;
+    } 
+    
+    private String loadMethods() {
+        String s = new String();
+        for(Method v : methods) {
+            s += v + "\n";
+        }
+        return s;
+    } 
+
+    private String getImports() {
+        ArrayList<String> imported = new ArrayList();
+        String s = new String();
+
+        for (Variable v : variables) {
+            if (v.getType().equals("int") || v.getType().equals("double") || v.getType().equals("char") || v.getType().equals("String") || v.getType().equals("float")
+                    || v.getType().equals("Integer") || v.getType().equals("Double") || v.getType().equals("Charachter") || v.getType().equals("Float")) {
+                continue;
+            }
+            if (this.name.equals(v.getType())) {
+                continue;
+            }
+
+            boolean isImported = false;
+            for (String i : imported) {
+                if (i.equals(v.getType())) {
+                    isImported = true;
+                    break;
+                }
+            }
+
+            if (isImported) {
+                continue;
+            }
+
+            imported.add(v.getType());
+
+        }
+
+        Package[] packages = Package.getPackages();
+        for (String im : imported) {
+            for (Package p : packages) {
+                try {
+                    Class.forName("" + p.getName() + im);
+                    s += "import " + p.getName() + "." + im + ";" + "\n";
+                    break;
+                } catch (ClassNotFoundException ex) {
+                    continue;
+                }
+
+            }
+        }
+        for (Method m : methods) {
+            if (m.getType().equals("void")) {
+                continue;
+            }
+            if (this.name.equals(m.getType())) {
+                continue;
+            }
+
+            boolean isImported = false;
+            for (String i : imported) {
+                if (i.equals(m.getType())) {
+                    isImported = true;
+                    break;
+                }
+            }
+
+            if (isImported) {
+                continue;
+            }
+
+            imported.add(m.getType());
+
+        }
+
+//        Package[] packages = Package.getPackages();
+        for (String im : imported) {
+            for (Package p : packages) {
+                try {
+                    Class.forName("" + p.getName() + im);
+                    s += "import " + p.getName() + "." + im + ";" + "\n";
+                    break;
+                } catch (ClassNotFoundException ex) {
+                    continue;
+                }
+
+            }
+        }
+        
+        return s;
+    }
 
 //    public String getName() {
 //        return name.getText();
 //    }
-
 //    public String getPackageName() {
 //        return pkg.getText();
 //    }
-
 //    @Override
 //    public void setLocationAndSize(double initX, double initY, double initWidth, double initHeight) {
 ////        xProperty().set(initX);
@@ -218,5 +331,4 @@ public class Class extends Item {
 //    public double getY() {
 //        throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
 //    }
-
 }

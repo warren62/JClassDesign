@@ -96,7 +96,7 @@ public class DataManager implements AppDataComponent {
     
     public void startNewClass(int x, int y) {
         System.out.println("start new item");
-	Class newItem1 = new Class(app);
+	JClass newItem1 = new JClass(app);
 	newItem1.start(x, y);
 	newItem = newItem1;
 	initNewItem();
@@ -176,7 +176,7 @@ public class DataManager implements AppDataComponent {
 	newItem = null;
     }
 
-    public void addClass(Class itemToAdd) {
+    public void addClass(JClass itemToAdd) {
 	items.add(itemToAdd);
     }
     
