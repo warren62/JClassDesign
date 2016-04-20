@@ -1,6 +1,7 @@
 package saf.components;
 
 import java.io.IOException;
+import saf.AppTemplate;
 
 /**
  * This interface provides the structure for file components in
@@ -14,7 +15,7 @@ import java.io.IOException;
  */
 public interface AppFileComponent {
     public void saveData(AppDataComponent data, String filePath) throws IOException;
-    public void loadData(AppDataComponent data, String filePath) throws IOException;
+    public void loadData(AppDataComponent data, String filePath, AppTemplate app) throws IOException;
     public void exportData(AppDataComponent data, String filePath) throws IOException;
     public void importData(AppDataComponent data, String filePath) throws IOException;
 }
