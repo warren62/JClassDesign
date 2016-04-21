@@ -5,6 +5,10 @@
  */
 package jc.gui;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -25,6 +29,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
+import javafx.stage.FileChooser;
 import static jc.PropertyType.ADD_CLASS_ICON;
 import static jc.PropertyType.ADD_CLASS_TOOLTIP;
 import static jc.PropertyType.ADD_INTERFACE_ICON;
@@ -50,6 +55,7 @@ import static jc.PropertyType.ZOOM_OUT_TOOLTIP;
 import jc.controller.DesignRendererController;
 import jc.controller.EditToolbarController;
 import jc.data.DataManager;
+import jc.file.FileManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
 import static saf.settings.AppPropertyType.NEW_ICON;
@@ -206,7 +212,7 @@ public class Workspace extends AppWorkspaceComponent {
         fileToolBar.getChildren().add(exitBtn);
         photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), true);
         photoBtn.setMaxWidth(Double.MAX_VALUE);
-        codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), true);
+        codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), false);
         codeBtn.setMaxWidth(Double.MAX_VALUE);
         
         
@@ -350,6 +356,21 @@ public class Workspace extends AppWorkspaceComponent {
         selectBtn.setOnAction(e -> {
             System.out.println("select class handler");
             editToolBarController.handleSelect();
+        });
+        
+        codeBtn.setOnAction(e -> {
+            FileManager fileManager = (FileManager) app.getFileComponent();
+            
+            FileChooser fileChooser = new FileChooser();
+            
+            File file = fileChooser.showSaveDialog(app.getGUI().getWindow());
+            
+            try {
+                DataManager data = (DataManager) app.getDataComponent();
+                fileManager.exportData(data, file.getAbsolutePath());
+            } catch (IOException ex) {
+                Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
+            }
         });
         
         classNameField.textProperty().addListener((a,e,o) -> {

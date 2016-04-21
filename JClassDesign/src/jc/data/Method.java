@@ -20,6 +20,14 @@ public class Method {
     private boolean f;
     private boolean s;
 
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public String getAccess() {
         return access;
     }
@@ -54,24 +62,24 @@ public class Method {
 
     public String toCode() {
         if (isF()) {
-            return access + " " + FINAL_STRING + " " + type + " " + name + "()" + "  {" + "\n" + 
-                    "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n" +
-                    "}";
+            return access + " " + FINAL_STRING + " " + type + " " + name + "()" + "  {" + "\n"
+                    + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
+                    + "}";
         }
         if (isS()) {
-            return access + " " + STATIC_STRING + " " + type + " " + name + "()" + "  {" + "\n" + 
-                    "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n" +
-                    "}";
+            return access + " " + STATIC_STRING + " " + type + " " + name + "()" + "  {" + "\n"
+                    + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
+                    + "}";
         }
         if (isS() && isF()) {
-            return access + " " + STATIC_STRING + " " + FINAL_STRING + " " + type + " " + name + "()" + "  {" + "\n" + 
-                    "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n" +
-                    "}";
+            return access + " " + STATIC_STRING + " " + FINAL_STRING + " " + type + " " + name + "()" + "  {" + "\n"
+                    + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
+                    + "}";
         }
 
-        return access + " " + type + " " + name + "()" + "  {" + "\n" + 
-                    "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n" +
-                    "}";
+        return access + " " + type + " " + name + "()" + "  {" + "\n"
+                + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
+                + "}";
     }
 
     public String toUml() {

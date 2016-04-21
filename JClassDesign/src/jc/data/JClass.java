@@ -31,8 +31,8 @@ public class JClass extends Item {
     VBox nameVBox, methodVBox, variableVBox;
 //    Label name = new Label("DefaultClassName");
 //    Label pkg = new Label("DefaultPackageName");
-    ArrayList<Method> methods;
-    ArrayList<Variable> variables;
+    ArrayList<Method> methods = new ArrayList();
+    ArrayList<Variable> variables = new ArrayList();
 
     public JClass(AppTemplate initApp) {
         super(initApp);
@@ -59,6 +59,31 @@ public class JClass extends Item {
 
         this.getStyleClass().add("vbox");
         this.setPrefSize(100, 100);
+        
+        Variable v = new Variable();
+        v.setAccess("public");
+        v.setName("s");
+        v.setF(true);
+        v.setS(true);
+        v.setType("File");
+        System.out.println("Test variable to code: " + v.toCode());
+        System.out.println("Test variable to uml: " + v.toUml());
+        
+        Method m = new Method();
+        m.setAccess("private");
+        m.setType("void");
+        m.setName("load");
+        System.out.println("Test method to code: " + m.toCode());
+        System.out.println("Test method to uml: " + m.toUml());
+//        JClass jc = new JClass(app);
+//        jc.addMethod(m);
+//        jc.addVariable(v);
+        this.setAccess("public");
+        this.addMethod(m);
+        this.addVariable(v);
+        System.out.println("Test class to code: " + this.toCode());
+        
+        
 //        this.setHeight(100);
 //        this.setWidth(100);
     }
@@ -198,8 +223,12 @@ public class JClass extends Item {
 
     public String toCode() {
         String s = new String();
-        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
-                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
+        String variables = loadVar();
+        String methods = loadMethods();
+//        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
+//                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
+        s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "  {" + "\n" + "\n" +
+                variables + "\n" + "\n" + methods + "\n" + "}";
 
         return s;
     }
@@ -207,7 +236,7 @@ public class JClass extends Item {
     private String loadVar() {
         String s = new String();
         for(Variable v : variables) {
-            s += v + "\n";
+            s += v.toCode() + "\n";
         }
         return s;
     } 
@@ -215,7 +244,7 @@ public class JClass extends Item {
     private String loadMethods() {
         String s = new String();
         for(Method v : methods) {
-            s += v + "\n";
+            s += v.toCode() + "\n";
         }
         return s;
     } 

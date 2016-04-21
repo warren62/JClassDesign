@@ -30,15 +30,16 @@ public class Variable {
         return access;
     }
 
-    public void setAccess(String access) throws Exception{
+    public void setAccess(String access) {
+        String s = new String();
         if(access.equals("public")) {
-            accessUML = "+";
+            accessUML += "+";
         }else if(access.equals("private")) {
-            accessUML = "-";
+            accessUML  += "-";
         }else if(access.equals("protected")) {
-            accessUML = "#";
+            accessUML += "#";
         }else {
-            throw new Exception("Incorrect Access Type");
+            System.out.println("incorrect access type");
         }
         this.access = access;
     }
