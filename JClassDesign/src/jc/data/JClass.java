@@ -28,11 +28,16 @@ public class JClass extends Item {
     double orgTranslateX, orgTranslateY;
     String access;
 
+    boolean implementsInterface = false;
+    boolean hasSuperclass = false;
+
     VBox nameVBox, methodVBox, variableVBox;
 //    Label name = new Label("DefaultClassName");
 //    Label pkg = new Label("DefaultPackageName");
     ArrayList<Method> methods = new ArrayList();
     ArrayList<Variable> variables = new ArrayList();
+    ArrayList<Interface> parentInterfaces = new ArrayList();
+    String parentClassName;
 
     public JClass(AppTemplate initApp) {
         super(initApp);
@@ -59,7 +64,7 @@ public class JClass extends Item {
 
         this.getStyleClass().add("vbox");
         this.setPrefSize(100, 100);
-        
+
         Variable v = new Variable();
         v.setAccess("public");
         v.setName("s");
@@ -68,7 +73,7 @@ public class JClass extends Item {
         v.setType("VBox");
         System.out.println("Test variable to code: " + v.toCode());
         System.out.println("Test variable to uml: " + v.toUml());
-        
+
         Method m = new Method();
         m.setAccess("private");
         m.setType("String");
@@ -76,7 +81,7 @@ public class JClass extends Item {
         m.addArg("String b");
         m.addArg("String c");
         m.addArg("int g");
-        
+
         Method m2 = new Method();
         m2.setAccess("private");
         m2.setType("String");
@@ -86,16 +91,30 @@ public class JClass extends Item {
         m2.addArg("int g");
         System.out.println("Test method to code: " + m.toCode());
         System.out.println("Test method to uml: " + m.toUml());
+        
+        Method m3 = new Method();
+        m3.setAccess("private");
+        m3.setType("String");
+        m3.setName("yoYo");
+        m3.addArg("String b");
+        m3.addArg("String c");
+        m3.addArg("int g");
 //        JClass jc = new JClass(app);
 //        jc.addMethod(m);
 //        jc.addVariable(v);
+
+        Interface i = new Interface(app);
+        i.setName("GG");
+        i.setAccess("public");
+        i.addMethod(m3);
+        
+        this.setParent(i);
         this.setAccess("public");
         this.addMethod(m);
         this.addMethod(m2);
         this.addVariable(v);
         System.out.println("Test class to code: " + this.toCode());
-        
-        
+
 //        this.setHeight(100);
 //        this.setWidth(100);
     }
@@ -223,7 +242,6 @@ public class JClass extends Item {
     public ArrayList getVariables() {
         return variables;
     }
-    
 
     public String getAccess() {
         return access;
@@ -233,33 +251,73 @@ public class JClass extends Item {
         this.access = access;
     }
 
+    public boolean isImplementsInterface() {
+        return implementsInterface;
+    }
+
+    public void setImplementsInterface(boolean implementsInterface) {
+        this.implementsInterface = implementsInterface;
+    }
+
+    public boolean isHasSuperclass() {
+        return hasSuperclass;
+    }
+
+    public void setHasSuperclass(boolean hasSuperclass) {
+        this.hasSuperclass = hasSuperclass;
+    }
+
     public String toCode() {
         String s = new String();
         String variables = loadVar();
         String methods = loadMethods();
 //        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
 //                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
-        s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "  {" + "\n" + "\n" +
-                variables + "\n" + "\n" + methods + "\n" + "}";
+        if (isImplementsInterface()) {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" +  "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
 
+        } else if (this.isHasSuperclass()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "extends " +  parentClassName + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
+
+        } else {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "  {" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
+        }
         return s;
     }
-    
+        
+    private String loadInterfaces() {
+        String s = new String();
+        for(Interface i : parentInterfaces) {
+            if(parentInterfaces.size() <= 1) {
+                s += i.getName();
+            }else {
+                s += ", " + i.getName();
+            }
+        }
+            
+        
+        return s;
+    }
+
     private String loadVar() {
         String s = new String();
-        for(Variable v : variables) {
+        for (Variable v : variables) {
             s += v.toCode() + "\n";
         }
         return s;
-    } 
-    
+    }
+
     private String loadMethods() {
         String s = new String();
-        for(Method v : methods) {
+        for (Method v : methods) {
             s += v.toCode() + "\n";
         }
         return s;
-    } 
+    }
 
     private String getImports() {
         ArrayList<String> imported = new ArrayList();
@@ -340,8 +398,30 @@ public class JClass extends Item {
 
             }
         }
-        
+
         return s;
+    }
+
+    public Item getParentItem() {
+        return parent;
+    }
+
+    public void setParent(Item parent) {
+        if (parent instanceof Interface) {
+            this.setImplementsInterface(true);
+            parentInterfaces.add((Interface) parent);
+            for(Interface i : parentInterfaces) {
+                ArrayList<Method> methods = i.getMethods();
+                for(Method m : methods) {
+                    this.addMethod(m);
+                }
+            }
+        } else {
+            this.setHasSuperclass(true);
+            parentClassName = parent.getName();
+            
+        }
+        this.parent = parent;
     }
 
 //    public String getName() {

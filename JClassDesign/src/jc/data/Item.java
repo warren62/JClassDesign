@@ -31,6 +31,8 @@ public class Item extends VBox implements Draggable {
     Label name = new Label("DefaultClassName");
     Label pkg = new Label("DefaultPackageName");
     
+    Item parent;
+    
     public Item (AppTemplate initApp) {
         
         app = initApp;
@@ -69,6 +71,10 @@ public class Item extends VBox implements Draggable {
     public String getPackageName() {
         return pkg.getText();
     }
+
+    
+    
+    
     
     
 
