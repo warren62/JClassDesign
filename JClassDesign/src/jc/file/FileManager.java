@@ -274,6 +274,19 @@ public class FileManager implements AppFileComponent {
 
         return methodJsonArray;
     }
+    
+    public JsonArray makeJOSNArgsArray(ArrayList<String> args) {
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (String a : args) {
+            JsonObject argJson = makeJSONArgsObject(a);
+            arrayBuilder.add(argJson);
+        }
+
+        JsonArray methodJsonArray = arrayBuilder.build();
+
+        return methodJsonArray;
+    }
 
     public JsonObject makeJSONMethodObject(Method m) {
         String name = m.getName();
@@ -282,6 +295,8 @@ public class FileManager implements AppFileComponent {
         String f = new String();
         String s = new String();
         ArrayList<String> args = m.getArgs();
+        JsonArray argsJsonArray = makeJOSNArgsArray(args);
+
         if (m.isF()) {
             f += "final";
         }
@@ -289,19 +304,23 @@ public class FileManager implements AppFileComponent {
             s += "final";
         }
 
-        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
-        JsonObject argJson = null;
-        if (args.size() > 0) {
-            for (String a : args) {
-                argJson = makeJSONArgsObject(a);
-
-            }
-        } else {
-            argJson = makeJSONArgsObject("");
-        }
-        arrayBuilder.add(argJson);
-
-        JsonArray argsJsonArray = arrayBuilder.build();
+//        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+//        JsonObject argJson = null;
+//        if (args != null) {
+////            for (String a : args) {
+////                argJson = makeJSONArgsObject(a);
+////
+////            }
+//            for (int i = 0; i < args.size(); i++) {
+//                System.out.println("Arg in makeJsonMEthodObject: " + args.get(i));
+//                argJson = makeJSONArgsObject(args.get(i));
+//            }
+//        } else {
+//            argJson = makeJSONArgsObject("");
+//        }
+//        arrayBuilder.add(argJson);
+//
+//        JsonArray argsJsonArray = arrayBuilder.build();
 
         JsonObject methodsJson = Json.createObjectBuilder()
                 .add("name", name)

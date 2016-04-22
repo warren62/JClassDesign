@@ -1,0 +1,26 @@
+
+{
+    "uml":[
+        {
+            "type":"Class",
+            "name":"DefaultClassName",
+            "package_name":"DefaultPackageName",
+            "x":332.0,
+            "y":230.0,
+            "methods":[
+                {
+                    "name":"load",
+                    "type":"String",
+                    "access":"private",
+                    "final":"",
+                    "static":"",
+                    "args":[
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}
