@@ -22,7 +22,11 @@ public class Item extends VBox implements Draggable {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     double x = 0;
+
+    
     double y = 0;
+    boolean ext;
+    boolean implementsInterface;
     StringProperty nameProp = new SimpleStringProperty("gg");
     Label name = new Label("DefaultClassName");
     Label pkg = new Label("DefaultPackageName");
@@ -32,6 +36,22 @@ public class Item extends VBox implements Draggable {
         app = initApp;
         initHandler();
         
+    }
+    
+    public boolean isExt() {
+        return ext;
+    }
+
+    public void setExt(boolean ext) {
+        this.ext = ext;
+    }
+
+    public boolean isImplementsInterface() {
+        return implementsInterface;
+    }
+
+    public void setImplementsInterface(boolean implementsInterface) {
+        this.implementsInterface = implementsInterface;
     }
     
     public void setName(String name) {

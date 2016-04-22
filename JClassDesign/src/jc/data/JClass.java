@@ -65,14 +65,17 @@ public class JClass extends Item {
         v.setName("s");
         v.setF(true);
         v.setS(true);
-        v.setType("File");
+        v.setType("VBox");
         System.out.println("Test variable to code: " + v.toCode());
         System.out.println("Test variable to uml: " + v.toUml());
         
         Method m = new Method();
         m.setAccess("private");
-        m.setType("void");
+        m.setType("String");
         m.setName("load");
+        m.addArg("String b");
+        m.addArg("String c");
+        m.addArg("int g");
         System.out.println("Test method to code: " + m.toCode());
         System.out.println("Test method to uml: " + m.toUml());
 //        JClass jc = new JClass(app);

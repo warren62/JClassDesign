@@ -180,7 +180,12 @@ public class FileManager implements AppFileComponent {
     @Override
     public void exportData(AppDataComponent data, String filePath) throws IOException {
         DataManager dm = (DataManager) data;
-        
+        String[] pkgArray = null;
+        File pkgFile = null;
+        File classFile = null;
+
+        boolean nested = false;
+
         ArrayList<Item> items = dm.getItems();
         ArrayList<String> packages = new ArrayList();
 
@@ -194,20 +199,40 @@ public class FileManager implements AppFileComponent {
         }
         for (Item i : items) {
 
-            packages.add(i.getPackageName());
+            if (i.getPackageName().contains(".")) {
+                pkgArray = i.getPackageName().split("\\.");
+                nested = true;
+            } else {
+                packages.add(i.getPackageName());
+
+            }
 
             for (String p : packages) {
 
-                File pkgFile = new File(fileTemp.getAbsolutePath()  + "\\" + p + "\\");
+                pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + p + "\\");
                 if (!pkgFile.exists()) {
                     pkgFile.mkdir();
                 }
-                
-                if(i instanceof JClass) {
-                    File classFile = new File(pkgFile.getAbsolutePath()  + "\\"+ i.getName() + ".java\\");
+
+                if (nested) {
+                    for (int g = 1; g < pkgArray.length; g++) {
+
+                        pkgFile = new File(pkgFile.getAbsolutePath() + "\\" + pkgArray[g] + "\\");
+                        if (!pkgFile.exists()) {
+                            pkgFile.mkdir();
+                        }
+                        
+                    }
+                    if (i instanceof JClass) {
+                            classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+                            saveFile(((JClass) i).toCode(), classFile);
+                        }
+                } else if (i instanceof JClass) {
+                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
                     saveFile(((JClass) i).toCode(), classFile);
                 }
             }
+            
 
         }
         file.createNewFile();

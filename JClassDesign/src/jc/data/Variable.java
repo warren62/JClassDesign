@@ -77,14 +77,21 @@ public class Variable {
     }
     
     public String toCode() {
-        if (isF()) {
-            return access + " " + FINAL_STRING + " " + type + " " + name + ";";
-        }
-        if (isS()) {
-            return access + " " + STATIC_STRING + " " + type + " " + name + ";";
-        }
+        String s = new String();
+//        if (isF()) {
+//            return access + " " + FINAL_STRING + " " + type + " " + name + ";";
+//        }
+//        if (isS()) {
+//            return access + " " + STATIC_STRING + " " + type + " " + name + ";";
+//        }
         if (isS() && isF()) {
             return access + " " + STATIC_STRING + " " + FINAL_STRING + " " + type + " " + name + ";";
+        }else if (isS() && !isF()) {
+            return access + " " + STATIC_STRING + " " + type + " " + name + ";";
+        }else if (isF() && !isS()) {
+            return access + " " + FINAL_STRING + " " + type + " " + name + ";";
+        }else if(access == null) {
+            return type + " " + name + ";";
         }
 
         return access + " " + type + " " + name + ";";
