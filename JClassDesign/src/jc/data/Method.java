@@ -118,6 +118,20 @@ public class Method {
                 + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
                 + "}";
     }
+    
+    public String toCodeInterface() {
+        if (isF()) {
+            return access + " " + FINAL_STRING + " " + type + " " + name + "(" + argsString() + ");";
+        }
+        if (isS()) {
+            return access + " " + STATIC_STRING + " " + type + " " + name + "(" + argsString() + ");";
+        }
+        if (isS() && isF()) {
+            return access + " " + STATIC_STRING + " " + FINAL_STRING + " " + type + " " + name + "(" + argsString() + ");";
+        }
+
+        return access + " " + type + " " + name + "(" + argsString() + ");";
+    }
 
     public String toUml() {
         return accessUML + " " + name + " : " + type;

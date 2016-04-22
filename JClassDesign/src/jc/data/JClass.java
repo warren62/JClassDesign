@@ -76,6 +76,14 @@ public class JClass extends Item {
         m.addArg("String b");
         m.addArg("String c");
         m.addArg("int g");
+        
+        Method m2 = new Method();
+        m2.setAccess("private");
+        m2.setType("String");
+        m2.setName("l");
+        m2.addArg("String b");
+        m2.addArg("String c");
+        m2.addArg("int g");
         System.out.println("Test method to code: " + m.toCode());
         System.out.println("Test method to uml: " + m.toUml());
 //        JClass jc = new JClass(app);
@@ -83,6 +91,7 @@ public class JClass extends Item {
 //        jc.addVariable(v);
         this.setAccess("public");
         this.addMethod(m);
+        this.addMethod(m2);
         this.addVariable(v);
         System.out.println("Test class to code: " + this.toCode());
         

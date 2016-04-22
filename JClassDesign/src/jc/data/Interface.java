@@ -21,11 +21,12 @@ public class Interface extends Item {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     VBox nameVBox, methodVBox;
+    String access;
 
 //    Label name = new Label("DefaultClassName");
 //    Label pkg = new Label("DefaultPackageName");
 
-    ArrayList<Method> methods;
+    ArrayList<Method> methods = new ArrayList();
 
     public Interface(AppTemplate initApp) {
         
@@ -47,6 +48,29 @@ public class Interface extends Item {
 
         this.getStyleClass().add("vbox");
 //        this.setPrefSize(100, 100);
+
+        Method m = new Method();
+        m.setAccess("private");
+        m.setType("String");
+        m.setName("ggNoob");
+        m.addArg("String b");
+        m.addArg("String c");
+        m.addArg("int g");
+        
+        Method m2 = new Method();
+        m2.setAccess("private");
+        m2.setType("String");
+        m2.setName("gg");
+        m2.addArg("String b");
+        m2.addArg("String c");
+        m2.addArg("int g");
+        System.out.println("Test method to code: " + m.toCode());
+        
+        this.setAccess("public");
+        this.addMethod(m);
+        this.addMethod(m2);
+        System.out.println("Test class to code: " + this.toCode());
+
         this.setHeight(100);
         this.setWidth(100);
     }
@@ -135,6 +159,114 @@ public class Interface extends Item {
 
     public ArrayList getMethods() {
         return methods;
+    }
+    
+     public String getAccess() {
+        return access;
+    }
+
+    public void setAccess(String access) {
+        this.access = access;
+    }
+    
+    public String toCode() {
+        String s = new String();
+        String methods = loadMethods();
+        
+        s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " interface" + " " + name.getText() + "  {" +  "\n" + "\n" + methods + "\n" + "}";
+        
+        return s;
+    }
+    
+    private String loadMethods() {
+        String s = new String();
+        for(Method v : methods) {
+            s += v.toCodeInterface() + "\n";
+        }
+        return s;
+    } 
+    
+    private String getImports() {
+        ArrayList<String> imported = new ArrayList();
+        String s = new String();
+
+//        for (Variable v : variables) {
+//            if (v.getType().equals("int") || v.getType().equals("double") || v.getType().equals("char") || v.getType().equals("String") || v.getType().equals("float")
+//                    || v.getType().equals("Integer") || v.getType().equals("Double") || v.getType().equals("Charachter") || v.getType().equals("Float")) {
+//                continue;
+//            }
+//            if (this.name.equals(v.getType())) {
+//                continue;
+//            }
+//
+//            boolean isImported = false;
+//            for (String i : imported) {
+//                if (i.equals(v.getType())) {
+//                    isImported = true;
+//                    break;
+//                }
+//            }
+//
+//            if (isImported) {
+//                continue;
+//            }
+//
+//            imported.add(v.getType());
+//
+//        }
+
+        Package[] packages = Package.getPackages();
+        for (String im : imported) {
+            for (Package p : packages) {
+                try {
+                    Class.forName("" + p.getName() + im);
+                    s += "import " + p.getName() + "." + im + ";" + "\n";
+                    break;
+                } catch (ClassNotFoundException ex) {
+                    continue;
+                }
+
+            }
+        }
+        for (Method m : methods) {
+            if (m.getType().equals("void")) {
+                continue;
+            }
+            if (this.name.equals(m.getType())) {
+                continue;
+            }
+
+            boolean isImported = false;
+            for (String i : imported) {
+                if (i.equals(m.getType())) {
+                    isImported = true;
+                    break;
+                }
+            }
+
+            if (isImported) {
+                continue;
+            }
+
+            imported.add(m.getType());
+
+        }
+
+//        Package[] packages = Package.getPackages();
+        for (String im : imported) {
+            for (Package p : packages) {
+                try {
+                    Class.forName("" + p.getName() + im);
+                    s += "import " + p.getName() + "." + im + ";" + "\n";
+                    break;
+                } catch (ClassNotFoundException ex) {
+                    continue;
+                }
+
+            }
+        }
+        
+        return s;
     }
     
 //    public String getName() {
