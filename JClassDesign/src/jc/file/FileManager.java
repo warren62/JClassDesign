@@ -14,7 +14,6 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
-import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +35,8 @@ import jc.data.JClass;
 import jc.data.DataManager;
 import jc.data.Interface;
 import jc.data.Item;
+import jc.data.Method;
+import jc.data.Variable;
 import saf.AppTemplate;
 import saf.components.AppDataComponent;
 import saf.components.AppFileComponent;
@@ -63,9 +64,9 @@ public class FileManager implements AppFileComponent {
                 String packageName = c.getPackageName();
                 double x = c.getLayoutX();
                 double y = c.getLayoutY();
-                ArrayList<String> variables = c.getVariables();
-                ArrayList<String> methods = c.getMethods();
-//                JsonObject methodJson = makeJSONMethodObject(methods);
+                ArrayList<Variable> variables = c.getVariables();
+                ArrayList<Method> methods = c.getMethods();
+                JsonArray methodJson = makeJOSNMethodArray(methods);
 //                JsonObject variableJson = makeJSONVariableObject(variables);
 
                 JsonObject classJson = Json.createObjectBuilder()
@@ -74,7 +75,7 @@ public class FileManager implements AppFileComponent {
                         .add("package_name", packageName)
                         .add("x", x)
                         .add("y", y)
-                        //                        .add("methods", methodJson)
+                        .add("methods", methodJson)
                         //                        .add("variables", variableJson)
                         .build();
                 arrayBuilder.add(classJson);
@@ -221,18 +222,17 @@ public class FileManager implements AppFileComponent {
                         if (!pkgFile.exists()) {
                             pkgFile.mkdir();
                         }
-                        
+
                     }
                     if (i instanceof JClass) {
-                            classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                            saveFile(((JClass) i).toCode(), classFile);
-                        }
+                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+                        saveFile(((JClass) i).toCode(), classFile);
+                    }
                 } else if (i instanceof JClass) {
                     classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
                     saveFile(((JClass) i).toCode(), classFile);
                 }
             }
-            
 
         }
         file.createNewFile();
@@ -262,14 +262,62 @@ public class FileManager implements AppFileComponent {
 
     }
 
-    public JsonObject makeJSONMethodObject(ArrayList<String> methods) {
-        String methodString = "";
-        for (String s : methods) {
-            methodString += s;
+    public JsonArray makeJOSNMethodArray(ArrayList<Method> methods) {
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Method m : methods) {
+            JsonObject methodJson = makeJSONMethodObject(m);
+            arrayBuilder.add(methodJson);
         }
 
+        JsonArray methodJsonArray = arrayBuilder.build();
+
+        return methodJsonArray;
+    }
+
+    public JsonObject makeJSONMethodObject(Method m) {
+        String name = m.getName();
+        String type = m.getType();
+        String access = m.getAccess();
+        String f = new String();
+        String s = new String();
+        ArrayList<String> args = m.getArgs();
+        if (m.isF()) {
+            f += "final";
+        }
+        if (m.isS()) {
+            s += "final";
+        }
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        JsonObject argJson = null;
+        if (args.size() > 0) {
+            for (String a : args) {
+                argJson = makeJSONArgsObject(a);
+
+            }
+        } else {
+            argJson = makeJSONArgsObject("");
+        }
+        arrayBuilder.add(argJson);
+
+        JsonArray argsJsonArray = arrayBuilder.build();
+
         JsonObject methodsJson = Json.createObjectBuilder()
-                .add("methods", methodString)
+                .add("name", name)
+                .add("type", type)
+                .add("access", access)
+                .add("final", f)
+                .add("static", s)
+                .add("args", argsJsonArray)
+                .build();
+
+        return methodsJson;
+    }
+
+    public JsonObject makeJSONArgsObject(String argString) {
+        JsonObject methodsJson = Json.createObjectBuilder()
+                .add("arg", argString)
                 .build();
 
         return methodsJson;
