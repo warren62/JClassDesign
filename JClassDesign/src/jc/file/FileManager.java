@@ -815,6 +815,11 @@ public class FileManager implements AppFileComponent {
         dm.addClass(dateTaskClass);
         dm.addClass(pauseHandler);
         dm.addClass(startHandlerHandler);
-        System.out.println();
+        System.out.println(threadExample.toCode());
+        System.out.println(counterTaskClass.toCode());
+        System.out.println(dateTaskClass.toCode());
+        System.out.println(pauseHandler.toCode());
+        System.out.println(startHandlerHandler.toCode());
+        
     }
 }
