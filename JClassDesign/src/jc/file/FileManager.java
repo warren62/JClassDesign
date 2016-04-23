@@ -799,7 +799,7 @@ public class FileManager implements AppFileComponent {
         startHandle.setName("handle");
         startHandle.addArg("Event event");
         startHandle.setAccess("public");
-        startHandler.setType("void");
+        startHandle.setType("void");
         startHandlerHandler.addVariable(appStartHandler);
         startHandlerHandler.addMethod(startHandler);
         startHandlerHandler.addMethod(startHandle);
@@ -815,6 +815,6 @@ public class FileManager implements AppFileComponent {
         dm.addClass(dateTaskClass);
         dm.addClass(pauseHandler);
         dm.addClass(startHandlerHandler);
-        
+        System.out.println();
     }
 }
