@@ -1,0 +1,343 @@
+
+{
+    "uml":[
+        {
+            "type":"Class",
+            "name":"DeafultClassName",
+            "package_name":"DeafultPackageName",
+            "x":260.0,
+            "y":252.0,
+            "methods":[
+                {
+                    "mname":"ggNoob",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"gg",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"yoYo",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"load",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"l",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                }
+            ],
+            "variables":[
+                {
+                    "vname":"s",
+                    "vtype":"VBox",
+                    "access":"public",
+                    "final":true,
+                    "static":true
+                }
+            ],
+            "parentInterfaces":[
+                {
+                    "name":"GG",
+                    "methods":[
+                        {
+                            "mname":"ggNoob",
+                            "mtype":"String",
+                            "access":"private",
+                            "final":false,
+                            "static":false,
+                            "args":[
+                                {
+                                    "arg":"String b"
+                                },
+                                {
+                                    "arg":", String c"
+                                },
+                                {
+                                    "arg":", int g"
+                                }
+                            ]
+                        },
+                        {
+                            "mname":"gg",
+                            "mtype":"String",
+                            "access":"private",
+                            "final":false,
+                            "static":false,
+                            "args":[
+                                {
+                                    "arg":"String b"
+                                },
+                                {
+                                    "arg":", String c"
+                                },
+                                {
+                                    "arg":", int g"
+                                }
+                            ]
+                        },
+                        {
+                            "mname":"yoYo",
+                            "mtype":"String",
+                            "access":"private",
+                            "final":false,
+                            "static":false,
+                            "args":[
+                                {
+                                    "arg":"String b"
+                                },
+                                {
+                                    "arg":", String c"
+                                },
+                                {
+                                    "arg":", int g"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "type":"Class",
+            "name":"DeafultClassName",
+            "package_name":"DeafultPackageName",
+            "x":776.0,
+            "y":374.0,
+            "methods":[
+                {
+                    "mname":"ggNoob",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"gg",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"yoYo",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"load",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                },
+                {
+                    "mname":"l",
+                    "mtype":"String",
+                    "access":"private",
+                    "final":false,
+                    "static":false,
+                    "args":[
+                        {
+                            "arg":"String b"
+                        },
+                        {
+                            "arg":", String c"
+                        },
+                        {
+                            "arg":", int g"
+                        }
+                    ]
+                }
+            ],
+            "variables":[
+                {
+                    "vname":"s",
+                    "vtype":"VBox",
+                    "access":"public",
+                    "final":true,
+                    "static":true
+                }
+            ],
+            "parentInterfaces":[
+                {
+                    "name":"GG",
+                    "methods":[
+                        {
+                            "mname":"ggNoob",
+                            "mtype":"String",
+                            "access":"private",
+                            "final":false,
+                            "static":false,
+                            "args":[
+                                {
+                                    "arg":"String b"
+                                },
+                                {
+                                    "arg":", String c"
+                                },
+                                {
+                                    "arg":", int g"
+                                }
+                            ]
+                        },
+                        {
+                            "mname":"gg",
+                            "mtype":"String",
+                            "access":"private",
+                            "final":false,
+                            "static":false,
+                            "args":[
+                                {
+                                    "arg":"String b"
+                                },
+                                {
+                                    "arg":", String c"
+                                },
+                                {
+                                    "arg":", int g"
+                                }
+                            ]
+                        },
+                        {
+                            "mname":"yoYo",
+                            "mtype":"String",
+                            "access":"private",
+                            "final":false,
+                            "static":false,
+                            "args":[
+                                {
+                                    "arg":"String b"
+                                },
+                                {
+                                    "arg":", String c"
+                                },
+                                {
+                                    "arg":", int g"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        }
+    ]
+}

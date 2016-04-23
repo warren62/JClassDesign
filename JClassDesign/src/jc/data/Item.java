@@ -9,6 +9,7 @@ import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Text;
 import jc.gui.Workspace;
 import saf.AppTemplate;
 
@@ -28,16 +29,40 @@ public class Item extends VBox implements Draggable {
     boolean ext;
     boolean implementsInterface;
     StringProperty nameProp = new SimpleStringProperty("gg");
-    Label name = new Label("DefaultClassName");
-    Label pkg = new Label("DefaultPackageName");
+    Label name =  new Label("DeafultClassName");
+    Label pkg =  new Label("DeafultPackageName");
+    String nameString = "DefaultClassName";
+    String pkgString = "DefaultPackageName";
     
     Item parent;
+
+    
     
     public Item (AppTemplate initApp) {
         
         app = initApp;
         initHandler();
         
+    }
+    
+    public Item() {
+        
+    }
+    
+    public String getNameString() {
+        return nameString;
+    }
+
+    public void setNameString(String nameString) {
+        this.nameString = nameString;
+    }
+
+    public String getPkgString() {
+        return pkgString;
+    }
+
+    public void setPkgString(String pkgString) {
+        this.pkgString = pkgString;
     }
     
     public boolean isExt() {
@@ -57,7 +82,9 @@ public class Item extends VBox implements Draggable {
     }
     
     public void setName(String name) {
-        this.name.setText(name);
+        
+            this.name.setText(name);
+        
     }
     
     public String getName() {

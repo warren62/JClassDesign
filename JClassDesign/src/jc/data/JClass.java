@@ -26,7 +26,7 @@ public class JClass extends Item {
     AppTemplate app;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
-    String access;
+    String access = "public";
 
     boolean implementsInterface = false;
     boolean hasSuperclass = false;
@@ -113,16 +113,21 @@ public class JClass extends Item {
 //        c.setAccess("public");
         
         
-        this.addParent(i);
-//        this.addParent(c);
-        this.setAccess("public");
-        this.addMethod(m);
-        this.addMethod(m2);
-        this.addVariable(v);
+//        this.addParent(i);
+//        
+//        this.setAccess("public");
+          
+//        this.addMethod(m);
+//        this.addMethod(m2);
+//        this.addVariable(v);
         System.out.println("Test class to code: " + this.toCode());
 
 //        this.setHeight(100);
 //        this.setWidth(100);
+    }
+    
+    public JClass() {
+        
     }
 
     public ArrayList<Interface> getParentInterfaces() {

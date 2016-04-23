@@ -1,1 +1,0 @@
-{"uml":[{"type":"Class","name":"DefaultClassName","package_name":"DefaultPackageName","x":468.0,"y":128.0,"methods":[{"name":"load","type":"String","access":"private","final":"","static":"","args":[{"arg":", int g"}]}]}]}
