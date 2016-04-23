@@ -14,6 +14,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -66,6 +67,8 @@ public class FileManager implements AppFileComponent {
                 double y = c.getLayoutY();
                 ArrayList<Variable> variables = c.getVariables();
                 ArrayList<Method> methods = c.getMethods();
+                ArrayList<Interface> parentInterfaces = c.getParentInterfaces();
+                JsonArray parentInterfaceArray = makeJOSNParentInterfaceArray(parentInterfaces);
                 JsonArray methodJson = makeJOSNMethodArray(methods);
                 JsonArray variableJson = makeJOSNVariableArray(variables);
 
@@ -77,6 +80,7 @@ public class FileManager implements AppFileComponent {
                         .add("y", y)
                         .add("methods", methodJson)
                         .add("variables", variableJson)
+                        .add("parentInterfaces", parentInterfaceArray)
                         .build();
                 arrayBuilder.add(classJson);
             } else if (i instanceof Interface) {
@@ -86,7 +90,7 @@ public class FileManager implements AppFileComponent {
                 String packageName = c.getPackageName();
                 double x = c.getLayoutX();
                 double y = c.getLayoutY();
-                
+
                 ArrayList<Method> methods = c.getMethods();
                 JsonArray methodJson = makeJOSNMethodArray(methods);
 
@@ -164,9 +168,10 @@ public class FileManager implements AppFileComponent {
             ArrayList<String> args = new ArrayList();
             JsonArray methodJsonArray = jsonItem.getJsonArray("methods");
             JsonArray variableJsonArray = jsonItem.getJsonArray("variables");
-            for(JsonValue j : methodJsonArray) {
+            JsonArray parentInterfaceJsonArray = jsonItem.getJsonArray("parentInterfaces");
+            for (JsonValue j : methodJsonArray) {
                 Method m = new Method();
-                JsonObject o = (JsonObject)j;
+                JsonObject o = (JsonObject) j;
                 String n = o.getString("mname");
                 String a = o.getString("access");
                 String t = o.getString("mtype");
@@ -180,19 +185,18 @@ public class FileManager implements AppFileComponent {
                 m.setType(t);
                 m.setF(f);
                 m.setS(s);
-                
+
                 JsonArray argsJsonArray = o.getJsonArray("args");
-                for(JsonValue jv : argsJsonArray) {
+                for (JsonValue jv : argsJsonArray) {
                     JsonObject oj = (JsonObject) jv;
                     m.addArg(oj.getString("arg"));
 //                    args.add(oj.getString("arg"));
                 }
                 c.addMethod(m);
-                
+
 //                System.out.println(j.toString() + "       break");
-                
             }
-            for(JsonValue j : variableJsonArray) {
+            for (JsonValue j : variableJsonArray) {
                 Variable v = new Variable();
                 JsonObject o = (JsonObject) j;
                 String n = o.getString("vname");
@@ -212,10 +216,7 @@ public class FileManager implements AppFileComponent {
 //            }
             double x = getDataAsDouble(jsonItem, "x");
             double y = getDataAsDouble(jsonItem, "y");
-            
-            
-            
-            
+
             c.setName(name);
             c.setPackage(packageName);
             c.setLayoutX(x);
@@ -228,11 +229,11 @@ public class FileManager implements AppFileComponent {
             Interface in = new Interface(app);
             String name = jsonItem.getString("name");
             String packageName = jsonItem.getString("package_name");
-            
+
             JsonArray methodJsonArray = jsonItem.getJsonArray("methods");
-            for(JsonValue j : methodJsonArray) {
+            for (JsonValue j : methodJsonArray) {
                 Method m = new Method();
-                JsonObject o = (JsonObject)j;
+                JsonObject o = (JsonObject) j;
                 String n = o.getString("mname");
                 String a = o.getString("access");
                 String t = o.getString("mtype");
@@ -246,19 +247,18 @@ public class FileManager implements AppFileComponent {
                 m.setType(t);
                 m.setF(f);
                 m.setS(s);
-                
+
                 JsonArray argsJsonArray = o.getJsonArray("args");
-                for(JsonValue jv : argsJsonArray) {
+                for (JsonValue jv : argsJsonArray) {
                     JsonObject oj = (JsonObject) jv;
                     m.addArg(oj.getString("arg"));
 //                    args.add(oj.getString("arg"));
                 }
                 in.addMethod(m);
-                
+
 //                System.out.println(j.toString() + "       break");
-                
             }
-            
+
             double x = getDataAsDouble(jsonItem, "x");
             double y = getDataAsDouble(jsonItem, "y");
             in.setName(name);
@@ -268,15 +268,14 @@ public class FileManager implements AppFileComponent {
             System.out.println("To code after load test: " + in.toCode());
             i = in;
         }
-        
-        
+
         return i;
     }
 
     @Override
     public void exportData(AppDataComponent data, String filePath) throws IOException {
         DataManager dm = (DataManager) data;
-        String[] pkgArray = null;
+        ArrayList<String> pkgArray = new ArrayList();
         File pkgFile = null;
         File classFile = null;
 
@@ -293,49 +292,116 @@ public class FileManager implements AppFileComponent {
         if (!fileTemp.exists()) {
             fileTemp.mkdir();
         }
+
         for (Item i : items) {
+            nested = false;
 
             if (i.getPackageName().contains(".")) {
-                pkgArray = i.getPackageName().split("\\.");
-                nested = true;
+                String[] pkgSplit = i.getPackageName().split("\\.");
+//                for (String s : pkgSplit) {
+                String path = "";
+                for (int m = 0; m < pkgSplit.length; m++) {
+                    path += "\\" + pkgSplit[m];
+                    pkgFile = new File(fileTemp.getAbsolutePath() + path + "\\");
+                    if (!pkgFile.exists()) {
+                        pkgFile.mkdir();
+                    }
+                }
+
             } else {
-                packages.add(i.getPackageName());
-
-            }
-
-            for (String p : packages) {
-
-                pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + p + "\\");
+                pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + i.getPackageName() + "\\");
                 if (!pkgFile.exists()) {
                     pkgFile.mkdir();
                 }
-
-                if (nested) {
-                    for (int g = 1; g < pkgArray.length; g++) {
-
-                        pkgFile = new File(pkgFile.getAbsolutePath() + "\\" + pkgArray[g] + "\\");
-                        if (!pkgFile.exists()) {
-                            pkgFile.mkdir();
-                        }
-
-                    }
-                    if (i instanceof JClass) {
-                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                        saveFile(((JClass) i).toCode(), classFile);
-                    }else if(i instanceof Interface) {
-                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                        saveFile(((Interface) i).toCode(), classFile);
-                    }
-                } else if (i instanceof JClass) {
-                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                    saveFile(((JClass) i).toCode(), classFile);
-                } else if (i instanceof Interface) {
-                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                    saveFile(((Interface) i).toCode(), classFile);
-                }
             }
 
+            if (i instanceof JClass) {
+                classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+                saveFile(((JClass) i).toCode(), classFile);
+            } else if (i instanceof Interface) {
+                classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+                saveFile(((Interface) i).toCode(), classFile);
+            }
         }
+//            for (String p : packages) {
+//
+//                pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + p + "\\");
+//                if (!pkgFile.exists()) {
+//                    pkgFile.mkdir();
+//                }
+//                if (nested) {
+//                    for (int g = 1; g < pkgArray.size(); g++) {
+//                        pkgFile = new File(pkgFile.getAbsolutePath() + "\\" + pkgArray.get(g - 1) + "\\");
+//                        if (!pkgFile.exists()) {
+//                            pkgFile.mkdir();
+//                        }
+//                    }
+//                    if (i instanceof JClass) {
+//                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                        saveFile(((JClass) i).toCode(), classFile);
+//                    } else if (i instanceof Interface) {
+//                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                        saveFile(((Interface) i).toCode(), classFile);
+//                    }
+//
+//                } else if (i instanceof JClass) {
+//                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                    saveFile(((JClass) i).toCode(), classFile);
+//                } else if (i instanceof Interface) {
+//                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                    saveFile(((Interface) i).toCode(), classFile);
+//                }
+//            }
+//        }
+//        for (Item i : items) {
+//            nested = false;
+//
+//            if (i.getPackageName().contains(".")) {
+//                String[] pkgSplit = i.getPackageName().split("\\.");
+//                for(String s : pkgSplit) {
+//                    pkgArray.add(s);
+//                }
+//               
+//                nested = true;
+//            } else {
+//                pkgArray.add(i.getPackageName());
+//
+//            }
+//
+//            for (String p : pkgArray) {
+//
+//                pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + p + "\\");
+//                if (!pkgFile.exists()) {
+//                    pkgFile.mkdir();
+//                }
+//
+//                if (nested) {
+//                    for (int g = 1; g < pkgArray.size(); g++) {
+//
+//                        pkgFile = new File(pkgFile.getAbsolutePath() + "\\" + pkgArray.get(g - 1) + "\\");
+//                        if (!pkgFile.exists()) {
+//                            pkgFile.mkdir();
+//                        }
+//
+//                    }
+//                    if (i instanceof JClass) {
+//                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                        saveFile(((JClass) i).toCode(), classFile);
+//                    }else if(i instanceof Interface) {
+//                        classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                        saveFile(((Interface) i).toCode(), classFile);
+//                    }
+//                } else if (i instanceof JClass) {
+//                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                    saveFile(((JClass) i).toCode(), classFile);
+//                } else if (i instanceof Interface) {
+//                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+//                    saveFile(((Interface) i).toCode(), classFile);
+//                }
+//            }
+//
+//        }
+
         file.createNewFile();
 //        FileOutputStream fos = new FileOutputStream(file);
     }
@@ -357,8 +423,10 @@ public class FileManager implements AppFileComponent {
             fileWriter = new FileWriter(file);
             fileWriter.write(content);
             fileWriter.close();
+
         } catch (IOException ex) {
-            Logger.getLogger(FileManager.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(FileManager.class
+                    .getName()).log(Level.SEVERE, null, ex);
         }
 
     }
@@ -375,7 +443,7 @@ public class FileManager implements AppFileComponent {
 
         return methodJsonArray;
     }
-    
+
     public JsonArray makeJOSNVariableArray(ArrayList<Variable> variables) {
 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
@@ -402,6 +470,19 @@ public class FileManager implements AppFileComponent {
         return methodJsonArray;
     }
 
+    public JsonArray makeJOSNParentInterfaceArray(ArrayList<Interface> parentInterfaces) {
+
+        JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
+        for (Interface i : parentInterfaces) {
+            JsonObject parentInterfaceJson = makeJSONParentInterfaceObject(i);
+            arrayBuilder.add(parentInterfaceJson);
+        }
+
+        JsonArray parentInterfaceJsonArray = arrayBuilder.build();
+
+        return parentInterfaceJsonArray;
+    }
+
     public JsonObject makeJSONMethodObject(Method m) {
         String name = m.getName();
         String type = m.getType();
@@ -420,8 +501,6 @@ public class FileManager implements AppFileComponent {
 //        if (m.isS()) {
 //            s += "final";
 //        }
-
-
         JsonObject methodsJson = Json.createObjectBuilder()
                 .add("mname", name)
                 .add("mtype", type)
@@ -443,14 +522,14 @@ public class FileManager implements AppFileComponent {
     }
 
     public JsonObject makeJSONVariableObject(Variable v) {
-       String name = v.getName();
-       String type = v.getType();
-       String access = v.getAccess();
+        String name = v.getName();
+        String type = v.getType();
+        String access = v.getAccess();
 //       String f = new String();
 //       String s = new String();
-       boolean f = v.isF();
-       boolean s = v.isS();
-       
+        boolean f = v.isF();
+        boolean s = v.isS();
+
 //       if(v.isF()) {
 //           f += "final";
 //       }
@@ -458,17 +537,27 @@ public class FileManager implements AppFileComponent {
 //       if(v.isS()) {
 //           s += "static";
 //       }
-
         JsonObject variableJson = Json.createObjectBuilder()
                 .add("vname", name)
                 .add("vtype", type)
                 .add("access", access)
                 .add("final", f)
                 .add("static", s)
-                
                 .build();
 
         return variableJson;
+    }
+
+    public JsonObject makeJSONParentInterfaceObject(Interface i) {
+        String name = i.getName();
+        ArrayList<Method> methods = i.getMethods();
+        JsonArray methodJsonArray = makeJOSNMethodArray(methods);
+
+        JsonObject parentInterfaceJson = Json.createObjectBuilder()
+                .add("name", name)
+                .add("methods", methodJsonArray)
+                .build();
+        return parentInterfaceJson;
     }
 
     private JsonObject loadJSONFile(String jsonFilePath) throws IOException {

@@ -70,7 +70,7 @@ public class JClass extends Item {
         v.setName("s");
         v.setF(true);
         v.setS(true);
-        v.setType("VBox");
+        v.setType("VBox"); 
         System.out.println("Test variable to code: " + v.toCode());
         System.out.println("Test variable to uml: " + v.toUml());
 
@@ -108,7 +108,13 @@ public class JClass extends Item {
         i.setAccess("public");
         i.addMethod(m3);
         
-        this.setParent(i);
+//        JClass c = new JClass(app);
+//        c.setName("Ha");
+//        c.setAccess("public");
+        
+        
+        this.addParent(i);
+//        this.addParent(c);
         this.setAccess("public");
         this.addMethod(m);
         this.addMethod(m2);
@@ -117,6 +123,10 @@ public class JClass extends Item {
 
 //        this.setHeight(100);
 //        this.setWidth(100);
+    }
+
+    public ArrayList<Interface> getParentInterfaces() {
+        return parentInterfaces;
     }
 
 //    @Override
@@ -281,6 +291,11 @@ public class JClass extends Item {
             
             s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "extends " +  parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
+         
+        } else if (this.isHasSuperclass() && this.isImplementsInterface()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "extends " +  parentClassName + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else {
             s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "  {" + "\n" + "\n"
@@ -406,7 +421,7 @@ public class JClass extends Item {
         return parent;
     }
 
-    public void setParent(Item parent) {
+    public void addParent(Item parent) {
         if (parent instanceof Interface) {
             this.setImplementsInterface(true);
             parentInterfaces.add((Interface) parent);
@@ -419,9 +434,9 @@ public class JClass extends Item {
         } else {
             this.setHasSuperclass(true);
             parentClassName = parent.getName();
-            
+            this.parent = parent;
         }
-        this.parent = parent;
+//        this.parent = parent;
     }
 
 //    public String getName() {
