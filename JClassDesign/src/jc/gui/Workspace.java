@@ -56,6 +56,7 @@ import static jc.PropertyType.ZOOM_OUT_TOOLTIP;
 import jc.controller.DesignRendererController;
 import jc.controller.EditToolbarController;
 import jc.data.DataManager;
+import jc.data.Item;
 import jc.file.FileManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
@@ -125,6 +126,7 @@ public class Workspace extends AppWorkspaceComponent {
 
     TextField classNameField;
     TextField packageField;
+    
     ComboBox parentComboBox;
 
     VBox gridControls;
@@ -266,6 +268,8 @@ public class Workspace extends AppWorkspaceComponent {
         packageField = new TextField();
 
         parentComboBox = new ComboBox();
+        
+        
 
         classHBox.getChildren().addAll(classNameLbl, classNameField);
         classHBox.setAlignment(Pos.CENTER);
@@ -404,6 +408,7 @@ public class Workspace extends AppWorkspaceComponent {
         designRenderer.setOnMousePressed(e -> {
             System.out.println("mouse pressed handler");
             designRendererController.processCanvasMousePress((int) e.getX(), (int) e.getY());
+            
             System.out.println("mouse pressed handler after");
             
         });
@@ -419,6 +424,10 @@ public class Workspace extends AppWorkspaceComponent {
 //        designRenderer.setOnMouseMoved(e -> {
 //            designRendererController.processCanvasMouseMoved((int)e.getX(), (int)e.getY());
 //        });
+    }
+
+    public ComboBox getParentComboBox() {
+        return parentComboBox;
     }
 
     public Group getGroup() {

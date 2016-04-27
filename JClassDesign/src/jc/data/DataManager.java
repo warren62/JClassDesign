@@ -10,11 +10,13 @@ import java.util.List;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.ComboBox;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Line;
 import javafx.scene.transform.Scale;
 import static jc.data.JClassDesignerState.SELECTING_CLASS;
 import jc.file.FileManager;
@@ -29,46 +31,41 @@ import saf.components.AppDataComponent;
 public class DataManager implements AppDataComponent {
 
     private double zoomAmount = .1;
-     // THIS IS A SHARED REFERENCE TO THE APPLICATION
+    // THIS IS A SHARED REFERENCE TO THE APPLICATION
     AppTemplate app;
-    
+
     JClassDesignerState state;
-    
+
     ArrayList<Node> items;
-    
+
     Item newItem;
-    
+
     Item selectedItem;
-    
+
     Group g = new Group();
-    
+
     Scale scaleTransform;
-    
-     
-    
-    
-    
+
     // USE THIS WHEN THE SHAPE IS SELECTED
     Effect highlightedEffect;
-    
+
     public DataManager(AppTemplate initApp) throws Exception {
-        
+
         app = initApp;
-        
+
         DropShadow dropShadowEffect = new DropShadow();
-	dropShadowEffect.setOffsetX(0.0f);
-	dropShadowEffect.setOffsetY(0.0f);
-	dropShadowEffect.setSpread(1.0);
-	dropShadowEffect.setColor(Color.YELLOW);
-	dropShadowEffect.setBlurType(BlurType.GAUSSIAN);
-	dropShadowEffect.setRadius(15);
-	highlightedEffect = dropShadowEffect;
-        
+        dropShadowEffect.setOffsetX(0.0f);
+        dropShadowEffect.setOffsetY(0.0f);
+        dropShadowEffect.setSpread(1.0);
+        dropShadowEffect.setColor(Color.YELLOW);
+        dropShadowEffect.setBlurType(BlurType.GAUSSIAN);
+        dropShadowEffect.setRadius(15);
+        highlightedEffect = dropShadowEffect;
+
         items = new ArrayList<>();
-        
-        
+
     }
-    
+
     public DataManager() {
         items = new ArrayList<Node>();
     }
@@ -76,179 +73,175 @@ public class DataManager implements AppDataComponent {
     public AppTemplate getApp() {
         return app;
     }
-    
+
     public JClassDesignerState getState() {
-	return state;
+        return state;
     }
 
     public void setState(JClassDesignerState initState) {
-	state = initState;
+        state = initState;
     }
-    
+
     public Item getNewClass() {
-	return newItem;
+        return newItem;
     }
 
     public Item getSelectedItem() {
-	return selectedItem;
+        return selectedItem;
     }
 
     public void setSelectedItem(Item initSelectedClass) {
-	selectedItem = initSelectedClass;
+        selectedItem = initSelectedClass;
     }
-
 
     public boolean isInState(JClassDesignerState testState) {
-	return state == testState;
+        return state == testState;
     }
-    
+
     public void unhighlightItem(Item item) {
-	selectedItem.setEffect(null);
+        selectedItem.setEffect(null);
     }
-    
+
     public void highlightItem(Item item) {
-	item.setEffect(highlightedEffect);
+        item.setEffect(highlightedEffect);
     }
-    
+
     public void startNewClass(int x, int y) {
         System.out.println("start new item");
-	JClass newItem1 = new JClass(app);
-	newItem1.start(x, y);
-	newItem = newItem1;
-	initNewItem();
+        JClass newItem1 = new JClass(app);
+        newItem1.start(x, y);
+        newItem = newItem1;
+        initNewItem();
         System.out.println("start item after");
     }
-    
+
     public void startNewInterface(int x, int y) {
         System.out.println("start new item");
-	Interface newItem1 = new Interface(app);
-	newItem1.start(x, y);
-	newItem = newItem1;
-	initNewItem();
+        Interface newItem1 = new Interface(app);
+        newItem1.start(x, y);
+        newItem = newItem1;
+        initNewItem();
         System.out.println("start item after");
     }
-    
-    public void initNewItem() {
-	// DESELECT THE SELECTED SHAPE IF THERE IS ONE
-	if (selectedItem != null) {
-	    unhighlightItem(selectedItem);
-	    selectedItem = null;
-	}
 
-	// USE THE CURRENT SETTINGS FOR THIS NEW SHAPE
-	Workspace workspace = (Workspace)app.getWorkspaceComponent();
-	
-	
-	// ADD THE SHAPE TO THE CANVAS
+    public void initNewItem() {
+        // DESELECT THE SELECTED SHAPE IF THERE IS ONE
+        if (selectedItem != null) {
+            unhighlightItem(selectedItem);
+            selectedItem = null;
+        }
+
+        // USE THE CURRENT SETTINGS FOR THIS NEW SHAPE
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+
+        // ADD THE SHAPE TO THE CANVAS
         System.out.println(items.toString() + "//" + items.size());
-	items.add(newItem);
+        items.add(newItem);
         System.out.println(newItem.toString() + "//" + items.size());
-        
-        
+
 //        workspace.getGroup().getChildren().add(newItem);
-       
 //        g.getChildren().add(newItem);
+        
+        workspace.getParentComboBox().getItems().add(newItem.getName());
         workspace.getDesignRenderer().getChildren().add(newItem);
         
+
 //        workspace.getWorkspace().getChildren().add(newItem);
         System.out.println("initnew item debug" + workspace.getWorkspace().getChildren().size());
-	
-	// GO INTO SHAPE SIZING MODE
-	
+
+        // GO INTO SHAPE SIZING MODE
     }
-    
-     public Item selectTopItem(int x, int y) {
+
+    public Item selectTopItem(int x, int y) {
         System.out.println("select top item before");
 //	Class item = getTopItem(x, y);
         Item item = getSelectedItem();
-	if (item == selectedItem)
-	    return item;
-	
-	if (selectedItem != null) {
-	    unhighlightItem(selectedItem);
-	}
-	if (item != null) {
-	    highlightItem(item);
-	    Workspace workspace = (Workspace)app.getWorkspaceComponent();
+        if (item == selectedItem) {
+            return item;
+        }
+
+        if (selectedItem != null) {
+            unhighlightItem(selectedItem);
+        }
+        if (item != null) {
+            highlightItem(item);
+            Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //	    workspace.loadSelectedShapeSettings(item);
-	}
-	selectedItem = item;
+        }
+        selectedItem = item;
 //        setSelectedClass(item);
-	if (item != null) {
-	    ((Draggable)item).start(x, y);
-	}
-	return item;
+        if (item != null) {
+            ((Draggable) item).start(x, y);
+        }
+        return item;
     }
 
     public Item getTopItem(int x, int y) {
-	for (int i = items.size() - 1; i >= 0; i--) {
-	    Item item = (Item)items.get(i);
-	    if (item.contains(x, y)) {
-		return item;
-	    }
-	}
-	return null;
+        for (int i = items.size() - 1; i >= 0; i--) {
+            Item item = (Item) items.get(i);
+            if (item.contains(x, y)) {
+                return item;
+            }
+        }
+        return null;
     }
-    
-     public void selectSizedItem() {
-	if (selectedItem != null)
-	    unhighlightItem(selectedItem);
-	selectedItem = newItem;
-	highlightItem(selectedItem);
-	newItem = null;
+
+    public void selectSizedItem() {
+        if (selectedItem != null) {
+            unhighlightItem(selectedItem);
+        }
+        selectedItem = newItem;
+        highlightItem(selectedItem);
+        newItem = null;
     }
 
     public void addClass(JClass itemToAdd) {
-	items.add(itemToAdd);
+        items.add(itemToAdd);
     }
-    
+
 //    public void setItems(ObservableList<Node> initItems, Pane pane) {
 //	items = initItems;
 //    }
-    
     public void addInterface(Interface itemToAdd) {
-	items.add(itemToAdd);
+        items.add(itemToAdd);
     }
 
     public void removeItem(Item itemToRemove) {
-	items.remove(itemToRemove);
+        items.remove(itemToRemove);
     }
-    
+
     public void addToWorkspace(Item i) {
-        
-        
-        
+
 //        g.getChildren().add(i);
-//        
-        ((Workspace)app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(i);
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        workspace.getDesignRenderer().getChildren().add(i);
+        workspace.getParentComboBox().getItems().add(i.getName());
 //        ((Workspace)app.getWorkspaceComponent()).getGroup().getChildren().add(i);
     }
-    
+
     public ArrayList getItems() {
         return items;
     }
-    
+
     @Override
     public void reset() {
 
         setState(SELECTING_CLASS);
         newItem = null;
-	selectedItem = null;
+        selectedItem = null;
 
-	
-	
-	items.clear();
-	((Workspace)app.getWorkspaceComponent()).getDesignRenderer().getChildren().clear();
-        
+        items.clear();
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().clear();
+
     }
-    
+
     public void zoomIn() {
-         Pane p =   ((Workspace)app.getWorkspaceComponent()).getDesignRenderer();
-         p.setPrefHeight(p.getPrefHeight() + 50);
-         p.setPrefWidth(p.getPrefWidth() + 50);
-         p.setScaleX(p.getScaleX() + zoomAmount);
-         p.setScaleY(p.getScaleY() + zoomAmount);
-         ((Workspace)app.getWorkspaceComponent()).getDesignRendererScroll().setContent(p);
+        Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
+//         p.setPrefHeight(p.getPrefHeight() + 50);
+//         p.setPrefWidth(p.getPrefWidth() + 50);
+        p.setScaleX(p.getScaleX() + zoomAmount);
+        p.setScaleY(p.getScaleY() + zoomAmount);
+        ((Workspace) app.getWorkspaceComponent()).getDesignRendererScroll().setContent(p);
 //         p.setLayoutX(0);
 //         p.setLayoutY(0);
 //        p.setPrefWidth(zoomAmount + p.getPrefWidth());
@@ -264,15 +257,49 @@ public class DataManager implements AppDataComponent {
 //        }
 //       
     }
-    
+
     public void zoomOut() {
-        Pane p =   ((Workspace)app.getWorkspaceComponent()).getDesignRenderer();
-         p.setScaleX(p.getScaleX() - zoomAmount);
-         p.setScaleY(p.getScaleY() - zoomAmount);
-         ((Workspace)app.getWorkspaceComponent()).getDesignRendererScroll().setContent(p);
-       
+        Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
+        p.setScaleX(p.getScaleX() - zoomAmount);
+        p.setScaleY(p.getScaleY() - zoomAmount);
+        ((Workspace) app.getWorkspaceComponent()).getDesignRendererScroll().setContent(p);
+
+    }
+
+//    public void linkLines() {
+//        ComboBox cb =  ((Workspace)app.getWorkspaceComponent()).getParentComboBox();
+//        Pane p =   ((Workspace)app.getWorkspaceComponent()).getDesignRenderer();
+//        for(Item i : p.getChildren())
+//        
+//    }
+    public void buildLine(double startX, double startY) {
+        Line line = new Line();
+        line.setStartX(startX);
+        line.setStartY(startY);
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
+    }
+
+    public void populateComboBox() {
+        ComboBox cb = ((Workspace) app.getWorkspaceComponent()).getParentComboBox();
+        Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
+        if (p.getChildren() != null) {
+            for (Node i : p.getChildren()) {
+                Item item = (Item) i;
+                cb.getItems().add(item.getName());
+            }
+        }
     }
     
+    public void updateParentNames() {
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        workspace.getParentComboBox().getItems().clear();
+        for(Node n : workspace.getDesignRenderer().getChildren()) {
+            Item i = (Item) n;
+            workspace.getParentComboBox().getItems().add(i.getName());
+        }
+        
+    }
+
     public void create() {
         JClass threadExample = new JClass(app);
         threadExample.setName("ThreadExample");
@@ -326,7 +353,7 @@ public class DataManager implements AppDataComponent {
         counterThread.setName("counterThread");
         counterThread.setAccess("private");
         counterThread.setType("Thread");
-        Variable counterTask = new Variable();      
+        Variable counterTask = new Variable();
         counterTask.setName("counterTask");
         counterTask.setAccess("private");
         counterTask.setType("Task");
@@ -408,8 +435,7 @@ public class DataManager implements AppDataComponent {
         threadExample.addMethod(initWindow);
         threadExample.addMethod(initThreads);
         threadExample.addMethod(main);
-        
-        
+
         JClass counterTaskClass = new JClass(app);
         counterTaskClass.setName("CounterThread");
         Variable appp = new Variable();
@@ -433,8 +459,7 @@ public class DataManager implements AppDataComponent {
         counterTaskClass.addVariable(counter);
         counterTaskClass.addMethod(counterTaskMethod);
         counterTaskClass.addMethod(call);
-        
-        
+
         JClass dateTaskClass = new JClass(app);
         dateTaskClass.setName("DateTask");
         Variable apppp = new Variable();
@@ -458,8 +483,7 @@ public class DataManager implements AppDataComponent {
         dateTaskClass.addVariable(now);
         dateTaskClass.addMethod(dateTaskMethod);
         dateTaskClass.addMethod(callMethod);
-        
-        
+
         JClass pauseHandler = new JClass(app);
         pauseHandler.setName("PauseHandler");
         Variable appPauseHandler = new Variable();
@@ -479,8 +503,7 @@ public class DataManager implements AppDataComponent {
         pauseHandler.addVariable(appPauseHandler);
         pauseHandler.addMethod(pauseHandlerMethod);
         pauseHandler.addMethod(handlerPause);
-        
-        
+
         JClass startHandlerHandler = new JClass(app);
         startHandlerHandler.setName("StartHandler");
         Variable appStartHandler = new Variable();
@@ -500,19 +523,18 @@ public class DataManager implements AppDataComponent {
         startHandlerHandler.addVariable(appStartHandler);
         startHandlerHandler.addMethod(startHandler);
         startHandlerHandler.addMethod(startHandle);
-        
+
 //        items.add(threadExample);
 //        items.add(counterTaskClass);
 //        items.add(dateTaskClass);
 //        items.add(pauseHandler);
 //        items.add(startHandlerHandler);
-        
         this.addClass(threadExample);
         this.addClass(counterTaskClass);
         this.addClass(dateTaskClass);
         this.addClass(pauseHandler);
         this.addClass(startHandlerHandler);
-        
+
     }
-    
+
 }

@@ -42,7 +42,7 @@ public class Interface extends Item {
         methodVBox.setMinHeight(30);
         methodVBox.setMinWidth(30);
         
-        Label nameLbl = new Label(name);
+        nameLbl = new Label(name);
 
         nameVBox.getChildren().add(nameLbl);
 

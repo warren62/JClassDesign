@@ -100,6 +100,8 @@ public class EditToolbarController {
         
         dataManager.getSelectedItem().setName(n);
         dataManager.getSelectedItem().updateNameLabel();
+        dataManager.updateParentNames();
+        
         System.out.println(dataManager.getSelectedItem().getName());
         System.out.println(dataManager.getSelectedItem());
     }
