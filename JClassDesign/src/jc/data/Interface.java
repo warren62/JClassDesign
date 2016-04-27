@@ -41,8 +41,10 @@ public class Interface extends Item {
         methodVBox.getStyleClass().add("vbox");
         methodVBox.setMinHeight(30);
         methodVBox.setMinWidth(30);
+        
+        Label nameLbl = new Label(name);
 
-        nameVBox.getChildren().add(name);
+        nameVBox.getChildren().add(nameLbl);
 
         getChildren().addAll(nameVBox, methodVBox);
 
@@ -173,7 +175,7 @@ public class Interface extends Item {
         String s = new String();
         String methods = loadMethods();
         
-        s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " interface" + " " + name.getText() + "  {" +  "\n" + "\n" + methods + "\n" + "}";
+        s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " interface" + " " + name + "  {" +  "\n" + "\n" + methods + "\n" + "}";
         
         return s;
     }

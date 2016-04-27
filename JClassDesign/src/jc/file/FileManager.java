@@ -54,7 +54,7 @@ public class FileManager implements AppFileComponent {
     public void saveData(AppDataComponent data, String filePath) throws IOException {
 
         DataManager dataManager = (DataManager) data;
-        create(dataManager);
+//        create(dataManager);
 
         JsonArrayBuilder arrayBuilder = Json.createArrayBuilder();
         ArrayList<Item> items = dataManager.getItems();
@@ -144,6 +144,40 @@ public class FileManager implements AppFileComponent {
             JsonObject jsonItem = jsonItemArray.getJsonObject(i);
             Item item = loadItem(jsonItem);
             dataManager.addToWorkspace(item);
+        }
+
+    }
+    
+    
+    
+    public void loadData(String filePath, AppTemplate initApp) throws IOException {
+        app = initApp;
+        DataManager dataManager = (DataManager) app.getDataComponent();
+        dataManager.reset();
+
+        JsonObject json = loadJSONFile(filePath);
+
+        JsonArray jsonItemArray = json.getJsonArray("uml");
+        for (int i = 0; i < jsonItemArray.size(); i++) {
+            JsonObject jsonItem = jsonItemArray.getJsonObject(i);
+            Item item = loadItem(jsonItem);
+            dataManager.addToWorkspace(item);
+        }
+
+    }
+    
+     public void loadData(String filePath) throws IOException {
+//        app = initApp;
+//        DataManager dataManager = (DataManager) data;
+//        dataManager.reset();
+
+        JsonObject json = loadJSONFile(filePath);
+
+        JsonArray jsonItemArray = json.getJsonArray("uml");
+        for (int i = 0; i < jsonItemArray.size(); i++) {
+            JsonObject jsonItem = jsonItemArray.getJsonObject(i);
+            Item item = loadItemTest(jsonItem);
+//            dataManager.addToWorkspace(item);
         }
 
     }
@@ -272,11 +306,131 @@ public class FileManager implements AppFileComponent {
 
         return i;
     }
+    
+    public Item loadItemTest(JsonObject jsonItem) {
+
+        String type = jsonItem.getString("type");
+        Item i;
+
+        if (type.equalsIgnoreCase("class")) {
+//            i = new JClass(app);
+            JClass c = new JClass();
+            String name = jsonItem.getString("name");
+            String packageName = jsonItem.getString("package_name");
+            ArrayList<Method> methods = new ArrayList();
+            ArrayList<Variable> variables = new ArrayList();
+            ArrayList<String> args = new ArrayList();
+            JsonArray methodJsonArray = jsonItem.getJsonArray("methods");
+            JsonArray variableJsonArray = jsonItem.getJsonArray("variables");
+            JsonArray parentInterfaceJsonArray = jsonItem.getJsonArray("parentInterfaces");
+            for (JsonValue j : methodJsonArray) {
+                Method m = new Method();
+                JsonObject o = (JsonObject) j;
+                String n = o.getString("mname");
+                String a = o.getString("access");
+                String t = o.getString("mtype");
+                System.out.println("load method type test  : " + o.getString("mtype"));
+                boolean f = o.getBoolean("final");
+                boolean s = o.getBoolean("static");
+//                String f = o.getString("final");
+//                String s = o.getString("static");
+                m.setAccess(a);
+                m.setName(n);
+                m.setType(t);
+                m.setF(f);
+                m.setS(s);
+
+                JsonArray argsJsonArray = o.getJsonArray("args");
+                for (JsonValue jv : argsJsonArray) {
+                    JsonObject oj = (JsonObject) jv;
+                    m.addArg(oj.getString("arg"));
+//                    args.add(oj.getString("arg"));
+                }
+                c.addMethod(m);
+
+//                System.out.println(j.toString() + "       break");
+            }
+            for (JsonValue j : variableJsonArray) {
+                Variable v = new Variable();
+                JsonObject o = (JsonObject) j;
+                String n = o.getString("vname");
+                String a = o.getString("access");
+                String t = o.getString("vtype");
+                boolean f = o.getBoolean("final");
+                boolean s = o.getBoolean("static");
+                v.setAccess(a);
+                v.setName(n);
+                v.setType(t);
+                v.setF(f);
+                v.setS(s);
+                c.addVariable(v);
+            }
+//            for(int z = 0; z < methodJsonArray.size(); z++) {
+//                
+//            }
+            double x = getDataAsDouble(jsonItem, "x");
+            double y = getDataAsDouble(jsonItem, "y");
+
+            c.setName(name);
+            c.setPackage(packageName);
+            c.setLayoutX(x);
+            c.setLayoutY(y);
+            System.out.println("To code after load test: " + c.toCode());
+            i = c;
+
+        } else {
+//            i = new Interface(app);
+            Interface in = new Interface(app);
+            String name = jsonItem.getString("name");
+            String packageName = jsonItem.getString("package_name");
+
+            JsonArray methodJsonArray = jsonItem.getJsonArray("methods");
+            for (JsonValue j : methodJsonArray) {
+                Method m = new Method();
+                JsonObject o = (JsonObject) j;
+                String n = o.getString("mname");
+                String a = o.getString("access");
+                String t = o.getString("mtype");
+                System.out.println("load method type test  : " + o.getString("mtype"));
+                boolean f = o.getBoolean("final");
+                boolean s = o.getBoolean("static");
+//                String f = o.getString("final");
+//                String s = o.getString("static");
+                m.setAccess(a);
+                m.setName(n);
+                m.setType(t);
+                m.setF(f);
+                m.setS(s);
+
+                JsonArray argsJsonArray = o.getJsonArray("args");
+                for (JsonValue jv : argsJsonArray) {
+                    JsonObject oj = (JsonObject) jv;
+                    m.addArg(oj.getString("arg"));
+//                    args.add(oj.getString("arg"));
+                }
+                in.addMethod(m);
+
+//                System.out.println(j.toString() + "       break");
+            }
+
+            double x = getDataAsDouble(jsonItem, "x");
+            double y = getDataAsDouble(jsonItem, "y");
+            in.setName(name);
+            in.setPackage(packageName);
+            in.setLayoutX(x);
+            in.setLayoutY(y);
+            System.out.println("To code after load test: " + in.toCode());
+            i = in;
+        }
+
+        return i;
+    }
+
 
     @Override
     public void exportData(AppDataComponent data, String filePath) throws IOException {
         DataManager dm = (DataManager) data;
-        create(dm);
+//        create(dm);
         ArrayList<String> pkgArray = new ArrayList();
         File pkgFile = null;
         File classFile = null;
@@ -572,7 +726,7 @@ public class FileManager implements AppFileComponent {
     }
     
     public void create(DataManager dm) {
-        JClass threadExample = new JClass(app);
+        JClass threadExample = new JClass();
         threadExample.setName("ThreadExample");
         threadExample.setAccess("public");
         Variable START_TEXT = new Variable();
@@ -709,7 +863,7 @@ public class FileManager implements AppFileComponent {
         threadExample.addMethod(main);
         
         
-        JClass counterTaskClass = new JClass(app);
+        JClass counterTaskClass = new JClass();
         counterTaskClass.setName("CounterTask");
         counterTaskClass.setAccess("public");
         Variable appp = new Variable();
@@ -735,7 +889,7 @@ public class FileManager implements AppFileComponent {
         counterTaskClass.addMethod(call);
         
         
-        JClass dateTaskClass = new JClass(app);
+        JClass dateTaskClass = new JClass();
         dateTaskClass.setName("DateTask");
         dateTaskClass.setAccess("public");
         Variable apppp = new Variable();
@@ -761,7 +915,7 @@ public class FileManager implements AppFileComponent {
         dateTaskClass.addMethod(callMethod);
         
         
-        JClass pauseHandler = new JClass(app);
+        JClass pauseHandler = new JClass();
         pauseHandler.setName("PauseHandler");
         pauseHandler.setAccess("public");
         Variable appPauseHandler = new Variable();
@@ -783,7 +937,7 @@ public class FileManager implements AppFileComponent {
         pauseHandler.addMethod(handlerPause);
         
         
-        JClass startHandlerHandler = new JClass(app);
+        JClass startHandlerHandler = new JClass();
         startHandlerHandler.setName("StartHandler");
         startHandlerHandler.setAccess("public");
         Variable appStartHandler = new Variable();

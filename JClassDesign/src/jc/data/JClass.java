@@ -27,13 +27,17 @@ public class JClass extends Item {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     String access = "public";
-
+//    String name = "DefaultClassName";
+//    String packageName = "DefaultPackageName";
+    
     boolean implementsInterface = false;
     boolean hasSuperclass = false;
+    boolean a = false;
+    
+    
 
     VBox nameVBox, methodVBox, variableVBox;
-//    Label name = new Label("DefaultClassName");
-//    Label pkg = new Label("DefaultPackageName");
+    
     ArrayList<Method> methods = new ArrayList();
     ArrayList<Variable> variables = new ArrayList();
     ArrayList<Interface> parentInterfaces = new ArrayList();
@@ -44,12 +48,16 @@ public class JClass extends Item {
 //        app = initApp;
         orgSceneX = 0;
         orgSceneY = 0;
+        
+        nameLbl = new Label(name);
+//        nameLbl.setText(name);
+//        Label pkgLbl = new Label(pkg);
 
         nameVBox = new VBox();
         methodVBox = new VBox();
         variableVBox = new VBox();
 
-        nameVBox.getChildren().add(name);
+        nameVBox.getChildren().add(nameLbl);
 
         nameVBox.getStyleClass().add("vbox");
         methodVBox.getStyleClass().add("vbox");
@@ -103,10 +111,10 @@ public class JClass extends Item {
 //        jc.addMethod(m);
 //        jc.addVariable(v);
 
-        Interface i = new Interface(app);
-        i.setName("GG");
-        i.setAccess("public");
-        i.addMethod(m3);
+//        Interface i = new Interface(app);
+//        i.setName("GG");
+//        i.setAccess("public");
+//        i.addMethod(m3);
         
 //        JClass c = new JClass(app);
 //        c.setName("Ha");
@@ -250,6 +258,15 @@ public class JClass extends Item {
         return methods;
     }
 
+    public boolean isA() {
+        return a;
+    }
+
+    public void setA(boolean a) {
+        this.a = a;
+    }
+    
+
     public void addVariable(Variable variable) {
         variables.add(variable);
     }
@@ -281,6 +298,15 @@ public class JClass extends Item {
     public void setHasSuperclass(boolean hasSuperclass) {
         this.hasSuperclass = hasSuperclass;
     }
+    
+    
+    
+//    public void setLabelName(String n) {
+//       Label l = (Label) nameVBox.getChildren().get(0);
+//       l.setText(name);
+//       nameVBox.getChildren().clear();
+//       nameVBox.getChildren().add(l);
+//    }
 
     public String toCode() {
         String s = new String();
@@ -288,22 +314,45 @@ public class JClass extends Item {
         String methods = loadMethods();
 //        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
 //                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
-        if (isImplementsInterface()) {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" +  "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+        if (isImplementsInterface() && isA()) {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" +  "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
-        } else if (this.isHasSuperclass()) {
+        }else if (isImplementsInterface()) {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" +  "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
+
+        }
+        
+        else if (this.isHasSuperclass() && isA()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "extends " +  parentClassName + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "extends " +  parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
          
-        } else if (this.isHasSuperclass() && this.isImplementsInterface()) {
+        }else if (this.isHasSuperclass()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "extends " +  parentClassName + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "extends " +  parentClassName + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
+         
+        } 
+        
+        else if (this.isHasSuperclass() && this.isImplementsInterface() && isA()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "extends " +  parentClassName + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
-        } else {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name.getText() + "  {" + "\n" + "\n"
+        }else if (this.isHasSuperclass() && this.isImplementsInterface()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "extends " +  parentClassName + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}"; 
+        
+        }else if(isA()) {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "  {" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
+        }
+        
+        else {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
         }
         return s;

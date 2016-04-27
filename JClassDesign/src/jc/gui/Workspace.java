@@ -11,6 +11,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
@@ -78,6 +79,8 @@ public class Workspace extends AppWorkspaceComponent {
 
     // IT KNOWS THE GUI IT IS PLACED INSIDE
     AppGUI gui;
+    
+    Group g;
 
     HBox topToolBar;
     HBox fileToolBar;
@@ -234,9 +237,9 @@ public class Workspace extends AppWorkspaceComponent {
         redoBtn = gui.initChildButton(editToolBar, REDO_ICON.toString(), REDO_TOOLTIP.toString(), true);
         redoBtn.setMaxWidth(Double.MAX_VALUE);
 
-        zoomInBtn = gui.initChildButton(viewToolBar, ZOOM_IN_ICON.toString(), ZOOM_IN_TOOLTIP.toString(), true);
+        zoomInBtn = gui.initChildButton(viewToolBar, ZOOM_IN_ICON.toString(), ZOOM_IN_TOOLTIP.toString(), false);
         zoomInBtn.setMaxWidth(Double.MAX_VALUE);
-        zoomOutBtn = gui.initChildButton(viewToolBar, ZOOM_OUT_ICON.toString(), ZOOM_OUT_TOOLTIP.toString(), true);
+        zoomOutBtn = gui.initChildButton(viewToolBar, ZOOM_OUT_ICON.toString(), ZOOM_OUT_TOOLTIP.toString(), false);
         zoomOutBtn.setMaxWidth(Double.MAX_VALUE);
 
         gridCheckBox = new CheckBox("Grid");
@@ -305,9 +308,13 @@ public class Workspace extends AppWorkspaceComponent {
         designRenderer.setStyle("-fx-background: black;");
         designRenderer.setMinSize(100, 100);
         designRenderer.setPrefSize(2500, 2500);
+        
+//        g = new Group();
+//        designRenderer.getChildren().add(g);
 
         designRendererScroll = new ScrollPane();
-        
+        designRendererScroll.setVvalue(.5);
+        designRendererScroll.setHvalue(.5);
 //        designRendererScroll.setHbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
 //        designRendererScroll.setVbarPolicy(ScrollPane.ScrollBarPolicy.ALWAYS);
         designRendererScroll.setContent(designRenderer);
@@ -316,13 +323,13 @@ public class Workspace extends AppWorkspaceComponent {
         splitPane.getItems().addAll(designRendererScroll, componentToolBar);
         splitPane.setDividerPositions(.75);
         
-	debugText = new Text();
-	designRenderer.getChildren().add(debugText);
-	debugText.setX(100);
-	debugText.setY(100);
+//	debugText = new Text();
+//	designRenderer.getChildren().add(debugText);
+//	debugText.setX(100);
+//	debugText.setY(100);
         
-        variableTable.setItems(designRenderer.getChildren());
-        methodTable.setItems(designRenderer.getChildren());
+//        variableTable.setItems(designRenderer.getChildren());
+//        methodTable.setItems(designRenderer.getChildren());
 
 
         
@@ -356,6 +363,14 @@ public class Workspace extends AppWorkspaceComponent {
         selectBtn.setOnAction(e -> {
             System.out.println("select class handler");
             editToolBarController.handleSelect();
+        });
+        
+        zoomOutBtn.setOnAction(e-> {
+            editToolBarController.handleZoomOut();
+        });
+        
+        zoomInBtn.setOnAction(e-> {
+            editToolBarController.handleZoomIn();
         });
         
         codeBtn.setOnAction(e -> {
@@ -404,6 +419,14 @@ public class Workspace extends AppWorkspaceComponent {
 //        designRenderer.setOnMouseMoved(e -> {
 //            designRendererController.processCanvasMouseMoved((int)e.getX(), (int)e.getY());
 //        });
+    }
+
+    public Group getGroup() {
+        return g;
+    }
+
+    public ScrollPane getDesignRendererScroll() {
+        return designRendererScroll;
     }
 
     @Override

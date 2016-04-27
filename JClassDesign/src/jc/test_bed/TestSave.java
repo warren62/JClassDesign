@@ -27,9 +27,9 @@ public class TestSave {
     
 //    DataManager dm = new DataManager();
 //    FileManager fm = new FileManager();
-    AppTemplate app;
-    ArrayList<Item> items = new ArrayList();
-    String filePath  = "./work/";
+//    AppTemplate app;
+//    ArrayList<Item> items = new ArrayList();
+//    String filePath  = "./work/";
     
     public static void main(String[] args) throws IOException {
 	
@@ -37,10 +37,10 @@ public class TestSave {
 //        a.create();
 //        a.save();
 //	launch(args);
-        String filePath  = "./work/";
+        String filePath  = "./work/DesignSaveTest";
         FileManager fm = new FileManager();
         DataManager dm = new DataManager();
-        dm.create();
+        fm.create(dm);
         fm.saveData(dm, filePath);
         
     }

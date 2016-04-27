@@ -87,11 +87,21 @@ public class EditToolbarController {
         
     }
     
+    public void handleZoomOut() {
+        dataManager.zoomOut();
+    }
+    
+    public void handleZoomIn() {
+        dataManager.zoomIn();
+    }
+    
     public void handleClassName(String n) {
         
         
         dataManager.getSelectedItem().setName(n);
+        dataManager.getSelectedItem().updateNameLabel();
         System.out.println(dataManager.getSelectedItem().getName());
+        System.out.println(dataManager.getSelectedItem());
     }
     
     public void handlePackageName(String n) {

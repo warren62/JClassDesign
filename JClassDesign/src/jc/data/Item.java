@@ -29,10 +29,10 @@ public class Item extends VBox implements Draggable {
     boolean ext;
     boolean implementsInterface;
     StringProperty nameProp = new SimpleStringProperty("gg");
-    Label name =  new Label("DeafultClassName");
-    Label pkg =  new Label("DeafultPackageName");
-    String nameString = "DefaultClassName";
-    String pkgString = "DefaultPackageName";
+    Label nameLbl;
+    Label pkgLbl;
+    String name = "DefaultClassName";
+    String pkg = "DefaultPackageName";
     
     Item parent;
 
@@ -42,28 +42,28 @@ public class Item extends VBox implements Draggable {
         
         app = initApp;
         initHandler();
-        
+//        nameLbl = new Label(name);
     }
     
     public Item() {
         
     }
     
-    public String getNameString() {
-        return nameString;
-    }
-
-    public void setNameString(String nameString) {
-        this.nameString = nameString;
-    }
-
-    public String getPkgString() {
-        return pkgString;
-    }
-
-    public void setPkgString(String pkgString) {
-        this.pkgString = pkgString;
-    }
+//    public String getNameString() {
+//        return nameString;
+//    }
+//
+//    public void setNameString(String nameString) {
+//        this.nameString = nameString;
+//    }
+//
+//    public String getPkgString() {
+//        return pkgString;
+//    }
+//
+//    public void setPkgString(String pkgString) {
+//        this.pkgString = pkgString;
+//    }
     
     public boolean isExt() {
         return ext;
@@ -83,20 +83,25 @@ public class Item extends VBox implements Draggable {
     
     public void setName(String name) {
         
-            this.name.setText(name);
+//            this.name.setText(name);
+           this.name = name;
+
         
     }
     
     public String getName() {
-        return name.getText();
+//        return name.getText();
+        return name;
     }
     
     public void setPackage(String name) {
-        this.pkg.setText(name);
+//        this.pkg.setText(name);
+        this.pkg = name;
     }
     
     public String getPackageName() {
-        return pkg.getText();
+//        return pkg.getText();
+        return pkg;
     }
 
     
@@ -209,6 +214,10 @@ public class Item extends VBox implements Draggable {
     @Override
     public String getShapeType() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
+    }
+    
+    public void updateNameLabel() {
+        nameLbl.setText(name);
     }
     
 }

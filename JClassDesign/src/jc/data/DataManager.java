@@ -8,12 +8,14 @@ package jc.data;
 import java.util.ArrayList;
 import java.util.List;
 import javafx.collections.ObservableList;
+import javafx.scene.Group;
 import javafx.scene.Node;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.transform.Scale;
 import static jc.data.JClassDesignerState.SELECTING_CLASS;
 import jc.file.FileManager;
 import jc.gui.Workspace;
@@ -26,7 +28,7 @@ import saf.components.AppDataComponent;
  */
 public class DataManager implements AppDataComponent {
 
-    
+    private double zoomAmount = .1;
      // THIS IS A SHARED REFERENCE TO THE APPLICATION
     AppTemplate app;
     
@@ -37,6 +39,12 @@ public class DataManager implements AppDataComponent {
     Item newItem;
     
     Item selectedItem;
+    
+    Group g = new Group();
+    
+    Scale scaleTransform;
+    
+     
     
     
     
@@ -56,13 +64,17 @@ public class DataManager implements AppDataComponent {
 	dropShadowEffect.setRadius(15);
 	highlightedEffect = dropShadowEffect;
         
-        items = new ArrayList<Node>();
+        items = new ArrayList<>();
         
         
     }
     
     public DataManager() {
         items = new ArrayList<Node>();
+    }
+
+    public AppTemplate getApp() {
+        return app;
     }
     
     public JClassDesignerState getState() {
@@ -131,7 +143,13 @@ public class DataManager implements AppDataComponent {
         System.out.println(items.toString() + "//" + items.size());
 	items.add(newItem);
         System.out.println(newItem.toString() + "//" + items.size());
+        
+        
+//        workspace.getGroup().getChildren().add(newItem);
+       
+//        g.getChildren().add(newItem);
         workspace.getDesignRenderer().getChildren().add(newItem);
+        
 //        workspace.getWorkspace().getChildren().add(newItem);
         System.out.println("initnew item debug" + workspace.getWorkspace().getChildren().size());
 	
@@ -197,7 +215,13 @@ public class DataManager implements AppDataComponent {
     }
     
     public void addToWorkspace(Item i) {
+        
+        
+        
+//        g.getChildren().add(i);
+//        
         ((Workspace)app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(i);
+//        ((Workspace)app.getWorkspaceComponent()).getGroup().getChildren().add(i);
     }
     
     public ArrayList getItems() {
@@ -216,6 +240,37 @@ public class DataManager implements AppDataComponent {
 	items.clear();
 	((Workspace)app.getWorkspaceComponent()).getDesignRenderer().getChildren().clear();
         
+    }
+    
+    public void zoomIn() {
+         Pane p =   ((Workspace)app.getWorkspaceComponent()).getDesignRenderer();
+         p.setPrefHeight(p.getPrefHeight() + 50);
+         p.setPrefWidth(p.getPrefWidth() + 50);
+         p.setScaleX(p.getScaleX() + zoomAmount);
+         p.setScaleY(p.getScaleY() + zoomAmount);
+         ((Workspace)app.getWorkspaceComponent()).getDesignRendererScroll().setContent(p);
+//         p.setLayoutX(0);
+//         p.setLayoutY(0);
+//        p.setPrefWidth(zoomAmount + p.getPrefWidth());
+//        
+//        p.setPrefHeight(zoomAmount + p.getPrefHeight());
+//        for(Node i : p.getChildren() ) {
+//            Item item = (Item) i;
+//            
+//            item.setPrefHeight(item.getPrefHeight() + zoomAmount);
+//            item.setPrefWidth(item.getPrefWidth() + zoomAmount);
+//            item.setLayoutX(item.getLayoutX() + zoomAmount/2);
+//            item.setLayoutY(item.getLayoutY() + zoomAmount/2);
+//        }
+//       
+    }
+    
+    public void zoomOut() {
+        Pane p =   ((Workspace)app.getWorkspaceComponent()).getDesignRenderer();
+         p.setScaleX(p.getScaleX() - zoomAmount);
+         p.setScaleY(p.getScaleY() - zoomAmount);
+         ((Workspace)app.getWorkspaceComponent()).getDesignRendererScroll().setContent(p);
+       
     }
     
     public void create() {

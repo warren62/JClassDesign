@@ -23,8 +23,10 @@ public class Method {
     public String type = "";
     public final String FINAL_STRING = "static";
     public final String STATIC_STRING = "final";
+    public final String ABSTRACT_STRING = "abstract";
     private boolean f;
     private boolean s;
+    private boolean a;
 
     
      public ArrayList<String> getArgs() {
@@ -81,6 +83,14 @@ public class Method {
         this.type = type;
     }
 
+    public boolean isA() {
+        return a;
+    }
+
+    public void setA(boolean a) {
+        this.a = a;
+    }
+
     public boolean isF() {
         return f;
     }
@@ -98,6 +108,12 @@ public class Method {
     }
 
     public String toCode() {
+        if(isA()) {
+            return access + " " + ABSTRACT_STRING + " " + type + " " + name + "(" + argsString() + ")" + "  {" + "\n"
+                    + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
+                    + "}";
+        }
+        
         if (isF()) {
             return access + " " + FINAL_STRING + " " + type + " " + name + "(" + argsString() + ")" + "  {" + "\n"
                     + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
