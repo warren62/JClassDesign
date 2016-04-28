@@ -72,7 +72,7 @@ public class EditToolbarController {
     }
     
     public void handleRemove() {
-        
+        dataManager.removeItem(dataManager.getSelectedItem());
     }
     
     public void handleResize() {

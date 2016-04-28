@@ -232,7 +232,7 @@ public class Workspace extends AppWorkspaceComponent {
         addClassBtn.setMaxWidth(Double.MAX_VALUE);
         addInterfaceBtn = gui.initChildButton(editToolBar, ADD_INTERFACE_ICON.toString(), ADD_INTERFACE_TOOLTIP.toString(), false);
         addInterfaceBtn.setMaxWidth(Double.MAX_VALUE);
-        removeBtn = gui.initChildButton(editToolBar, REMOVE_ICON.toString(), REMOVE_TOOLTIP.toString(), true);
+        removeBtn = gui.initChildButton(editToolBar, REMOVE_ICON.toString(), REMOVE_TOOLTIP.toString(), false);
         removeBtn.setMaxWidth(Double.MAX_VALUE);
         undoBtn = gui.initChildButton(editToolBar, UNDO_ICON.toString(), UNDO_TOOLTIP.toString(), true);
         undoBtn.setMaxWidth(Double.MAX_VALUE);
@@ -367,6 +367,10 @@ public class Workspace extends AppWorkspaceComponent {
         selectBtn.setOnAction(e -> {
             System.out.println("select class handler");
             editToolBarController.handleSelect();
+        });
+        
+        removeBtn.setOnAction(e -> {
+            editToolBarController.handleRemove();
         });
         
         zoomOutBtn.setOnAction(e-> {
