@@ -326,24 +326,24 @@ public class JClass extends Item {
         
         else if (this.isHasSuperclass() && isA()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "extends " +  parentClassName + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " +  parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
          
         }else if (this.isHasSuperclass()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "extends " +  parentClassName + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " +  parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
          
         } 
         
         else if (this.isHasSuperclass() && this.isImplementsInterface() && isA()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "extends " +  parentClassName + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " +  parentClassName + "implements " +  loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         }else if (this.isHasSuperclass() && this.isImplementsInterface()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "extends " +  parentClassName + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " +  parentClassName + "implements " +  loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}"; 
         
         }else if(isA()) {

@@ -398,6 +398,10 @@ public class Workspace extends AppWorkspaceComponent {
 
         });
         
+        parentComboBox.setOnAction(e -> {
+            editToolBarController.handleAddParent();
+        });
+        
         packageField.textProperty().addListener((a,e,o) -> {
             editToolBarController.handlePackageName(o);
             System.out.println(packageField.getText());

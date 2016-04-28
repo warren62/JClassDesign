@@ -111,4 +111,8 @@ public class EditToolbarController {
         System.out.println(dataManager.getSelectedItem().getPackageName());
     }
     
+    public void handleAddParent() {
+        dataManager.linkLines();
+    }
+    
 }

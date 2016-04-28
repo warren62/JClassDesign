@@ -7,16 +7,22 @@ package jc.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
 import javafx.scene.Group;
 import javafx.scene.Node;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.effect.BlurType;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.effect.Effect;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Scale;
 import static jc.data.JClassDesignerState.SELECTING_CLASS;
 import jc.file.FileManager;
@@ -141,10 +147,10 @@ public class DataManager implements AppDataComponent {
 
 //        workspace.getGroup().getChildren().add(newItem);
 //        g.getChildren().add(newItem);
-        
+//        HBox hb = new HBox();
+//        hb.getChildren().addAll(new CheckBox(), new Label(newItem.getName()));
         workspace.getParentComboBox().getItems().add(newItem.getName());
         workspace.getDesignRenderer().getChildren().add(newItem);
-        
 
 //        workspace.getWorkspace().getChildren().add(newItem);
         System.out.println("initnew item debug" + workspace.getWorkspace().getChildren().size());
@@ -266,38 +272,44 @@ public class DataManager implements AppDataComponent {
 
     }
 
-//    public void linkLines() {
-//        ComboBox cb =  ((Workspace)app.getWorkspaceComponent()).getParentComboBox();
-//        Pane p =   ((Workspace)app.getWorkspaceComponent()).getDesignRenderer();
-//        for(Item i : p.getChildren())
-//        
-//    }
-    public void buildLine(double startX, double startY) {
-        Line line = new Line();
-        line.setStartX(startX);
-        line.setStartY(startY);
-        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
-    }
-
-    public void populateComboBox() {
+    public void linkLines() {
         ComboBox cb = ((Workspace) app.getWorkspaceComponent()).getParentComboBox();
         Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
-        if (p.getChildren() != null) {
-            for (Node i : p.getChildren()) {
-                Item item = (Item) i;
-                cb.getItems().add(item.getName());
+        if (this.getSelectedItem() instanceof JClass) {
+//            if (this.getSelectedItem().getName().equals(cb.getValue())) {
+            for (Node n : p.getChildren()) {
+                Item i = (Item) n;
+                if (i.getName().equals(cb.getValue())) {
+                    JClass jC = (JClass) this.getSelectedItem();
+                    jC.addParent(i);
+                    buildLine(i);
+
+                }
             }
         }
     }
-    
+
+    public void buildLine(Item i) {
+        Line line = new BoundLine(i.layoutXProperty() ,i.layoutYProperty(), 
+                this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
+//        DoubleProperty sX = new SimpleDoubleProperty(startX);
+//        DoubleProperty sY = new SimpleDoubleProperty(startY);
+//
+//        line.startXProperty().bind(sX);
+//        line.startYProperty().bind(sY);
+//        line.setStartX(startX);
+//        line.setStartY(startY);
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
+    }
+
     public void updateParentNames() {
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
         workspace.getParentComboBox().getItems().clear();
-        for(Node n : workspace.getDesignRenderer().getChildren()) {
+        for (Node n : workspace.getDesignRenderer().getChildren()) {
             Item i = (Item) n;
             workspace.getParentComboBox().getItems().add(i.getName());
         }
-        
+
     }
 
     public void create() {
@@ -535,6 +547,21 @@ public class DataManager implements AppDataComponent {
         this.addClass(pauseHandler);
         this.addClass(startHandlerHandler);
 
+    }
+
+    class BoundLine extends Line {
+
+        BoundLine(DoubleProperty startX, DoubleProperty startY, DoubleProperty endX, DoubleProperty endY) {
+            startXProperty().bind(startX);
+            startYProperty().bind(startY);
+            endXProperty().bind(endX);
+            endYProperty().bind(endY);
+            setStrokeWidth(2);
+            setStroke(Color.GRAY.deriveColor(0, 1, 1, 0.5));
+            setStrokeLineCap(StrokeLineCap.BUTT);
+            getStrokeDashArray().setAll(10.0, 5.0);
+            setMouseTransparent(true);
+        }
     }
 
 }
