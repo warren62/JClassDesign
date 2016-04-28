@@ -7,6 +7,7 @@ package jc.data;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -150,6 +151,11 @@ public class Item extends VBox implements Draggable {
 //                    data.unhighlightItem((Class) n);
 //                } 
 //            }
+               for(Node n : workspace.getDesignRenderer().getChildren()) {
+                   Item i = (Item) n;
+                   data.unhighlightItem(i);
+               }
+            data.highlightItem(this);
             data.setSelectedItem(this);
 //            data.highlightItem(this);
 //            workspace.setClassNameText(data.getSelectedClass().getName());
