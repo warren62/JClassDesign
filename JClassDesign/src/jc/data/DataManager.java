@@ -21,7 +21,10 @@ import javafx.scene.effect.Effect;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Polyline;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Scale;
 import static jc.data.JClassDesignerState.SELECTING_CLASS;
@@ -286,6 +289,7 @@ public class DataManager implements AppDataComponent {
                     JClass jC = (JClass) this.getSelectedItem();
                     jC.addParent(i);
                     buildLine(i);
+                    buildArrow(i.layoutXProperty(), i.layoutYProperty());
 
                 }
             }
@@ -304,6 +308,53 @@ public class DataManager implements AppDataComponent {
 //        line.setStartY(startY);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
     }
+    
+    public void buildArrow(DoubleProperty x, DoubleProperty y) {
+//        Circle point = new Circle(.5);
+//        point.centerXProperty().bind(x);
+//        point.centerYProperty().bind(y);
+//        DoubleProperty topBottomX = new SimpleDoubleProperty( + 50);
+//        DoubleProperty topBottomY = new SimpleDoubleProperty(point.centerYProperty().get() + 50);
+//        DoubleProperty bottomX = new SimpleDoubleProperty(point.centerXProperty().get() - 50);
+//        DoubleProperty bottomY = new SimpleDoubleProperty(point.centerYProperty().get() - 50);
+
+        Polygon arrow = new Polygon();
+                arrow.getPoints().addAll(new Double[]{
+                            0.0, 5.0,
+                            -5.0, -5.0,
+                            5.0, -5.0});
+//        pl.getPoints().add(point.getCenterY())
+        arrow.layoutXProperty().bind(x);
+        arrow.layoutYProperty().bind(y);
+       
+        
+        
+        
+//        Line top = new BoundLine(point.centerXProperty(), point.centerYProperty(), topBottomX, topBottomY);
+//        Line bottom = new BoundLine(point.centerXProperty(), point.centerYProperty(), bottomX, bottomY);
+
+         Line top = new Line();
+         
+//         DoubleProperty topCenterX = new SimpleDoubleProperty();
+//         DoubleProperty topCenterY = new SimpleDoubleProperty(point.centerYProperty().get());
+         top.startXProperty().bind(x);
+         top.startYProperty().bind(y);
+         DoubleProperty topBottomX = new SimpleDoubleProperty(top.startXProperty().get() + 50);
+         DoubleProperty topBottomY = new SimpleDoubleProperty(top.startYProperty().get() + 50);
+         top.endXProperty().bind(top.startXProperty().subtract(15));
+         top.endYProperty().bind(top.startYProperty().subtract(15));
+
+         Line bottom = new Line();
+         bottom.startXProperty().bind(x);
+         bottom.startYProperty().bind(y);
+//         DoubleProperty bottomX = new SimpleDoubleProperty(top.startXProperty().get() - 50);
+//         DoubleProperty bottomY = new SimpleDoubleProperty(top.startYProperty().get() - 50);
+         bottom.endXProperty().bind(bottom.startXProperty().add(15));
+         bottom.endYProperty().bind(bottom.startYProperty().add(15));
+         
+//        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(bottom, top);
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(arrow);
+    }
 
     public void updateParentNames() {
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
@@ -313,6 +364,23 @@ public class DataManager implements AppDataComponent {
             workspace.getParentComboBox().getItems().add(i.getName());
         }
 
+    }
+    
+    public void resize(Item i) {
+        Circle c1 = new Circle(10);
+        c1.centerXProperty().bind(i.layoutXProperty());
+        c1.centerYProperty().bind(i.layoutYProperty());
+        c1.setOnMouseDragged(e -> {
+            i.setPrefHeight(e.getSceneY());
+            i.setPrefWidth(e.getSceneX());
+        });
+        
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(c1);
+        
+        c1.setOnMouseDragReleased(e -> {
+            ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(c1);
+        });
+        
     }
 
     public void create() {

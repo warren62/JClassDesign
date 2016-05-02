@@ -151,11 +151,11 @@ public class Item extends VBox implements Draggable {
 //                    data.unhighlightItem((Class) n);
 //                } 
 //            }
-               for(Node n : workspace.getDesignRenderer().getChildren()) {
-                   Item i = (Item) n;
-                   data.unhighlightItem(i);
-               }
-            data.highlightItem(this);
+//               for(Node n : workspace.getDesignRenderer().getChildren()) {
+//                   Item i = (Item) n;
+//                   data.unhighlightItem(i);
+//               }
+//            data.highlightItem(this);
             data.setSelectedItem(this);
 //            data.highlightItem(this);
 //            workspace.setClassNameText(data.getSelectedClass().getName());

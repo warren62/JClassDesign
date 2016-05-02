@@ -215,7 +215,7 @@ public class Workspace extends AppWorkspaceComponent {
         saveBtn = gui.initChildButton(fileToolBar, SAVE_ICON.toString(), SAVE_TOOLTIP.toString(), true);
         saveBtn.setMaxWidth(Double.MAX_VALUE);
         fileToolBar.getChildren().add(exitBtn);
-        photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), true);
+        photoBtn = gui.initChildButton(fileToolBar, PHOTO_ICON.toString(), PHOTO_TOOLTIP.toString(), false);
         photoBtn.setMaxWidth(Double.MAX_VALUE);
         codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), false);
         codeBtn.setMaxWidth(Double.MAX_VALUE);
@@ -226,7 +226,7 @@ public class Workspace extends AppWorkspaceComponent {
 //        newBtn = gui.initChildButton(editToolBar, NEW_ICON.toString(), SELECT_TOOLTIP.toString(), false);
         selectBtn = gui.initChildButton(editToolBar, SELECT_ICON.toString(), SELECT_TOOLTIP.toString(), false);
         selectBtn.setMaxWidth(Double.MAX_VALUE);
-        resizeBtn = gui.initChildButton(editToolBar, RESIZE_ICON.toString(), RESIZE_TOOLTIP.toString(), true);
+        resizeBtn = gui.initChildButton(editToolBar, RESIZE_ICON.toString(), RESIZE_TOOLTIP.toString(), false);
         resizeBtn.setMaxWidth(Double.MAX_VALUE);
         addClassBtn = gui.initChildButton(editToolBar, ADD_CLASS_ICON.toString(), ADD_CLASS_TOOLTIP.toString(), false);
         addClassBtn.setMaxWidth(Double.MAX_VALUE);
@@ -381,6 +381,10 @@ public class Workspace extends AppWorkspaceComponent {
             editToolBarController.handleZoomIn();
         });
         
+        resizeBtn.setOnAction(e -> {
+            editToolBarController.handleResize();
+        });
+        
         codeBtn.setOnAction(e -> {
             FileManager fileManager = (FileManager) app.getFileComponent();
             
@@ -394,6 +398,10 @@ public class Workspace extends AppWorkspaceComponent {
             } catch (IOException ex) {
                 Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
+        });
+        
+        photoBtn.setOnAction(e -> {
+            editToolBarController.handleSnapshot();
         });
         
         classNameField.textProperty().addListener((a,e,o) -> {

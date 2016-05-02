@@ -18,7 +18,7 @@ public class Method {
     
     public ArrayList<String> args = new ArrayList();
     private String access;
-    private String accessUML;
+    private String accessUML = "";
     public String name = "";
     public String type = "";
     public final String FINAL_STRING = "static";

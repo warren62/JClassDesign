@@ -5,8 +5,18 @@
  */
 package jc.controller;
 
+import java.io.File;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javafx.embed.swing.SwingFXUtils;
 import javafx.scene.Cursor;
 import javafx.scene.Scene;
+import javafx.scene.SnapshotParameters;
+import javafx.scene.image.WritableImage;
+import javafx.scene.layout.Pane;
+import javafx.stage.FileChooser;
+import javax.imageio.ImageIO;
 import jc.data.JClass;
 import jc.data.DataManager;
 import jc.data.Item;
@@ -76,7 +86,37 @@ public class EditToolbarController {
     }
     
     public void handleResize() {
+        dataManager.resize(dataManager.getSelectedItem());
+    }
+    
+    public void handleSnapshot() {
         
+        Workspace workspace = (Workspace)app.getWorkspaceComponent();
+        Pane pane = workspace.getDesignRenderer();
+        WritableImage image = pane.snapshot(new SnapshotParameters(), null);
+
+        File fileWork = new File("./snapshots/");
+        if (!fileWork.exists()) {
+            fileWork.mkdir();
+        }
+
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setInitialDirectory(fileWork);
+        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter("PNG Files (.*png)", ".*png");
+        fileChooser.getExtensionFilters().add(extFilter);
+
+        File file = fileChooser.showSaveDialog(app.getGUI().getWindow());
+        String path = file.getPath() + ".png";
+        System.out.println(path);
+        file = new File(path);
+//       File file = new File("pane.png");
+
+        try {
+            ImageIO.write(SwingFXUtils.fromFXImage(image, null), "png", file);
+        } catch (IOException ex) {
+            Logger.getLogger(EditToolbarController.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
     }
     
     public void handleUndo() {
