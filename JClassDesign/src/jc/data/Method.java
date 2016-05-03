@@ -157,7 +157,11 @@ public class Method {
         Method m = new Method();
         m.setA(this.isA());
         m.setAccess(this.getAccess());
-        m.setArgs(this.getArgs());
+        ArrayList<String> l = new ArrayList();
+        for(String s : this.getArgs()) {
+            l.add(s);
+        }
+        m.setArgs(l);
         m.setF(this.isF());
         m.setName(this.getName());
         m.setS(this.isS());

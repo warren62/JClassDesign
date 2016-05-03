@@ -48,7 +48,7 @@ public class JClassDesignerMemento {
 //        System.out.println("*******Size of workspace3 getSavedState : " + testWorkspace3.getDesignRenderer().getChildren().size());
 //        return new WorkspaceData(undoStack.pop().workspace);
 //        System.out.println("*******Size of stack : " + undoStack.size());
-        undoStackItems.pop();
+//        undoStackItems.pop();
         return undoStackItems.pop();
     }
 
@@ -66,7 +66,16 @@ public class JClassDesignerMemento {
         ArrayList<Item> list = new ArrayList();
         for (Node n : items) {
             Item i = (Item) n;
-            list.add(i);
+            if(i instanceof JClass) {
+                JClass j = (JClass) i;
+                JClass copy = j.deepCopy();
+                list.add(copy);
+            } else {
+                Interface in = (Interface) i;
+                Interface copy = in.deepCopy();
+                list.add(copy);
+            }
+            
         }
         undoStackItems.add(list);
     }

@@ -226,6 +226,12 @@ public class Item extends VBox implements Draggable {
         nameLbl.setText(name);
     }
     
-    
+//    public Item deepCopy() {
+////        Item i = new Item();
+//        if(this instanceof JClass) {
+//             JClass j = this;
+//            
+//        }
+//    }
     
 }

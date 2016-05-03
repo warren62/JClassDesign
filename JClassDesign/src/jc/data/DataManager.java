@@ -256,6 +256,7 @@ public class DataManager implements AppDataComponent {
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
         workspace.getDesignRenderer().getChildren().add(i);
         workspace.getParentComboBox().getItems().add(i.getName());
+        i.initHandler(this, workspace);
 //        Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
 //        memento.add(new WorkspaceData(workspace));
@@ -446,8 +447,8 @@ public class DataManager implements AppDataComponent {
         ArrayList<Item> list = memento.getSavedState();
         System.out.println("*******Memento get children in undo method : " + list.size());
         for(Item i : list) {
-//            addToWorkspace(i);
-            workspace.getDesignRenderer().getChildren().add(i);
+            addToWorkspace(i);
+//            workspace.getDesignRenderer().getChildren().add(i);
         }
 
     }

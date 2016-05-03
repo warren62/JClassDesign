@@ -408,6 +408,11 @@ public class Workspace extends AppWorkspaceComponent {
             editToolBarController.handleSnapshot();
         });
         
+        plusVarBtn.setOnAction(e -> {
+            VariableDialog vd = new VariableDialog(gui.getWindow());
+            vd.showDialog();
+        });
+        
         classNameField.textProperty().addListener((a,e,o) -> {
             editToolBarController.handleClassName(o);
             System.out.println(packageField.getText());

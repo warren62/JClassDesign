@@ -254,7 +254,7 @@ public class JClass extends Item {
         methods.add(method);
     }
 
-    public ArrayList getMethods() {
+    public ArrayList<Method> getMethods() {
         return methods;
     }
 
@@ -271,7 +271,7 @@ public class JClass extends Item {
         variables.add(variable);
     }
 
-    public ArrayList getVariables() {
+    public ArrayList<Variable> getVariables() {
         return variables;
     }
 
@@ -488,9 +488,33 @@ public class JClass extends Item {
         } else {
             this.setHasSuperclass(true);
             parentClassName = parent.getName();
-            this.parent = parent;
+            this.parent = (JClass) parent;
         }
 //        this.parent = parent;
+    }
+    
+    public JClass deepCopy() {
+        JClass j = new JClass();
+        j.setAccess(this.getAccess());
+        j.setA(this.isA());
+        j.setHasSuperclass(this.isHasSuperclass());
+        j.setLayoutX(this.getLayoutX());
+        j.setLayoutY(this.getLayoutY());
+        
+//        j.addParent(this.getParentItem().deepCopy());
+//        ArrayList<Method> m = new ArrayList();
+        for(Method me : this.getMethods()) {
+            Method met = me.deepCopy();
+            j.addMethod(met);
+        }
+        
+        for(Variable me : this.getVariables()) {
+            Variable met = me.deepCopy();
+            j.addVariable(met);
+        }
+        
+        return j;
+        
     }
 
 //    public String getName() {

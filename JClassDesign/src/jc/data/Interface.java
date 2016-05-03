@@ -159,7 +159,7 @@ public class Interface extends Item {
         methods.add(method);
     }
 
-    public ArrayList getMethods() {
+    public ArrayList<Method> getMethods() {
         return methods;
     }
     
@@ -269,6 +269,19 @@ public class Interface extends Item {
         }
         
         return s;
+    }
+    
+    public Interface deepCopy() {
+        Interface i = new Interface();
+        i.setAccess(this.getAccess());
+        i.setName(this.getName());
+        for(Method m : this.getMethods()) {
+            Method me = m.deepCopy();
+            i.addMethod(me);
+        }
+        i.setLayoutX(this.getLayoutX());
+        i.setLayoutY(this.getLayoutY());
+        return i;
     }
     
     
