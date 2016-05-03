@@ -28,9 +28,9 @@ public class Interface extends Item {
 
     ArrayList<Method> methods = new ArrayList();
 
-    public Interface(AppTemplate initApp) {
+    public Interface() {
         
-        super(initApp);
+//        super(initApp);
         orgSceneX = 0;
         orgSceneY = 0;
 
@@ -270,6 +270,8 @@ public class Interface extends Item {
         
         return s;
     }
+    
+    
     
 //    public String getName() {
 //        return name.getText();

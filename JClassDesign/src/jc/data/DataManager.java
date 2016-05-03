@@ -7,6 +7,8 @@ package jc.data;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javafx.beans.property.DoubleProperty;
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.collections.ObservableList;
@@ -54,6 +56,8 @@ public class DataManager implements AppDataComponent {
     Group g = new Group();
 
     Scale scaleTransform;
+
+    JClassDesignerMemento memento = new JClassDesignerMemento();
 
     // USE THIS WHEN THE SHAPE IS SELECTED
     Effect highlightedEffect;
@@ -117,19 +121,34 @@ public class DataManager implements AppDataComponent {
 
     public void startNewClass(int x, int y) {
         System.out.println("start new item");
-        JClass newItem1 = new JClass(app);
+        JClass newItem1 = new JClass();
         newItem1.start(x, y);
         newItem = newItem1;
         initNewItem();
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        System.out.println("*******memento add workspace in start new class for memento: ");
+        System.out.println("*******memento add workspace in start new class : " + workspace == null);
+        System.out.println("*******memento add workspace in start new class for app : " + app == null);
+//        memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
+
+//        memento.add(deepCopyDataManager());
+//        memento = new JClassDesignerMemento(app.getGUI().getAppPane());
         System.out.println("start item after");
     }
 
     public void startNewInterface(int x, int y) {
         System.out.println("start new item");
-        Interface newItem1 = new Interface(app);
+        Interface newItem1 = new Interface();
         newItem1.start(x, y);
         newItem = newItem1;
         initNewItem();
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//       memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
+
+//       memento.add(deepCopyDataManager());
+//        memento = new JClassDesignerMemento(app.getGUI().getAppPane());
         System.out.println("start item after");
     }
 
@@ -142,6 +161,7 @@ public class DataManager implements AppDataComponent {
 
         // USE THE CURRENT SETTINGS FOR THIS NEW SHAPE
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        newItem.initHandler(this, workspace);
 
         // ADD THE SHAPE TO THE CANVAS
         System.out.println(items.toString() + "//" + items.size());
@@ -155,6 +175,9 @@ public class DataManager implements AppDataComponent {
         workspace.getParentComboBox().getItems().add(newItem.getName());
         workspace.getDesignRenderer().getChildren().add(newItem);
 
+//        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento = new JClassDesignerMemento(workspace);
+//        memento.add(workspace);
 //        workspace.getWorkspace().getChildren().add(newItem);
         System.out.println("initnew item debug" + workspace.getWorkspace().getChildren().size());
 
@@ -219,7 +242,12 @@ public class DataManager implements AppDataComponent {
         items.remove(itemToRemove);
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
         workspace.getDesignRenderer().getChildren().remove(itemToRemove);
-        
+//        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento = new JClassDesignerMemento(workspace);
+//        memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
+
+//        memento.add(deepCopyDataManager());
     }
 
     public void addToWorkspace(Item i) {
@@ -228,6 +256,12 @@ public class DataManager implements AppDataComponent {
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
         workspace.getDesignRenderer().getChildren().add(i);
         workspace.getParentComboBox().getItems().add(i.getName());
+//        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento = new JClassDesignerMemento(workspace);
+//        memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
+
+//        memento.add(deepCopyDataManager());
 //        ((Workspace)app.getWorkspaceComponent()).getGroup().getChildren().add(i);
     }
 
@@ -294,10 +328,16 @@ public class DataManager implements AppDataComponent {
                 }
             }
         }
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento = new JClassDesignerMemento(workspace);
+//        memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
+
+//        memento.add(deepCopyDataManager());
     }
 
     public void buildLine(Item i) {
-        Line line = new BoundLine(i.layoutXProperty() ,i.layoutYProperty(), 
+        Line line = new BoundLine(i.layoutXProperty(), i.layoutYProperty(),
                 this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
 //        DoubleProperty sX = new SimpleDoubleProperty(startX);
 //        DoubleProperty sY = new SimpleDoubleProperty(startY);
@@ -308,7 +348,7 @@ public class DataManager implements AppDataComponent {
 //        line.setStartY(startY);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
     }
-    
+
     public void buildArrow(DoubleProperty x, DoubleProperty y) {
 //        Circle point = new Circle(.5);
 //        point.centerXProperty().bind(x);
@@ -319,39 +359,35 @@ public class DataManager implements AppDataComponent {
 //        DoubleProperty bottomY = new SimpleDoubleProperty(point.centerYProperty().get() - 50);
 
         Polygon arrow = new Polygon();
-                arrow.getPoints().addAll(new Double[]{
-                            0.0, 5.0,
-                            -5.0, -5.0,
-                            5.0, -5.0});
+        arrow.getPoints().addAll(new Double[]{
+            0.0, 5.0,
+            -5.0, -5.0,
+            5.0, -5.0});
 //        pl.getPoints().add(point.getCenterY())
         arrow.layoutXProperty().bind(x);
         arrow.layoutYProperty().bind(y);
-       
-        
-        
-        
+
 //        Line top = new BoundLine(point.centerXProperty(), point.centerYProperty(), topBottomX, topBottomY);
 //        Line bottom = new BoundLine(point.centerXProperty(), point.centerYProperty(), bottomX, bottomY);
+        Line top = new Line();
 
-         Line top = new Line();
-         
 //         DoubleProperty topCenterX = new SimpleDoubleProperty();
 //         DoubleProperty topCenterY = new SimpleDoubleProperty(point.centerYProperty().get());
-         top.startXProperty().bind(x);
-         top.startYProperty().bind(y);
-         DoubleProperty topBottomX = new SimpleDoubleProperty(top.startXProperty().get() + 50);
-         DoubleProperty topBottomY = new SimpleDoubleProperty(top.startYProperty().get() + 50);
-         top.endXProperty().bind(top.startXProperty().subtract(15));
-         top.endYProperty().bind(top.startYProperty().subtract(15));
+        top.startXProperty().bind(x);
+        top.startYProperty().bind(y);
+        DoubleProperty topBottomX = new SimpleDoubleProperty(top.startXProperty().get() + 50);
+        DoubleProperty topBottomY = new SimpleDoubleProperty(top.startYProperty().get() + 50);
+        top.endXProperty().bind(top.startXProperty().subtract(15));
+        top.endYProperty().bind(top.startYProperty().subtract(15));
 
-         Line bottom = new Line();
-         bottom.startXProperty().bind(x);
-         bottom.startYProperty().bind(y);
+        Line bottom = new Line();
+        bottom.startXProperty().bind(x);
+        bottom.startYProperty().bind(y);
 //         DoubleProperty bottomX = new SimpleDoubleProperty(top.startXProperty().get() - 50);
 //         DoubleProperty bottomY = new SimpleDoubleProperty(top.startYProperty().get() - 50);
-         bottom.endXProperty().bind(bottom.startXProperty().add(15));
-         bottom.endYProperty().bind(bottom.startYProperty().add(15));
-         
+        bottom.endXProperty().bind(bottom.startXProperty().add(15));
+        bottom.endYProperty().bind(bottom.startYProperty().add(15));
+
 //        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(bottom, top);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(arrow);
     }
@@ -363,9 +399,14 @@ public class DataManager implements AppDataComponent {
             Item i = (Item) n;
             workspace.getParentComboBox().getItems().add(i.getName());
         }
+//        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento = new JClassDesignerMemento(workspace);
+//        memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
 
+//        memento.add(deepCopyDataManager());
     }
-    
+
     public void resize(Item i) {
         Circle c1 = new Circle(10);
         c1.centerXProperty().bind(i.layoutXProperty());
@@ -374,17 +415,57 @@ public class DataManager implements AppDataComponent {
             i.setPrefHeight(e.getSceneY());
             i.setPrefWidth(e.getSceneX());
         });
-        
+
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(c1);
-        
+
         c1.setOnMouseDragReleased(e -> {
             ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(c1);
         });
-        
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento = new JClassDesignerMemento(workspace);
+//        memento.add(new WorkspaceData(workspace));
+        memento.add(workspace.getDesignRenderer().getChildren());
+//        memento.add(deepCopyDataManager());
+
+    }
+
+    public void undo() {
+
+//        app.getWorkspaceComponent().setWorkspace(memento.getSavedState().getWorkspace());
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        workspace.getDesignRenderer().getChildren().clear();
+//        WorkspaceData workspaceMemento = memento.getSavedState();
+//        System.out.println("*******undo method test workspacememento : " + memento.getSavedState().getDesignRenderer().getChildren().size());
+//        workspace.setDesignRenderer(workspaceMemento.getDesignRenderer());
+//        System.out.println("*******Memento get children in undo method : " + workspaceMemento.getDesignRenderer().getChildren().size());
+//        for(Node n : workspaceMemento.getDesignRenderer().getChildren()) {
+//            Item i = (Item) n;
+//            addToWorkspace(i);
+//        }
+//        System.out.println("********** Workspace set in undo : ");
+        ArrayList<Item> list = memento.getSavedState();
+        System.out.println("*******Memento get children in undo method : " + list.size());
+        for(Item i : list) {
+//            addToWorkspace(i);
+            workspace.getDesignRenderer().getChildren().add(i);
+        }
+
+    }
+
+    public DataManager deepCopyDataManager() {
+        DataManager w = this;
+        DataManager r = null;
+        try {
+            r = (DataManager) w.clone();
+        } catch (CloneNotSupportedException ex) {
+            Logger.getLogger(DataManager.class.getName()).log(Level.SEVERE, null, ex);
+        }
+
+        return r;
     }
 
     public void create() {
-        JClass threadExample = new JClass(app);
+        JClass threadExample = new JClass();
         threadExample.setName("ThreadExample");
         Variable START_TEXT = new Variable();
         START_TEXT.setName("START_TEXT");
@@ -519,7 +600,7 @@ public class DataManager implements AppDataComponent {
         threadExample.addMethod(initThreads);
         threadExample.addMethod(main);
 
-        JClass counterTaskClass = new JClass(app);
+        JClass counterTaskClass = new JClass();
         counterTaskClass.setName("CounterThread");
         Variable appp = new Variable();
         appp.setName("app");
@@ -543,7 +624,7 @@ public class DataManager implements AppDataComponent {
         counterTaskClass.addMethod(counterTaskMethod);
         counterTaskClass.addMethod(call);
 
-        JClass dateTaskClass = new JClass(app);
+        JClass dateTaskClass = new JClass();
         dateTaskClass.setName("DateTask");
         Variable apppp = new Variable();
         appp.setName("app");
@@ -567,7 +648,7 @@ public class DataManager implements AppDataComponent {
         dateTaskClass.addMethod(dateTaskMethod);
         dateTaskClass.addMethod(callMethod);
 
-        JClass pauseHandler = new JClass(app);
+        JClass pauseHandler = new JClass();
         pauseHandler.setName("PauseHandler");
         Variable appPauseHandler = new Variable();
         appPauseHandler.setType("ThreadExample");
@@ -587,7 +668,7 @@ public class DataManager implements AppDataComponent {
         pauseHandler.addMethod(pauseHandlerMethod);
         pauseHandler.addMethod(handlerPause);
 
-        JClass startHandlerHandler = new JClass(app);
+        JClass startHandlerHandler = new JClass();
         startHandlerHandler.setName("StartHandler");
         Variable appStartHandler = new Variable();
         appStartHandler.setName("app");

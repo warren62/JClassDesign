@@ -100,4 +100,14 @@ public class Variable {
     public String toUml() {
         return accessUML + " " + name + " : " + type;
     }
+    
+    public Variable deepCopy() {
+        Variable v = new Variable();
+        v.setAccess(this.getAccess());
+        v.setF(this.isF());
+        v.setName(this.getName());
+        v.setS(this.isS());
+        v.setType(this.getType());
+        return v;
+    }
 }

@@ -195,7 +195,7 @@ public class FileManager implements AppFileComponent {
 
         if (type.equalsIgnoreCase("class")) {
 //            i = new JClass(app);
-            JClass c = new JClass(app);
+            JClass c = new JClass();
             String name = jsonItem.getString("name");
             String packageName = jsonItem.getString("package_name");
             ArrayList<Method> methods = new ArrayList();
@@ -261,7 +261,7 @@ public class FileManager implements AppFileComponent {
 
         } else {
 //            i = new Interface(app);
-            Interface in = new Interface(app);
+            Interface in = new Interface();
             String name = jsonItem.getString("name");
             String packageName = jsonItem.getString("package_name");
 
@@ -380,7 +380,7 @@ public class FileManager implements AppFileComponent {
 
         } else {
 //            i = new Interface(app);
-            Interface in = new Interface(app);
+            Interface in = new Interface();
             String name = jsonItem.getString("name");
             String packageName = jsonItem.getString("package_name");
 

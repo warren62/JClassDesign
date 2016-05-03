@@ -234,7 +234,7 @@ public class Workspace extends AppWorkspaceComponent {
         addInterfaceBtn.setMaxWidth(Double.MAX_VALUE);
         removeBtn = gui.initChildButton(editToolBar, REMOVE_ICON.toString(), REMOVE_TOOLTIP.toString(), false);
         removeBtn.setMaxWidth(Double.MAX_VALUE);
-        undoBtn = gui.initChildButton(editToolBar, UNDO_ICON.toString(), UNDO_TOOLTIP.toString(), true);
+        undoBtn = gui.initChildButton(editToolBar, UNDO_ICON.toString(), UNDO_TOOLTIP.toString(), false);
         undoBtn.setMaxWidth(Double.MAX_VALUE);
         redoBtn = gui.initChildButton(editToolBar, REDO_ICON.toString(), REDO_TOOLTIP.toString(), true);
         redoBtn.setMaxWidth(Double.MAX_VALUE);
@@ -385,6 +385,10 @@ public class Workspace extends AppWorkspaceComponent {
             editToolBarController.handleResize();
         });
         
+        undoBtn.setOnAction(e -> {
+            editToolBarController.handleUndo();
+        });
+        
         codeBtn.setOnAction(e -> {
             FileManager fileManager = (FileManager) app.getFileComponent();
             
@@ -480,6 +484,12 @@ public class Workspace extends AppWorkspaceComponent {
     public Pane getDesignRenderer() {
         return designRenderer;
     }
+
+    public void setDesignRenderer(Pane designRenderer) {
+        this.designRenderer = designRenderer;
+    }
+    
+    
     
     public AppTemplate getApp() {
         return app;

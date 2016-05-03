@@ -43,8 +43,8 @@ public class JClass extends Item {
     ArrayList<Interface> parentInterfaces = new ArrayList();
     String parentClassName;
 
-    public JClass(AppTemplate initApp) {
-        super(initApp);
+    public JClass() {
+//        super(initApp);
 //        app = initApp;
         orgSceneX = 0;
         orgSceneY = 0;
@@ -134,9 +134,9 @@ public class JClass extends Item {
 //        this.setWidth(100);
     }
     
-    public JClass() {
-        
-    }
+//    public JClass() {
+//        
+//    }
 
     public ArrayList<Interface> getParentInterfaces() {
         return parentInterfaces;

@@ -120,7 +120,7 @@ public class EditToolbarController {
     }
     
     public void handleUndo() {
-        
+        dataManager.undo();
     }
     
     public void handleRedo() {

@@ -39,16 +39,16 @@ public class Item extends VBox implements Draggable {
 
     
     
-    public Item (AppTemplate initApp) {
+    public Item () {
         
-        app = initApp;
-        initHandler();
+//        app = initApp;
+//        initHandler();
 //        nameLbl = new Label(name);
     }
     
-    public Item() {
-        
-    }
+//    public Item() {
+//        
+//    }
     
 //    public String getNameString() {
 //        return nameString;
@@ -118,7 +118,7 @@ public class Item extends VBox implements Draggable {
         
         setLayoutX(x);
         setLayoutY(y);
-        DataManager data = (DataManager) app.getDataComponent();
+//        DataManager data = (DataManager) app.getDataComponent();
 //        data.setSelectedClass(this);
 //        data.highlightItem(this);
         System.out.println(this.getPrefHeight() + "//" + this.getPrefWidth());
@@ -129,7 +129,7 @@ public class Item extends VBox implements Draggable {
         relocate(x, y);
     }
     
-     public void initHandler() {
+     public void initHandler(DataManager data, Workspace workspace) {
          
           this.setOnMousePressed(e -> {
             
@@ -143,8 +143,8 @@ public class Item extends VBox implements Draggable {
             
 //            orgTranslateY = ((Item)(e.getSource())).getTranslateY();
 //            orgTranslateY = ((Item)(e.getSource())).getTranslateY();
-            DataManager data = (DataManager) app.getDataComponent();
-            Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//            DataManager data = (DataManager) app.getDataComponent();
+//            Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //            ObservableList<Node> list = workspace.getDesignRenderer().getChildren();
 //            for (Node n : list) {
 //                if (!n.equals(data.getSelectedClass())) {
@@ -180,7 +180,7 @@ public class Item extends VBox implements Draggable {
 //            double offsetY = e.getSceneY() - orgSceneY;
 //            double newTranslateX = orgTranslateX + offsetX;
 //            double newTranslateY = orgTranslateY + offsetY;
-            DataManager data = (DataManager) app.getDataComponent();
+//            DataManager data = (DataManager) app.getDataComponent();
             
 //            drag((int)e.getX(), (int)e.getY());
 
@@ -225,5 +225,7 @@ public class Item extends VBox implements Draggable {
     public void updateNameLabel() {
         nameLbl.setText(name);
     }
+    
+    
     
 }

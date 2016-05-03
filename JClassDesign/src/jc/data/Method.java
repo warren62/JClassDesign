@@ -152,5 +152,17 @@ public class Method {
     public String toUml() {
         return accessUML + " " + name + " : " + type;
     }
+    
+    public Method deepCopy() {
+        Method m = new Method();
+        m.setA(this.isA());
+        m.setAccess(this.getAccess());
+        m.setArgs(this.getArgs());
+        m.setF(this.isF());
+        m.setName(this.getName());
+        m.setS(this.isS());
+        m.setType(this.getType());
+        return m;
+    }
 
 }
