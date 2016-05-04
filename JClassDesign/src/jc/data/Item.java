@@ -7,6 +7,8 @@ package jc.data;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
@@ -162,6 +164,21 @@ public class Item extends VBox implements Draggable {
 //            workspace.setPackageNameText(data.getSelectedClass().getPackageName());
             workspace.setClassNameText(this.getName());
             workspace.setPackageNameText(this.getPackageName());
+            if(this instanceof JClass) {
+                JClass j = (JClass) this;
+                ObservableList<Method> ol = FXCollections.observableArrayList(((JClass) this).getMethods());
+//                workspace.getMethodTable().getItems().clear();
+                workspace.getMethodTable().setItems(ol);
+                
+                ObservableList<Variable> olv = FXCollections.observableArrayList(((JClass) this).getVariables());
+//                workspace.getMethodTable().getItems().clear();
+                workspace.getVariableTable().setItems(olv);
+            }else if(this instanceof Interface) {
+                Interface j = (Interface) this;
+                ObservableList<Method> ol = FXCollections.observableArrayList(((Interface) this).getMethods());
+                workspace.getMethodTable().setItems(ol);
+            }
+            
         });
 
         this.setOnMouseDragged(e -> {

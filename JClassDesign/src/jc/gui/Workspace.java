@@ -80,7 +80,7 @@ public class Workspace extends AppWorkspaceComponent {
 
     // IT KNOWS THE GUI IT IS PLACED INSIDE
     AppGUI gui;
-    
+
     Group g;
 
     HBox topToolBar;
@@ -122,11 +122,10 @@ public class Workspace extends AppWorkspaceComponent {
     Label parentLbl;
     Label variableLbl;
     Label methodLbl;
-    
 
     TextField classNameField;
     TextField packageField;
-    
+
     ComboBox parentComboBox;
 
     VBox gridControls;
@@ -136,20 +135,23 @@ public class Workspace extends AppWorkspaceComponent {
 
     TableView variableTable;
     TableView methodTable;
-    
+
     TableColumn varNameColumn = new TableColumn("Name");
     TableColumn varTypeColumn = new TableColumn("Type");
     TableColumn varStaticColumn = new TableColumn("Static");
     TableColumn varAccessColumn = new TableColumn("Access");
+    TableColumn varFinalColumn = new TableColumn("Final");
+    TableColumn varAbstractColumn = new TableColumn("Abstract");
 
     TableColumn methNameColumn = new TableColumn("Name");
-    TableColumn methReturnColumn = new TableColumn("Return");
+    TableColumn methTypeColumn = new TableColumn("Type");
     TableColumn methStaticColumn = new TableColumn("Static");
+    TableColumn methFinalColumn = new TableColumn("Final");
     TableColumn methAbstractColumn = new TableColumn("Abstract");
     TableColumn methAccessColumn = new TableColumn("Access");
     TableColumn methArg1Column = new TableColumn("Arg1");
     TableColumn methArg2Column = new TableColumn("Arg2");
-    
+
     Pane designRenderer;
     ScrollPane designRendererScroll;
     SplitPane splitPane;
@@ -158,7 +160,7 @@ public class Workspace extends AppWorkspaceComponent {
     DesignRendererController designRendererController;
     EditToolbarController editToolBarController;
     DataManager dataManager;
-    
+
     Text debugText;
 
     public Workspace(AppTemplate initApp) {
@@ -190,7 +192,6 @@ public class Workspace extends AppWorkspaceComponent {
 
         componentToolBar = new VBox();
 
-        
         plusVarBtn = new Button("+");
         plusVarBtn.setMaxWidth(Double.MAX_VALUE);
         minusVarBtn = new Button("-");
@@ -199,8 +200,7 @@ public class Workspace extends AppWorkspaceComponent {
         plusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         minusMethodBtn = new Button("-");
         minusMethodBtn.setMaxWidth(Double.MAX_VALUE);
-        
-        
+
         newBtn = gui.getNewButton();
         newBtn.setMaxWidth(Double.MAX_VALUE);
         exitBtn = gui.getExitButton();
@@ -209,9 +209,9 @@ public class Workspace extends AppWorkspaceComponent {
         saveAsBtn.setMaxWidth(Double.MAX_VALUE);
         loadBtn = gui.getLoadButton();
         loadBtn.setMaxWidth(Double.MAX_VALUE);
-        
+
         fileToolBar.getChildren().addAll(newBtn, loadBtn, saveAsBtn);
-        
+
         saveBtn = gui.initChildButton(fileToolBar, SAVE_ICON.toString(), SAVE_TOOLTIP.toString(), true);
         saveBtn.setMaxWidth(Double.MAX_VALUE);
         fileToolBar.getChildren().add(exitBtn);
@@ -219,9 +219,6 @@ public class Workspace extends AppWorkspaceComponent {
         photoBtn.setMaxWidth(Double.MAX_VALUE);
         codeBtn = gui.initChildButton(fileToolBar, CODE_ICON.toString(), CODE_TOOLTIP.toString(), false);
         codeBtn.setMaxWidth(Double.MAX_VALUE);
-        
-        
-        
 
 //        newBtn = gui.initChildButton(editToolBar, NEW_ICON.toString(), SELECT_TOOLTIP.toString(), false);
         selectBtn = gui.initChildButton(editToolBar, SELECT_ICON.toString(), SELECT_TOOLTIP.toString(), false);
@@ -251,8 +248,6 @@ public class Workspace extends AppWorkspaceComponent {
 
         viewToolBar.getChildren().add(gridControls);
 
-        
-
         topToolBar = new HBox();
         topToolBar.getChildren().addAll(fileToolBar, editToolBar, viewToolBar);
 
@@ -268,8 +263,6 @@ public class Workspace extends AppWorkspaceComponent {
         packageField = new TextField();
 
         parentComboBox = new ComboBox();
-        
-        
 
         classHBox.getChildren().addAll(classNameLbl, classNameField);
         classHBox.setAlignment(Pos.CENTER);
@@ -282,23 +275,39 @@ public class Workspace extends AppWorkspaceComponent {
         methodHBox.getChildren().addAll(methodLbl, plusMethodBtn, minusMethodBtn);
         methodHBox.setAlignment(Pos.CENTER);
 
+        varNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("name"));
+        varTypeColumn.setCellValueFactory(new PropertyValueFactory<String, String>("type"));
+        varStaticColumn.setCellValueFactory(new PropertyValueFactory<Boolean, String>("s"));
+        varAccessColumn.setCellValueFactory(new PropertyValueFactory<String, String>("access"));
+        varFinalColumn.setCellValueFactory(new PropertyValueFactory<Boolean, String>("f"));
+        varAbstractColumn.setCellValueFactory(new PropertyValueFactory<Boolean, String>("a"));
+
         variableTable = new TableView();
         variableTable.getColumns().add(varNameColumn);
 //        varNameColumn.setCellValueFactory(new PropertyValueFactory("nameProp"));
         variableTable.getColumns().add(varTypeColumn);
         variableTable.getColumns().add(varStaticColumn);
         variableTable.getColumns().add(varAccessColumn);
-        
+        variableTable.getColumns().add(varFinalColumn);
+        variableTable.getColumns().add(varAbstractColumn);
+
+        methNameColumn.setCellValueFactory(new PropertyValueFactory<String, String>("name"));
+        methTypeColumn.setCellValueFactory(new PropertyValueFactory<String, String>("type"));
+        methStaticColumn.setCellValueFactory(new PropertyValueFactory<Boolean, String>("s"));
+        methAccessColumn.setCellValueFactory(new PropertyValueFactory<String, String>("access"));
+        methFinalColumn.setCellValueFactory(new PropertyValueFactory<Boolean, String>("f"));
+        methAbstractColumn.setCellValueFactory(new PropertyValueFactory<Boolean, String>("a"));
+
         methodTable = new TableView();
         methodTable.getColumns().add(methNameColumn);
-        methodTable.getColumns().add(methReturnColumn);
+        methodTable.getColumns().add(methTypeColumn);
         methodTable.getColumns().add(methStaticColumn);
         methodTable.getColumns().add(methAbstractColumn);
+        methodTable.getColumns().add(methFinalColumn);
         methodTable.getColumns().add(methAccessColumn);
-        methodTable.getColumns().add(methArg1Column);
-        methodTable.getColumns().add(methArg2Column);
-        
-        
+//        methodTable.getColumns().add(methArg1Column);
+//        methodTable.getColumns().add(methArg2Column);
+
         ScrollPane varTableScroll = new ScrollPane();
         varTableScroll.setContent(variableTable);
         ScrollPane methTableScroll = new ScrollPane();
@@ -312,10 +321,9 @@ public class Workspace extends AppWorkspaceComponent {
         designRenderer.setStyle("-fx-background: black;");
         designRenderer.setMinSize(100, 100);
         designRenderer.setPrefSize(2500, 2500);
-        
+
 //        g = new Group();
 //        designRenderer.getChildren().add(g);
-
         designRendererScroll = new ScrollPane();
         designRendererScroll.setVvalue(.5);
         designRendererScroll.setHvalue(.5);
@@ -326,18 +334,14 @@ public class Workspace extends AppWorkspaceComponent {
         splitPane = new SplitPane();
         splitPane.getItems().addAll(designRendererScroll, componentToolBar);
         splitPane.setDividerPositions(.75);
-        
+
 //	debugText = new Text();
 //	designRenderer.getChildren().add(debugText);
 //	debugText.setX(100);
 //	debugText.setY(100);
-        
 //        variableTable.setItems(designRenderer.getChildren());
 //        methodTable.setItems(designRenderer.getChildren());
-
-
-        
-        DataManager data = (DataManager)app.getDataComponent();
+        DataManager data = (DataManager) app.getDataComponent();
 //	data.addClass(redoBtn);
 
         workspace = new BorderPane();
@@ -351,51 +355,50 @@ public class Workspace extends AppWorkspaceComponent {
 //        newBtn.setOnAction(e -> {
 //            designRenderer.getChildren().clear();
 //        });
-        
         editToolBarController = new EditToolbarController(app);
         addClassBtn.setOnAction(e -> {
-            System.out.println("add class handler" +  editToolBarController.toString());
+            System.out.println("add class handler" + editToolBarController.toString());
             editToolBarController.handleAddClass();
-            
+
         });
-        
+
         addInterfaceBtn.setOnAction(e -> {
-            System.out.println("add class handler" +  editToolBarController.toString());
+            System.out.println("add class handler" + editToolBarController.toString());
             editToolBarController.handleAddInterface();
-            
+
         });
         selectBtn.setOnAction(e -> {
             System.out.println("select class handler");
             editToolBarController.handleSelect();
         });
-        
+
         removeBtn.setOnAction(e -> {
             editToolBarController.handleRemove();
         });
-        
-        zoomOutBtn.setOnAction(e-> {
+
+        zoomOutBtn.setOnAction(e -> {
             editToolBarController.handleZoomOut();
         });
-        
-        zoomInBtn.setOnAction(e-> {
+
+        zoomInBtn.setOnAction(e -> {
             editToolBarController.handleZoomIn();
         });
-        
+
         resizeBtn.setOnAction(e -> {
             editToolBarController.handleResize();
         });
-        
+
         undoBtn.setOnAction(e -> {
             editToolBarController.handleUndo();
         });
-        
+
         codeBtn.setOnAction(e -> {
             FileManager fileManager = (FileManager) app.getFileComponent();
-            
+
             FileChooser fileChooser = new FileChooser();
-            
+
             File file = fileChooser.showSaveDialog(app.getGUI().getWindow());
-            
+
             try {
                 DataManager data = (DataManager) app.getDataComponent();
                 fileManager.exportData(data, file.getAbsolutePath());
@@ -403,27 +406,37 @@ public class Workspace extends AppWorkspaceComponent {
                 Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        
+
         photoBtn.setOnAction(e -> {
             editToolBarController.handleSnapshot();
         });
-        
+
         plusVarBtn.setOnAction(e -> {
             VariableDialog vd = new VariableDialog(gui.getWindow());
             vd.showDialog();
+            DataManager data = (DataManager) app.getDataComponent();
+            vd.addData(data.getSelectedItem(), variableTable);
         });
-        
-        classNameField.textProperty().addListener((a,e,o) -> {
+
+        plusMethodBtn.setOnAction(e -> {
+            MethodDialog md = new MethodDialog(gui.getWindow());
+            md.showDialog();
+//            System.out.println(dataManager.getSelectedItem() == null);
+            DataManager data = (DataManager) app.getDataComponent();
+            md.addData(data.getSelectedItem(), methodTable);
+        });
+
+        classNameField.textProperty().addListener((a, e, o) -> {
             editToolBarController.handleClassName(o);
             System.out.println(packageField.getText());
 
         });
-        
+
         parentComboBox.setOnAction(e -> {
             editToolBarController.handleAddParent();
         });
-        
-        packageField.textProperty().addListener((a,e,o) -> {
+
+        packageField.textProperty().addListener((a, e, o) -> {
             editToolBarController.handlePackageName(o);
             System.out.println(packageField.getText());
 
@@ -433,9 +446,9 @@ public class Workspace extends AppWorkspaceComponent {
         designRenderer.setOnMousePressed(e -> {
             System.out.println("mouse pressed handler");
             designRendererController.processCanvasMousePress((int) e.getX(), (int) e.getY());
-            
+
             System.out.println("mouse pressed handler after");
-            
+
         });
         designRenderer.setOnMouseReleased(e -> {
             designRendererController.processCanvasMouseRelease((int) e.getX(), (int) e.getY());
@@ -444,7 +457,7 @@ public class Workspace extends AppWorkspaceComponent {
 //            designRendererController.processCanvasMouseDragged((int) e.getX(), (int) e.getY());
 //        });
         designRenderer.setOnMouseExited(e -> {
-            designRendererController.processCanvasMouseExited((int)e.getX(), (int)e.getY());
+            designRendererController.processCanvasMouseExited((int) e.getX(), (int) e.getY());
         });
 //        designRenderer.setOnMouseMoved(e -> {
 //            designRendererController.processCanvasMouseMoved((int)e.getX(), (int)e.getY());
@@ -459,6 +472,16 @@ public class Workspace extends AppWorkspaceComponent {
         return g;
     }
 
+    public TableView getMethodTable() {
+        return methodTable;
+    }
+
+    public TableView getVariableTable() {
+        return variableTable;
+    }
+
+    
+    
     public ScrollPane getDesignRendererScroll() {
         return designRendererScroll;
     }
@@ -485,7 +508,7 @@ public class Workspace extends AppWorkspaceComponent {
         fileToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
         editToolBar.getStyleClass().add(CLASS_EDIT_TOOLBAR_ROW);
     }
-    
+
     public Pane getDesignRenderer() {
         return designRenderer;
     }
@@ -493,13 +516,11 @@ public class Workspace extends AppWorkspaceComponent {
     public void setDesignRenderer(Pane designRenderer) {
         this.designRenderer = designRenderer;
     }
-    
-    
-    
+
     public AppTemplate getApp() {
         return app;
     }
-    
+
     public void setClassNameText(String s) {
         classNameField.setText(s);
     }

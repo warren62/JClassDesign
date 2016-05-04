@@ -5,6 +5,7 @@
  */
 package jc.gui;
 
+import java.lang.reflect.Field;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
@@ -18,18 +19,18 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jc.data.DataManager;
 import jc.data.Interface;
 import jc.data.Item;
 import jc.data.JClass;
 import jc.data.Method;
-import jc.data.Variable;
 
 /**
  *
  * @author Steve
  */
-public class VariableDialog extends Stage {
-
+public class MethodDialog extends Stage{
+    
     Scene dialogScene;
     CheckBox finalCheckBox;
     CheckBox staticCheckBox;
@@ -52,7 +53,7 @@ public class VariableDialog extends Stage {
 
     VBox mainVB;
 
-    public VariableDialog(Stage stage) {
+    public MethodDialog(Stage stage) {
         initModality(Modality.WINDOW_MODAL);
         initOwner(stage);
 
@@ -86,6 +87,7 @@ public class VariableDialog extends Stage {
         staticCheckBox = new CheckBox();
         abstractCheckBox = new CheckBox();
         
+        
         accessComboBox = new ComboBox();
         accessComboBox.getItems().addAll("", "public", "private", "protected");
 
@@ -115,7 +117,7 @@ public class VariableDialog extends Stage {
         String name = nameField.getText();
         String access = accessComboBox.getValue().toString();
         
-        Variable m = new Variable();
+        Method m = new Method();
         m.setName(name);
         m.setType(type);
         m.setA(a);
@@ -124,9 +126,13 @@ public class VariableDialog extends Stage {
         m.setAccess(access);
         
         if(i instanceof JClass) {
-            ((JClass) i).addVariable(m);
+            ((JClass) i).addMethod(m);
 //            t.setItems((ObservableList) ((JClass) i).getMethods());
-            ObservableList<Variable> ol = FXCollections.observableArrayList(((JClass) i).getVariables());
+            ObservableList<Method> ol = FXCollections.observableArrayList(((JClass) i).getMethods());
+            t.setItems(ol);
+        }else if(i instanceof Interface) {
+            ((Interface) i).addMethod(m);
+            ObservableList<Method> ol = FXCollections.observableArrayList(((Interface) i).getMethods());
             t.setItems(ol);
         }
         
@@ -136,4 +142,7 @@ public class VariableDialog extends Stage {
 //        Field fi = new Field();
         
     }
+    
+    
+    
 }

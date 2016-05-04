@@ -11,8 +11,6 @@ package jc.data;
  */
 public class Variable {
 
-    
-    
     private String access = "";
     private String accessUML;
     public String name = "";
@@ -21,8 +19,8 @@ public class Variable {
     public final String STATIC_STRING = "final";
     private boolean f;
     private boolean s;
+    private boolean a;
 
-    
     private boolean fUML;
     private boolean sUML;
 
@@ -32,16 +30,24 @@ public class Variable {
 
     public void setAccess(String access) {
         String s = new String();
-        if(access.equals("public")) {
+        if (access.equals("public")) {
             accessUML += "+";
-        }else if(access.equals("private")) {
-            accessUML  += "-";
-        }else if(access.equals("protected")) {
+        } else if (access.equals("private")) {
+            accessUML += "-";
+        } else if (access.equals("protected")) {
             accessUML += "#";
-        }else {
+        } else {
             System.out.println("incorrect access type");
         }
         this.access = access;
+    }
+
+    public boolean isA() {
+        return a;
+    }
+
+    public void setA(boolean a) {
+        this.a = a;
     }
 
     public boolean isF() {
@@ -59,7 +65,7 @@ public class Variable {
     public void setS(boolean s) {
         this.s = s;
     }
-    
+
     public String getType() {
         return type;
     }
@@ -67,7 +73,7 @@ public class Variable {
     public void setType(String type) {
         this.type = type;
     }
-    
+
     public String getName() {
         return name;
     }
@@ -75,7 +81,7 @@ public class Variable {
     public void setName(String name) {
         this.name = name;
     }
-    
+
     public String toCode() {
         String s = new String();
 //        if (isF()) {
@@ -84,13 +90,16 @@ public class Variable {
 //        if (isS()) {
 //            return access + " " + STATIC_STRING + " " + type + " " + name + ";";
 //        }
+
         if (isS() && isF()) {
             return access + " " + STATIC_STRING + " " + FINAL_STRING + " " + type + " " + name + ";";
-        }else if (isS() && !isF()) {
+        } else if (isA()) {
+            return access + " " + "abstract" + " " + type + " " + name + ";";
+        } else if (isS() && !isF()) {
             return access + " " + STATIC_STRING + " " + type + " " + name + ";";
-        }else if (isF() && !isS()) {
+        } else if (isF() && !isS()) {
             return access + " " + FINAL_STRING + " " + type + " " + name + ";";
-        }else if(access == null) {
+        } else if (access == null) {
             return type + " " + name + ";";
         }
 
@@ -100,7 +109,7 @@ public class Variable {
     public String toUml() {
         return accessUML + " " + name + " : " + type;
     }
-    
+
     public Variable deepCopy() {
         Variable v = new Variable();
         v.setAccess(this.getAccess());
