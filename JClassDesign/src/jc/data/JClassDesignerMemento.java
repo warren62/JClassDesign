@@ -65,7 +65,9 @@ public class JClassDesignerMemento {
     public void add(ObservableList<Node> items) {
         ArrayList<Item> list = new ArrayList();
         for (Node n : items) {
+          if(n instanceof JClass || n instanceof Interface){
             Item i = (Item) n;
+            
             if(i instanceof JClass) {
                 JClass j = (JClass) i;
                 JClass copy = j.deepCopy();
@@ -75,6 +77,7 @@ public class JClassDesignerMemento {
                 Interface copy = in.deepCopy();
                 list.add(copy);
             }
+          }
             
         }
         undoStackItems.add(list);

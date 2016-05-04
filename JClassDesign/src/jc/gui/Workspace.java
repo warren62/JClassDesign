@@ -116,6 +116,7 @@ public class Workspace extends AppWorkspaceComponent {
     Button minusVarBtn;
     Button plusMethodBtn;
     Button minusMethodBtn;
+    Button parentBtn;
 
     Label classNameLbl;
     Label packageLbl;
@@ -200,6 +201,8 @@ public class Workspace extends AppWorkspaceComponent {
         plusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         minusMethodBtn = new Button("-");
         minusMethodBtn.setMaxWidth(Double.MAX_VALUE);
+        parentBtn = new Button("Edit Parents");
+        parentBtn.setMaxWidth(Double.MIN_VALUE);
 
         newBtn = gui.getNewButton();
         newBtn.setMaxWidth(Double.MAX_VALUE);
@@ -240,6 +243,8 @@ public class Workspace extends AppWorkspaceComponent {
         zoomInBtn.setMaxWidth(Double.MAX_VALUE);
         zoomOutBtn = gui.initChildButton(viewToolBar, ZOOM_OUT_ICON.toString(), ZOOM_OUT_TOOLTIP.toString(), false);
         zoomOutBtn.setMaxWidth(Double.MAX_VALUE);
+        
+        
 
         gridCheckBox = new CheckBox("Grid");
         gridSnapCheckBox = new CheckBox("Snap");
@@ -268,7 +273,7 @@ public class Workspace extends AppWorkspaceComponent {
         classHBox.setAlignment(Pos.CENTER);
         packageHBox.getChildren().addAll(packageLbl, packageField);
         packageHBox.setAlignment(Pos.CENTER);
-        parentHBox.getChildren().addAll(parentLbl, parentComboBox);
+        parentHBox.getChildren().addAll(parentLbl, parentBtn);
         parentHBox.setAlignment(Pos.CENTER);
         varHBox.getChildren().addAll(variableLbl, plusVarBtn, minusVarBtn);
         varHBox.setAlignment(Pos.CENTER);
@@ -424,6 +429,14 @@ public class Workspace extends AppWorkspaceComponent {
 //            System.out.println(dataManager.getSelectedItem() == null);
             DataManager data = (DataManager) app.getDataComponent();
             md.addData(data.getSelectedItem(), methodTable);
+        });
+        
+        parentBtn.setOnAction(e -> {
+            ParentDialog pd = new ParentDialog(gui.getWindow(), app);
+            pd.showDialog();
+            
+            DataManager data = (DataManager) app.getDataComponent();
+            pd.addData(data.getSelectedItem());
         });
 
         classNameField.textProperty().addListener((a, e, o) -> {
