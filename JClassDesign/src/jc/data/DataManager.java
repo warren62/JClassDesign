@@ -346,6 +346,14 @@ public class DataManager implements AppDataComponent {
     public void buildLine(Item i) {
         Line line = new BoundLine(i.layoutXProperty(), i.layoutYProperty(),
                 this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
+        line.setOnMousePressed(e -> {
+            System.out.println("****Click line works******");
+
+            int clickCount = e.getClickCount();
+            if (clickCount == 2) {
+                System.out.println("****Double Click line works******");
+            }
+        });
 //        DoubleProperty sX = new SimpleDoubleProperty(startX);
 //        DoubleProperty sY = new SimpleDoubleProperty(startY);
 //
@@ -732,11 +740,11 @@ public class DataManager implements AppDataComponent {
             startYProperty().bind(startY);
             endXProperty().bind(endX);
             endYProperty().bind(endY);
-            setStrokeWidth(2);
-            setStroke(Color.GRAY.deriveColor(0, 1, 1, 0.5));
-            setStrokeLineCap(StrokeLineCap.BUTT);
-            getStrokeDashArray().setAll(10.0, 5.0);
-            setMouseTransparent(true);
+            setStrokeWidth(5);
+//            setStroke(Color.GRAY.deriveColor(0, 1, 1, 0.5));
+//            setStrokeLineCap(StrokeLineCap.BUTT);
+//            getStrokeDashArray().setAll(10.0, 5.0);
+//            setMouseTransparent(true);
         }
     }
 
