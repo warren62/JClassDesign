@@ -82,7 +82,7 @@ public class ParentDialog extends Stage {
 
                             ((JClass) i).addParent(it);
                             d.buildLine(it);
-                            d.buildArrow(it.layoutXProperty(), it.layoutYProperty());
+                            d.buildArrow(it.layoutXProperty(), it.layoutYProperty(), i);
 
                         }
                     }

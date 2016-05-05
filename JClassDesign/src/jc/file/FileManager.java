@@ -38,6 +38,7 @@ import jc.data.Interface;
 import jc.data.Item;
 import jc.data.Method;
 import jc.data.Variable;
+import jc.gui.Workspace;
 import saf.AppTemplate;
 import saf.components.AppDataComponent;
 import saf.components.AppFileComponent;
@@ -81,7 +82,7 @@ public class FileManager implements AppFileComponent {
                         .add("y", y)
                         .add("methods", methodJson)
                         .add("variables", variableJson)
-//                        .add("parentInterfaces", parentInterfaceArray)
+                        //                        .add("parentInterfaces", parentInterfaceArray)
                         .build();
                 arrayBuilder.add(classJson);
             } else if (i instanceof Interface) {
@@ -147,9 +148,7 @@ public class FileManager implements AppFileComponent {
         }
 
     }
-    
-    
-    
+
     public void loadData(String filePath, AppTemplate initApp) throws IOException {
         app = initApp;
         DataManager dataManager = (DataManager) app.getDataComponent();
@@ -165,8 +164,8 @@ public class FileManager implements AppFileComponent {
         }
 
     }
-    
-     public void loadData(String filePath) throws IOException {
+
+    public void loadData(String filePath) throws IOException {
 //        app = initApp;
 //        DataManager dataManager = (DataManager) data;
 //        dataManager.reset();
@@ -306,7 +305,7 @@ public class FileManager implements AppFileComponent {
 
         return i;
     }
-    
+
     public Item loadItemTest(JsonObject jsonItem) {
 
         String type = jsonItem.getString("type");
@@ -426,10 +425,10 @@ public class FileManager implements AppFileComponent {
         return i;
     }
 
-
     @Override
-    public void exportData(AppDataComponent data, String filePath) throws IOException {
+    public void exportData(AppDataComponent data, String filePath, AppTemplate app) throws IOException {
         DataManager dm = (DataManager) data;
+        Workspace w = (Workspace) app.getWorkspaceComponent();
 //        create(dm);
         ArrayList<String> pkgArray = new ArrayList();
         File pkgFile = null;
@@ -437,7 +436,9 @@ public class FileManager implements AppFileComponent {
 
         boolean nested = false;
 
-        ArrayList<Item> items = dm.getItems();
+//        ArrayList<Item> items = dm.getItems();
+        ObservableList<Node> items =  w.getDesignRenderer().getChildren();
+
         ArrayList<String> packages = new ArrayList();
 
         File file = new File(filePath);
@@ -449,8 +450,9 @@ public class FileManager implements AppFileComponent {
             fileTemp.mkdir();
         }
 
-        for (Item i : items) {
+        for (Node n : items) {
             nested = false;
+            Item i = (Item) n;
 
             if (i.getPackageName().contains(".")) {
                 String[] pkgSplit = i.getPackageName().split("\\.");
@@ -724,7 +726,7 @@ public class FileManager implements AppFileComponent {
         is.close();
         return json;
     }
-    
+
     public void create(DataManager dm) {
         JClass threadExample = new JClass();
         threadExample.setName("ThreadExample");
@@ -779,7 +781,7 @@ public class FileManager implements AppFileComponent {
         counterThread.setName("counterThread");
         counterThread.setAccess("private");
         counterThread.setType("Thread");
-        Variable counterTask = new Variable();      
+        Variable counterTask = new Variable();
         counterTask.setName("counterTask");
         counterTask.setAccess("private");
         counterTask.setType("Task");
@@ -861,8 +863,7 @@ public class FileManager implements AppFileComponent {
         threadExample.addMethod(initWindow);
         threadExample.addMethod(initThreads);
         threadExample.addMethod(main);
-        
-        
+
         JClass counterTaskClass = new JClass();
         counterTaskClass.setName("CounterTask");
         counterTaskClass.setAccess("public");
@@ -887,8 +888,7 @@ public class FileManager implements AppFileComponent {
         counterTaskClass.addVariable(counter);
         counterTaskClass.addMethod(counterTaskMethod);
         counterTaskClass.addMethod(call);
-        
-        
+
         JClass dateTaskClass = new JClass();
         dateTaskClass.setName("DateTask");
         dateTaskClass.setAccess("public");
@@ -913,8 +913,7 @@ public class FileManager implements AppFileComponent {
         dateTaskClass.addVariable(now);
         dateTaskClass.addMethod(dateTaskMethod);
         dateTaskClass.addMethod(callMethod);
-        
-        
+
         JClass pauseHandler = new JClass();
         pauseHandler.setName("PauseHandler");
         pauseHandler.setAccess("public");
@@ -935,8 +934,7 @@ public class FileManager implements AppFileComponent {
         pauseHandler.addVariable(appPauseHandler);
         pauseHandler.addMethod(pauseHandlerMethod);
         pauseHandler.addMethod(handlerPause);
-        
-        
+
         JClass startHandlerHandler = new JClass();
         startHandlerHandler.setName("StartHandler");
         startHandlerHandler.setAccess("public");
@@ -957,13 +955,12 @@ public class FileManager implements AppFileComponent {
         startHandlerHandler.addVariable(appStartHandler);
         startHandlerHandler.addMethod(startHandler);
         startHandlerHandler.addMethod(startHandle);
-        
+
 //        items.add(threadExample);
 //        items.add(counterTaskClass);
 //        items.add(dateTaskClass);
 //        items.add(pauseHandler);
 //        items.add(startHandlerHandler);
-        
         dm.addClass(threadExample);
         dm.addClass(counterTaskClass);
         dm.addClass(dateTaskClass);
@@ -974,6 +971,6 @@ public class FileManager implements AppFileComponent {
         System.out.println(dateTaskClass.toCode());
         System.out.println(pauseHandler.toCode());
         System.out.println(startHandlerHandler.toCode());
-        
+
     }
 }

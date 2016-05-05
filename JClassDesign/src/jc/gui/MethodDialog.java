@@ -6,9 +6,11 @@
 package jc.gui;
 
 import java.lang.reflect.Field;
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -24,13 +26,14 @@ import jc.data.Interface;
 import jc.data.Item;
 import jc.data.JClass;
 import jc.data.Method;
+import saf.AppTemplate;
 
 /**
  *
  * @author Steve
  */
-public class MethodDialog extends Stage{
-    
+public class MethodDialog extends Stage {
+
     Scene dialogScene;
     CheckBox finalCheckBox;
     CheckBox staticCheckBox;
@@ -53,13 +56,18 @@ public class MethodDialog extends Stage{
 
     VBox mainVB;
 
-    public MethodDialog(Stage stage) {
+    AppTemplate app;
+
+    public MethodDialog(Stage stage, AppTemplate initApp) {
+
+        app = initApp;
+
         initModality(Modality.WINDOW_MODAL);
         initOwner(stage);
 
         mainVB = new VBox(10);
         mainVB.setAlignment(Pos.CENTER);
-        
+
         nameHB = new HBox(10);
         nameHB.setAlignment(Pos.CENTER);
         typeHB = new HBox(10);
@@ -72,7 +80,7 @@ public class MethodDialog extends Stage{
         abstractHB.setAlignment(Pos.CENTER);
         accessHB = new HBox(10);
         accessHB.setAlignment(Pos.CENTER);
-        
+
         nameField = new TextField();
         typeField = new TextField();
 
@@ -82,14 +90,14 @@ public class MethodDialog extends Stage{
         accessLbl = new Label("Access");
         typeLbl = new Label("Type");
         finalLbl = new Label("Final");
-        
+
         finalCheckBox = new CheckBox();
         staticCheckBox = new CheckBox();
         abstractCheckBox = new CheckBox();
-        
-        
+
         accessComboBox = new ComboBox();
-        accessComboBox.getItems().addAll("", "public", "private", "protected");
+        accessComboBox.setValue("");
+        accessComboBox.getItems().addAll("public", "private", "protected");
 
         nameHB.getChildren().addAll(nameLbl, nameField);
         typeHB.getChildren().addAll(typeLbl, typeField);
@@ -97,8 +105,6 @@ public class MethodDialog extends Stage{
         staticHB.getChildren().addAll(staticLbl, staticCheckBox);
         abstractHB.getChildren().addAll(abstractLbl, abstractCheckBox);
         accessHB.getChildren().addAll(accessLbl, accessComboBox);
-
-        
 
         mainVB.getChildren().addAll(finalHB, staticHB, abstractHB, nameHB, typeHB, accessHB);
         dialogScene = new Scene(mainVB, 300, 300);
@@ -108,7 +114,7 @@ public class MethodDialog extends Stage{
     public void showDialog() {
         this.showAndWait();
     }
-    
+
     public void addData(Item i, TableView t) {
         boolean f = finalCheckBox.isSelected();
         boolean s = staticCheckBox.isSelected();
@@ -116,7 +122,7 @@ public class MethodDialog extends Stage{
         String type = typeField.getText();
         String name = nameField.getText();
         String access = accessComboBox.getValue().toString();
-        
+
         Method m = new Method();
         m.setName(name);
         m.setType(type);
@@ -124,25 +130,79 @@ public class MethodDialog extends Stage{
         m.setF(f);
         m.setS(s);
         m.setAccess(access);
-        
-        if(i instanceof JClass) {
+
+        DataManager data = (DataManager) app.getDataComponent();
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+//        JClass jc = new JClass();
+//        ArrayList<Method> methodList;
+//        ArrayList<JClass> classList = new ArrayList();
+//        for (Node n : w.getDesignRenderer().getChildren()) {
+//            if (n instanceof JClass) {
+//                jc = (JClass) n;
+//                classList.add(jc);
+//
+//                for (int z = 0; z < classList.size(); z++) {
+//
+//                }
+//                System.out.println("*****Print class name ***** " + jc.getName());
+//                methodList = jc.getMethods();
+//                System.out.println("*****Print method list***** " + methodList.toString());
+//
+////                addLines(methodList, jc, (JClass) i);
+//            }
+//        }
+
+        if (i instanceof JClass) {
             ((JClass) i).addMethod(m);
 //            t.setItems((ObservableList) ((JClass) i).getMethods());
             ObservableList<Method> ol = FXCollections.observableArrayList(((JClass) i).getMethods());
             t.setItems(ol);
-        }else if(i instanceof Interface) {
+        } else if (i instanceof Interface) {
             ((Interface) i).addMethod(m);
             ObservableList<Method> ol = FXCollections.observableArrayList(((Interface) i).getMethods());
             t.setItems(ol);
         }
-        
-        
+
 //        Class c = this.getClass();
 //        c.getField("name").getType().getPackage();
 //        Field fi = new Field();
-        
     }
-    
-    
-    
+
+    public void addLines(ArrayList<Method> methodList, JClass jc, JClass j) {
+        DataManager data = (DataManager) app.getDataComponent();
+        for (Method me : methodList) {
+            System.out.println("*****for loop in add lines method in method dialog***** ");
+            System.out.println("*****Method get type and jc get name in add lines method of method dialog***** " + jc.getName() + "//" + me.getType());
+            if (me.getType().equals(jc.getName()) && !me.getType().equals("void")) {
+
+                data.buildLine(jc);
+                data.buildArrow(jc.layoutXProperty(), jc.layoutYProperty(), j);
+                System.out.println("*****Draw diamond in method dialog***** ");
+            }
+        }
+    }
+
+    public void generate(Item i) {
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+        DataManager data = (DataManager) app.getDataComponent();
+        for (Node n : w.getDesignRenderer().getChildren()) {
+            if (n instanceof JClass) {
+                JClass jc = (JClass) n;
+                if (i instanceof JClass) {
+                    JClass selJC = (JClass) i;
+                    ArrayList<Method> list = ((JClass) i).getMethods();
+                    for(int z = 0; z < list.size(); z++) {
+                        if(list.get(z).getType().equals(jc.getName())) {
+                            data.buildLine(jc);
+                            data.buildDiamond(jc.layoutXProperty(), jc.layoutYProperty(), i);
+                        }
+                    }
+
+                }
+
+            }
+        }
+
+    }
+
 }

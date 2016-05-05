@@ -157,6 +157,7 @@ public class Interface extends Item {
 
     public void addMethod(Method method) {
         methods.add(method);
+        methodVBox.getChildren().add(new Label(method.toUml()));
     }
 
     public ArrayList<Method> getMethods() {

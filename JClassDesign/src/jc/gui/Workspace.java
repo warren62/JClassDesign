@@ -248,6 +248,7 @@ public class Workspace extends AppWorkspaceComponent {
 
         gridCheckBox = new CheckBox("Grid");
         gridSnapCheckBox = new CheckBox("Snap");
+        gridSnapCheckBox.setDisable(true);
 
         gridControls.getChildren().addAll(gridCheckBox, gridSnapCheckBox);
 
@@ -407,7 +408,7 @@ public class Workspace extends AppWorkspaceComponent {
 
             try {
                 DataManager data = (DataManager) app.getDataComponent();
-                fileManager.exportData(data, file.getAbsolutePath());
+                fileManager.exportData(data, file.getAbsolutePath(), app);
             } catch (IOException ex) {
                 Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
@@ -425,11 +426,12 @@ public class Workspace extends AppWorkspaceComponent {
         });
 
         plusMethodBtn.setOnAction(e -> {
-            MethodDialog md = new MethodDialog(gui.getWindow());
+            MethodDialog md = new MethodDialog(gui.getWindow(), app);
             md.showDialog();
 //            System.out.println(dataManager.getSelectedItem() == null);
             DataManager data = (DataManager) app.getDataComponent();
             md.addData(data.getSelectedItem(), methodTable);
+            md.generate(data.getSelectedItem());
         });
         
         parentBtn.setOnAction(e -> {
@@ -461,8 +463,10 @@ public class Workspace extends AppWorkspaceComponent {
         gridCheckBox.setOnAction(e -> {
             if(gridCheckBox.isSelected()) {
                 this.addLines();
+                 gridSnapCheckBox.setDisable(false);
             }else {
                 this.clearLines();
+                gridSnapCheckBox.setDisable(true);
             }
             
         });

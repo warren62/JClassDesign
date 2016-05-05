@@ -68,7 +68,7 @@ public class JClass extends Item {
 //        variableVBox.setMinWidth(30);
 //        initHandler();
 
-        getChildren().addAll(nameVBox, methodVBox, variableVBox);
+        getChildren().addAll(nameVBox, variableVBox, methodVBox);
 
         this.getStyleClass().add("vbox");
         this.setPrefSize(100, 100);
@@ -252,6 +252,7 @@ public class JClass extends Item {
 //    }
     public void addMethod(Method method) {
         methods.add(method);
+        methodVBox.getChildren().add(new Label(method.toUml()));
     }
 
     public ArrayList<Method> getMethods() {
@@ -269,6 +270,7 @@ public class JClass extends Item {
 
     public void addVariable(Variable variable) {
         variables.add(variable);
+        variableVBox.getChildren().add(new Label(variable.toUml()));
     }
 
     public ArrayList<Variable> getVariables() {

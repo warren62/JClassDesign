@@ -62,6 +62,9 @@ public class DataManager implements AppDataComponent {
     // USE THIS WHEN THE SHAPE IS SELECTED
     Effect highlightedEffect;
 
+    double orgSceneX, orgSceneY;
+    double orgTranslateX, orgTranslateY;
+
     public DataManager(AppTemplate initApp) throws Exception {
 
         app = initApp;
@@ -330,7 +333,7 @@ public class DataManager implements AppDataComponent {
                     JClass jC = (JClass) this.getSelectedItem();
                     jC.addParent(i);
                     buildLine(i);
-                    buildArrow(i.layoutXProperty(), i.layoutYProperty());
+                    buildArrow(i.layoutXProperty(), i.layoutYProperty(), i);
 
                 }
             }
@@ -346,14 +349,77 @@ public class DataManager implements AppDataComponent {
     public void buildLine(Item i) {
         Line line = new BoundLine(i.layoutXProperty(), i.layoutYProperty(),
                 this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
-        line.setOnMousePressed(e -> {
-            System.out.println("****Click line works******");
-
-            int clickCount = e.getClickCount();
-            if (clickCount == 2) {
-                System.out.println("****Double Click line works******");
-            }
-        });
+//        line.setOnMousePressed(e -> {
+//            System.out.println("****Click line works******");
+//            Circle c = new Circle(5);
+//
+////            double midpointX = line.startXProperty().add(line.endXProperty()).divide(2);
+////            c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
+////            c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
+//            c.setCenterX((line.getStartX() + line.getEndX()) / 2);
+//            c.setCenterY((line.getStartY() + line.getEndY()) / 2);
+//            ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(line);
+//            Line l = new BoundLine(i.layoutXProperty(), i.layoutYProperty(), c.centerXProperty(), c.centerYProperty());
+//            Line l2 = new BoundLine(c.centerXProperty(), c.centerYProperty(), this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
+//            System.out.println("******** line 1 *****" + l.toString());
+//            System.out.println("******** line 2 *****" + l2.toString());
+//
+//            ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(c, l, l2);
+//
+//            c.setOnMousePressed(t -> {
+//                orgSceneX = t.getSceneX();
+//                orgSceneY = t.getSceneY();
+//                orgTranslateX = ((Circle) (t.getSource())).getCenterX();
+//                orgTranslateY = ((Circle) (t.getSource())).getCenterY();
+//
+//            });
+//
+//            c.setOnMouseDragged(t -> {
+//                double offsetX = t.getSceneX() - orgSceneX;
+//                double offsetY = t.getSceneY() - orgSceneY;
+////                double newTranslateX = orgTranslateX + offsetX;
+////                double newTranslateY = orgTranslateY + offsetY;
+//                double newTranslateX = orgTranslateX + offsetX;
+//                double newTranslateY = orgTranslateY + offsetY;
+//
+////                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().removeAll(l, l2);
+//                Line l3 = new BoundLine(i.layoutXProperty(), i.layoutYProperty(), c.centerXProperty(), c.centerYProperty());
+//                Line l4 = new BoundLine(c.centerXProperty(), c.centerYProperty(), this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
+//
+////                ((Circle) (t.getSource())).setLayoutX(newTranslateX);
+////                ((Circle) (t.getSource())).setLayoutY(newTranslateY);
+//                ((Circle) (t.getSource())).setCenterX(newTranslateX);
+//                ((Circle) (t.getSource())).setCenterY(newTranslateY);
+//
+//                System.out.println("t get scene x " + t.getSceneX());
+//                System.out.println("t get scene y " + t.getSceneY());
+//                System.out.println("orig scene x " + orgSceneX);
+//                System.out.println("orig scene y " + orgSceneY);
+//                System.out.println("orig Translate x " + orgTranslateX);
+//                System.out.println("orig Translate y " + orgTranslateY);
+//
+//                System.out.println("******** circle 1 translate x*****" + ((Circle) (t.getSource())).getTranslateX());
+//                System.out.println("******** circle 1 translate y *****" + ((Circle) (t.getSource())).getTranslateY());
+//
+////                c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
+////                c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
+////                l.endXProperty().bind(c.translateXProperty());
+////                l.endYProperty().bind(c.translateYProperty());
+////                l2.startXProperty().bind(c.translateXProperty());
+////                l2.startYProperty().bind(c.translateYProperty());
+//
+//                System.out.println("******** line 1 *****" + l.toString());
+//                System.out.println("******** line 2 *****" + l2.toString());
+//                System.out.println("******** circle 1 *****" + c.toString());
+//
+////                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l3, l4);
+//            });
+//
+//            int clickCount = e.getClickCount();
+//            if (clickCount == 2) {
+//                System.out.println("****Double Click line works******");
+//            }
+//        });
 //        DoubleProperty sX = new SimpleDoubleProperty(startX);
 //        DoubleProperty sY = new SimpleDoubleProperty(startY);
 //
@@ -365,7 +431,7 @@ public class DataManager implements AppDataComponent {
         memento.add(((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren());
     }
 
-    public void buildArrow(DoubleProperty x, DoubleProperty y) {
+    public void buildArrow(DoubleProperty x, DoubleProperty y, Item i) {
 //        Circle point = new Circle(.5);
 //        point.centerXProperty().bind(x);
 //        point.centerYProperty().bind(y);
@@ -376,36 +442,58 @@ public class DataManager implements AppDataComponent {
 
         Polygon arrow = new Polygon();
         arrow.getPoints().addAll(new Double[]{
-            0.0, 5.0,
-            -5.0, -5.0,
-            5.0, -5.0});
+            0.0, 10.0,
+            -10.0, -10.0,
+            10.0, -10.0});
+        arrow.setRotate(270);
 //        pl.getPoints().add(point.getCenterY())
         arrow.layoutXProperty().bind(x);
         arrow.layoutYProperty().bind(y);
 
 //        Line top = new BoundLine(point.centerXProperty(), point.centerYProperty(), topBottomX, topBottomY);
 //        Line bottom = new BoundLine(point.centerXProperty(), point.centerYProperty(), bottomX, bottomY);
-        Line top = new Line();
-
-//         DoubleProperty topCenterX = new SimpleDoubleProperty();
-//         DoubleProperty topCenterY = new SimpleDoubleProperty(point.centerYProperty().get());
-        top.startXProperty().bind(x);
-        top.startYProperty().bind(y);
-        DoubleProperty topBottomX = new SimpleDoubleProperty(top.startXProperty().get() + 50);
-        DoubleProperty topBottomY = new SimpleDoubleProperty(top.startYProperty().get() + 50);
-        top.endXProperty().bind(top.startXProperty().subtract(15));
-        top.endYProperty().bind(top.startYProperty().subtract(15));
-
-        Line bottom = new Line();
-        bottom.startXProperty().bind(x);
-        bottom.startYProperty().bind(y);
-//         DoubleProperty bottomX = new SimpleDoubleProperty(top.startXProperty().get() - 50);
-//         DoubleProperty bottomY = new SimpleDoubleProperty(top.startYProperty().get() - 50);
-        bottom.endXProperty().bind(bottom.startXProperty().add(15));
-        bottom.endYProperty().bind(bottom.startYProperty().add(15));
-
+//        Line top = new Line();
+//
+////         DoubleProperty topCenterX = new SimpleDoubleProperty();
+////         DoubleProperty topCenterY = new SimpleDoubleProperty(point.centerYProperty().get());
+//        top.startXProperty().bind(x);
+//        top.startYProperty().bind(y);
+//        DoubleProperty topBottomX = new SimpleDoubleProperty(top.startXProperty().get() + 50);
+//        DoubleProperty topBottomY = new SimpleDoubleProperty(top.startYProperty().get() + 50);
+//        top.endXProperty().bind(top.startXProperty().subtract(15));
+//        top.endYProperty().bind(top.startYProperty().subtract(15));
+//
+//        Line bottom = new Line();
+//        bottom.startXProperty().bind(x);
+//        bottom.startYProperty().bind(y);
+////         DoubleProperty bottomX = new SimpleDoubleProperty(top.startXProperty().get() - 50);
+////         DoubleProperty bottomY = new SimpleDoubleProperty(top.startYProperty().get() - 50);
+//        bottom.endXProperty().bind(bottom.startXProperty().add(15));
+//        bottom.endYProperty().bind(bottom.startYProperty().add(15));
 //        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(bottom, top);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(arrow);
+    }
+
+    public void buildDiamond(DoubleProperty x, DoubleProperty y, Item i) {
+//        double[] xh = {-.5, 0, .5, 0, 0, -.5, 0, .5};
+//        double[] yh = {0, -.5, 0, .5};
+
+        Polygon p = new Polygon();
+        p.getPoints().addAll(new Double[]{
+            0.0, 10.0,
+            -10.0, -10.0,
+            0.0, -30.0,
+            10.0, -10.0,
+            
+            
+        });
+        
+        p.setRotate(90);
+        
+        p.layoutXProperty().bind(x);
+        p.layoutYProperty().bind(y);
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(p);
+
     }
 
     public void updateParentNames() {
@@ -741,9 +829,79 @@ public class DataManager implements AppDataComponent {
             endXProperty().bind(endX);
             endYProperty().bind(endY);
             setStrokeWidth(5);
-//            setStroke(Color.GRAY.deriveColor(0, 1, 1, 0.5));
-//            setStrokeLineCap(StrokeLineCap.BUTT);
-//            getStrokeDashArray().setAll(10.0, 5.0);
+            setStroke(Color.GRAY.deriveColor(0, 1, 1, 0.5));
+            setStrokeLineCap(StrokeLineCap.BUTT);
+            getStrokeDashArray().setAll(10.0, 5.0);
+
+            this.setOnMousePressed(e -> {
+                System.out.println("****Click line works******");
+                Circle c = new Circle(7);
+
+//            double midpointX = line.startXProperty().add(line.endXProperty()).divide(2);
+//            c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
+//            c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
+                c.setCenterX((this.getStartX() + this.getEndX()) / 2);
+                c.setCenterY((this.getStartY() + this.getEndY()) / 2);
+                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(this);
+                Line l = new BoundLine(startX, startY, c.centerXProperty(), c.centerYProperty());
+                Line l2 = new BoundLine(c.centerXProperty(), c.centerYProperty(), endX, endY);
+                System.out.println("******** line 1 *****" + l.toString());
+                System.out.println("******** line 2 *****" + l2.toString());
+
+                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
+
+                c.setOnMousePressed(t -> {
+                    orgSceneX = t.getSceneX();
+                    orgSceneY = t.getSceneY();
+                    orgTranslateX = ((Circle) (t.getSource())).getCenterX();
+                    orgTranslateY = ((Circle) (t.getSource())).getCenterY();
+
+                });
+
+                c.setOnMouseDragged(t -> {
+                    double offsetX = t.getSceneX() - orgSceneX;
+                    double offsetY = t.getSceneY() - orgSceneY;
+//                double newTranslateX = orgTranslateX + offsetX;
+//                double newTranslateY = orgTranslateY + offsetY;
+                    double newTranslateX = orgTranslateX + offsetX;
+                    double newTranslateY = orgTranslateY + offsetY;
+
+//                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().removeAll(l, l2);
+//                Line l3 = new BoundLine(i.layoutXProperty(), i.layoutYProperty(), c.centerXProperty(), c.centerYProperty());
+//                Line l4 = new BoundLine(c.centerXProperty(), c.centerYProperty(), this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
+//                ((Circle) (t.getSource())).setLayoutX(newTranslateX);
+//                ((Circle) (t.getSource())).setLayoutY(newTranslateY);
+                    ((Circle) (t.getSource())).setCenterX(newTranslateX);
+                    ((Circle) (t.getSource())).setCenterY(newTranslateY);
+
+                    System.out.println("t get scene x " + t.getSceneX());
+                    System.out.println("t get scene y " + t.getSceneY());
+                    System.out.println("orig scene x " + orgSceneX);
+                    System.out.println("orig scene y " + orgSceneY);
+                    System.out.println("orig Translate x " + orgTranslateX);
+                    System.out.println("orig Translate y " + orgTranslateY);
+
+                    System.out.println("******** circle 1 translate x*****" + ((Circle) (t.getSource())).getTranslateX());
+                    System.out.println("******** circle 1 translate y *****" + ((Circle) (t.getSource())).getTranslateY());
+
+//                c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
+//                c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
+//                l.endXProperty().bind(c.translateXProperty());
+//                l.endYProperty().bind(c.translateYProperty());
+//                l2.startXProperty().bind(c.translateXProperty());
+//                l2.startYProperty().bind(c.translateYProperty());
+                    System.out.println("******** line 1 *****" + l.toString());
+                    System.out.println("******** line 2 *****" + l2.toString());
+                    System.out.println("******** circle 1 *****" + c.toString());
+
+//                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l3, l4);
+                });
+
+                int clickCount = e.getClickCount();
+                if (clickCount == 2) {
+                    System.out.println("****Double Click line works******");
+                }
+            });
 //            setMouseTransparent(true);
         }
     }
