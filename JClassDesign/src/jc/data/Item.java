@@ -21,13 +21,12 @@ import saf.AppTemplate;
  * @author Steve
  */
 public class Item extends VBox implements Draggable {
-    
+
     AppTemplate app;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     double x = 0;
 
-    
     double y = 0;
     boolean ext;
     boolean implementsInterface;
@@ -36,22 +35,19 @@ public class Item extends VBox implements Draggable {
     Label pkgLbl;
     String name = "DefaultClassName";
     String pkg = "DefaultPackageName";
-    
+
     Item parent;
 
-    
-    
-    public Item () {
-        
+    public Item() {
+
 //        app = initApp;
 //        initHandler();
 //        nameLbl = new Label(name);
     }
-    
+
 //    public Item() {
 //        
 //    }
-    
 //    public String getNameString() {
 //        return nameString;
 //    }
@@ -67,7 +63,6 @@ public class Item extends VBox implements Draggable {
 //    public void setPkgString(String pkgString) {
 //        this.pkgString = pkgString;
 //    }
-    
     public boolean isExt() {
         return ext;
     }
@@ -83,41 +78,34 @@ public class Item extends VBox implements Draggable {
     public void setImplementsInterface(boolean implementsInterface) {
         this.implementsInterface = implementsInterface;
     }
-    
-    public void setName(String name) {
-        
-//            this.name.setText(name);
-           this.name = name;
 
-        
+    public void setName(String name) {
+
+//            this.name.setText(name);
+        this.name = name;
+
     }
-    
+
     public String getName() {
 //        return name.getText();
         return name;
     }
-    
+
     public void setPackage(String name) {
 //        this.pkg.setText(name);
         this.pkg = name;
     }
-    
+
     public String getPackageName() {
 //        return pkg.getText();
         return pkg;
     }
 
-    
-    
-    
-    
-    
-
     @Override
     public void start(int x, int y) {
 //        orgSceneX = x;
 //        orgSceneY = y;
-        
+
         setLayoutX(x);
         setLayoutY(y);
 //        DataManager data = (DataManager) app.getDataComponent();
@@ -130,19 +118,17 @@ public class Item extends VBox implements Draggable {
     public void drag(int x, int y) {
         relocate(x, y);
     }
-    
-     public void initHandler(DataManager data, Workspace workspace) {
-         
-          this.setOnMousePressed(e -> {
-            
+
+    public void initHandler(DataManager data, Workspace workspace) {
+
+        this.setOnMousePressed(e -> {
+
             orgSceneX = e.getSceneX();
             orgSceneY = e.getSceneY();
-            
-             x = getLayoutX();
-             y = getLayoutY();
 
+            x = getLayoutX();
+            y = getLayoutY();
 
-            
 //            orgTranslateY = ((Item)(e.getSource())).getTranslateY();
 //            orgTranslateY = ((Item)(e.getSource())).getTranslateY();
 //            DataManager data = (DataManager) app.getDataComponent();
@@ -164,43 +150,51 @@ public class Item extends VBox implements Draggable {
 //            workspace.setPackageNameText(data.getSelectedClass().getPackageName());
             workspace.setClassNameText(this.getName());
             workspace.setPackageNameText(this.getPackageName());
-            if(this instanceof JClass) {
+            if (this instanceof JClass) {
                 JClass j = (JClass) this;
                 ObservableList<Method> ol = FXCollections.observableArrayList(((JClass) this).getMethods());
 //                workspace.getMethodTable().getItems().clear();
                 workspace.getMethodTable().setItems(ol);
-                
+
                 ObservableList<Variable> olv = FXCollections.observableArrayList(((JClass) this).getVariables());
 //                workspace.getMethodTable().getItems().clear();
                 workspace.getVariableTable().setItems(olv);
-            }else if(this instanceof Interface) {
+            } else if (this instanceof Interface) {
                 Interface j = (Interface) this;
                 ObservableList<Method> ol = FXCollections.observableArrayList(((Interface) this).getMethods());
                 workspace.getMethodTable().setItems(ol);
             }
-            
+
         });
 
         this.setOnMouseDragged(e -> {
-            
-            x += e.getSceneX() - orgSceneX;
-            y += e.getSceneY() - orgSceneY;
-            
-            setLayoutX(x);
-            setLayoutY(y);
-            
-            orgSceneX = e.getSceneX();
-            orgSceneY = e.getSceneY();
+            if (workspace.isSnap()) {
+                x += e.getSceneX() - orgSceneX;
+                y += e.getSceneY() - orgSceneY;
 
-            
+                setLayoutX(x);
+                setLayoutY(y);
+
+                orgSceneX = e.getSceneX();
+                orgSceneY = e.getSceneY();
+                data.snap();
+            } else {
+                x += e.getSceneX() - orgSceneX;
+                y += e.getSceneY() - orgSceneY;
+
+                setLayoutX(x);
+                setLayoutY(y);
+
+                orgSceneX = e.getSceneX();
+                orgSceneY = e.getSceneY();
+            }
+
 //            double offsetX = e.getSceneX() - orgSceneX;
 //            double offsetY = e.getSceneY() - orgSceneY;
 //            double newTranslateX = orgTranslateX + offsetX;
 //            double newTranslateY = orgTranslateY + offsetY;
 //            DataManager data = (DataManager) app.getDataComponent();
-            
 //            drag((int)e.getX(), (int)e.getY());
-
             data.setSelectedItem(this);
 //            ((Item)(e.getSource())).setTranslateX(newTranslateX);
 //            ((Item)(e.getSource())).setTranslateY(newTranslateY);
@@ -217,16 +211,16 @@ public class Item extends VBox implements Draggable {
 
     @Override
     public double getX() {
-        
+
         return x;
-        
+
     }
 
     @Override
     public double getY() {
-        
+
         return y;
-        
+
     }
 
     @Override
@@ -238,11 +232,11 @@ public class Item extends VBox implements Draggable {
     public String getShapeType() {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.
     }
-    
+
     public void updateNameLabel() {
         nameLbl.setText(name);
     }
-    
+
 //    public Item deepCopy() {
 ////        Item i = new Item();
 //        if(this instanceof JClass) {
@@ -250,5 +244,4 @@ public class Item extends VBox implements Draggable {
 //            
 //        }
 //    }
-    
 }

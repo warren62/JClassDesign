@@ -13,6 +13,8 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Polygon;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jc.data.DataManager;
@@ -40,19 +42,23 @@ public class ParentDialog extends Stage {
         mainVB = new VBox(5);
         mainVB.setAlignment(Pos.CENTER);
 
-        Workspace w = (Workspace) app.getWorkspaceComponent();
+//        Workspace w = (Workspace) app.getWorkspaceComponent();
 
-        if (w.getDesignRenderer().getChildren().size() > 1) {
-            for (Node n : w.getDesignRenderer().getChildren()) {
-                Item i = (Item) n;
-                itemList.add(i);
-//                HBox hb = new HBox(10);
-//                hb.setAlignment(Pos.CENTER);
-//
-//                hb.getChildren().addAll(new Label(i.getName()), new CheckBox());
-                mainVB.getChildren().add(new CheckBox(i.getName()));
-            }
-        }
+//        if (w.getDesignRenderer().getChildren().size() > 1) {
+//            for (int z = 0; z < w.getDesignRenderer().getChildren().size(); z++) {
+//                if (w.getDesignRenderer().getChildren().get(z) instanceof Item) {
+//                    Item i = (Item) w.getDesignRenderer().getChildren().get(z);
+//                    itemList.add(i);
+////                HBox hb = new HBox(10);
+////                hb.setAlignment(Pos.CENTER);
+////
+////                hb.getChildren().addAll(new Label(i.getName()), new CheckBox());
+//                    mainVB.getChildren().add(new CheckBox(i.getName()));
+//                } else {
+//                    w.getDesignRenderer().getChildren().remove(w.getDesignRenderer().getChildren().get(z));
+//                }
+//            }
+//        }
 
 //        addData(d.getSelectedItem());
         dialogScene = new Scene(mainVB, 300, 300);
@@ -81,6 +87,37 @@ public class ParentDialog extends Stage {
                         }
                     }
                 }
+            }
+        }
+    }
+    
+    public void populateDialog() {
+        
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+        if (w.getDesignRenderer().getChildren().size() > 1) {
+            for (int z = 0; z < w.getDesignRenderer().getChildren().size(); z++) {
+                if (w.getDesignRenderer().getChildren().get(z) instanceof Item) {
+                    Item i = (Item) w.getDesignRenderer().getChildren().get(z);
+                    itemList.add(i);
+//                HBox hb = new HBox(10);
+//                hb.setAlignment(Pos.CENTER);
+//
+//                hb.getChildren().addAll(new Label(i.getName()), new CheckBox());
+                    mainVB.getChildren().add(new CheckBox(i.getName()));
+                } 
+                
+                else {
+                   clearLines();
+                }
+            }
+        }
+    }
+    
+    public void clearLines() {
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+        for(Node n : w.getDesignRenderer().getChildren()) {
+            if(n instanceof Line || n instanceof Polygon) {
+                w.getDesignRenderer().getChildren().remove(n);
             }
         }
     }

@@ -229,6 +229,9 @@ public class DataManager implements AppDataComponent {
 
     public void addClass(JClass itemToAdd) {
         items.add(itemToAdd);
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento.add(workspace.getDesignRenderer().getChildren());
+
     }
 
 //    public void setItems(ObservableList<Node> initItems, Pane pane) {
@@ -236,6 +239,8 @@ public class DataManager implements AppDataComponent {
 //    }
     public void addInterface(Interface itemToAdd) {
         items.add(itemToAdd);
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+//        memento.add(workspace.getDesignRenderer().getChildren());
     }
 
     public void removeItem(Item itemToRemove) {
@@ -283,6 +288,7 @@ public class DataManager implements AppDataComponent {
     }
 
     public void zoomIn() {
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
         Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
 //         p.setPrefHeight(p.getPrefHeight() + 50);
 //         p.setPrefWidth(p.getPrefWidth() + 50);
@@ -348,6 +354,7 @@ public class DataManager implements AppDataComponent {
 //        line.setStartX(startX);
 //        line.setStartY(startY);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
+        memento.add(((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren());
     }
 
     public void buildArrow(DoubleProperty x, DoubleProperty y) {
@@ -446,11 +453,27 @@ public class DataManager implements AppDataComponent {
 //        System.out.println("********** Workspace set in undo : ");
         ArrayList<Item> list = memento.getSavedState();
         System.out.println("*******Memento get children in undo method : " + list.size());
-        for(Item i : list) {
+        for (Item i : list) {
             addToWorkspace(i);
 //            workspace.getDesignRenderer().getChildren().add(i);
         }
 
+    }
+
+    public void snap() {
+
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+        for (Node n : w.getDesignRenderer().getChildren()) {
+            if (n instanceof Item) {
+//            Item i = (Item) n;
+                int x = (int) (n.getLayoutX() / 20);
+                int y = (int) (n.getLayoutY() / 20);
+                int offX = x * 20;
+                int offY = y * 20;
+                n.setLayoutX(offX);
+                n.setLayoutY(offY);
+            }
+        }
     }
 
     public DataManager deepCopyDataManager() {

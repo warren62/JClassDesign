@@ -202,7 +202,7 @@ public class Workspace extends AppWorkspaceComponent {
         minusMethodBtn = new Button("-");
         minusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         parentBtn = new Button("Edit Parents");
-        parentBtn.setMaxWidth(Double.MIN_VALUE);
+        parentBtn.setMaxWidth(Double.MAX_VALUE);
 
         newBtn = gui.getNewButton();
         newBtn.setMaxWidth(Double.MAX_VALUE);
@@ -322,6 +322,7 @@ public class Workspace extends AppWorkspaceComponent {
         componentToolBar.getChildren().addAll(classHBox, packageHBox, parentHBox, varHBox, varTableScroll, methodHBox, methTableScroll);
 
         grid = new GridPane();
+        
         designRenderer = new Pane();
         designRenderer.setStyle("-fx-background: black;");
         designRenderer.setMinSize(100, 100);
@@ -433,6 +434,8 @@ public class Workspace extends AppWorkspaceComponent {
         
         parentBtn.setOnAction(e -> {
             ParentDialog pd = new ParentDialog(gui.getWindow(), app);
+            pd.populateDialog();
+//            pd.clearLines();
             pd.showDialog();
             
             DataManager data = (DataManager) app.getDataComponent();
@@ -453,6 +456,20 @@ public class Workspace extends AppWorkspaceComponent {
             editToolBarController.handlePackageName(o);
             System.out.println(packageField.getText());
 
+        });
+        
+        gridCheckBox.setOnAction(e -> {
+            if(gridCheckBox.isSelected()) {
+                this.addLines();
+            }else {
+                this.clearLines();
+            }
+            
+        });
+        
+        gridSnapCheckBox.setOnAction(e -> {
+            DataManager data = (DataManager) app.getDataComponent();
+            data.snap();
         });
 
         designRendererController = new DesignRendererController(app);
@@ -492,11 +509,29 @@ public class Workspace extends AppWorkspaceComponent {
     public TableView getVariableTable() {
         return variableTable;
     }
+    
+    public boolean isSnap() {
+        boolean b;
+        if(gridSnapCheckBox.isSelected()) {
+            b = true;
+        }else {
+            b = false;
+        }
+        return b;
+    }
 
     
     
     public ScrollPane getDesignRendererScroll() {
         return designRendererScroll;
+    }
+    
+    public void addLines() {
+        designRenderer.getStyleClass().add("root");
+    }
+    
+    public void clearLines() {
+        designRenderer.getStyleClass().clear();
     }
 
     @Override
