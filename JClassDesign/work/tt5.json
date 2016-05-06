@@ -1,0 +1,38 @@
+
+{
+    "uml":[
+        {
+            "type":"Class",
+            "name":"A",
+            "package_name":"DefaultPackageName",
+            "x":886.0,
+            "y":1145.0,
+            "methods":[
+            ],
+            "variables":[
+            ]
+        },
+        {
+            "type":"Class",
+            "name":"B",
+            "package_name":"DefaultPackageName",
+            "x":1375.0,
+            "y":1055.0,
+            "methods":[
+            ],
+            "variables":[
+            ]
+        },
+        {
+            "type":"Class",
+            "name":"C",
+            "package_name":"DefaultPackageName",
+            "x":1652.0,
+            "y":969.0,
+            "methods":[
+            ],
+            "variables":[
+            ]
+        }
+    ]
+}

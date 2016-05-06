@@ -5,6 +5,7 @@
  */
 package jc.data;
 
+import java.util.ArrayList;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 import javafx.collections.FXCollections;
@@ -12,6 +13,8 @@ import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
 import jc.gui.Workspace;
 import saf.AppTemplate;
@@ -35,6 +38,12 @@ public class Item extends VBox implements Draggable {
     Label pkgLbl;
     String name = "DefaultClassName";
     String pkg = "DefaultPackageName";
+
+    ArrayList<Line> parentLines = new ArrayList();
+    ArrayList<Line> childLines = new ArrayList();
+
+    ArrayList<Shape> parentShapes = new ArrayList();
+    ArrayList<Shape> childShapes = new ArrayList();
 
     Item parent;
 
@@ -99,6 +108,54 @@ public class Item extends VBox implements Draggable {
     public String getPackageName() {
 //        return pkg.getText();
         return pkg;
+    }
+
+    public ArrayList<Line> getParentLines() {
+        return parentLines;
+    }
+
+    public void setParentLines(ArrayList<Line> parentLines) {
+        this.parentLines = parentLines;
+    }
+
+    public ArrayList<Line> getChildLines() {
+        return childLines;
+    }
+
+    public void setChildLines(ArrayList<Line> childLines) {
+        this.childLines = childLines;
+    }
+
+    public void addParentLine(Line l) {
+        parentLines.add(l);
+    }
+
+    public void addChildLine(Line l) {
+        childLines.add(l);
+    }
+
+    public ArrayList<Shape> getParentShapes() {
+        return parentShapes;
+    }
+
+    public void setParentShapes(ArrayList<Shape> parentShapes) {
+        this.parentShapes = parentShapes;
+    }
+
+    public ArrayList<Shape> getChildShapes() {
+        return childShapes;
+    }
+
+    public void setChildShapes(ArrayList<Shape> childShapes) {
+        this.childShapes = childShapes;
+    }
+
+    public void addParentShape(Shape s) {
+        parentShapes.add(s);
+    }
+
+    public void addChildShape(Shape s) {
+        childShapes.add(s);
     }
 
     @Override
@@ -167,6 +224,45 @@ public class Item extends VBox implements Draggable {
 
         });
 
+        initDrag(data, workspace);
+
+//        this.setOnMouseDragged(e -> {
+//            if (workspace.isSnap()) {
+//                x += e.getSceneX() - orgSceneX;
+//                y += e.getSceneY() - orgSceneY;
+//
+//                setLayoutX(x);
+//                setLayoutY(y);
+//
+//                orgSceneX = e.getSceneX();
+//                orgSceneY = e.getSceneY();
+//                data.snap();
+//            } else {
+//                x += e.getSceneX() - orgSceneX;
+//                y += e.getSceneY() - orgSceneY;
+//
+//                setLayoutX(x);
+//                setLayoutY(y);
+//
+//                orgSceneX = e.getSceneX();
+//                orgSceneY = e.getSceneY();
+//            }
+//
+////            double offsetX = e.getSceneX() - orgSceneX;
+////            double offsetY = e.getSceneY() - orgSceneY;
+////            double newTranslateX = orgTranslateX + offsetX;
+////            double newTranslateY = orgTranslateY + offsetY;
+////            DataManager data = (DataManager) app.getDataComponent();
+////            drag((int)e.getX(), (int)e.getY());
+//            data.setSelectedItem(this);
+////            ((Item)(e.getSource())).setTranslateX(newTranslateX);
+////            ((Item)(e.getSource())).setTranslateY(newTranslateY);
+////            data.highlightItem(this);
+////            this.relocate(newTranslateX, newTranslateY);
+//        });
+    }
+
+    public void initDrag(DataManager data, Workspace workspace) {
         this.setOnMouseDragged(e -> {
             if (workspace.isSnap()) {
                 x += e.getSceneX() - orgSceneX;
@@ -188,6 +284,10 @@ public class Item extends VBox implements Draggable {
                 orgSceneX = e.getSceneX();
                 orgSceneY = e.getSceneY();
             }
+            this.setOnMouseReleased(t -> {
+                data.getMemento().add(workspace.getDesignRenderer().getChildren());
+                System.out.println("*****Init drag******");
+            });
 
 //            double offsetX = e.getSceneX() - orgSceneX;
 //            double offsetY = e.getSceneY() - orgSceneY;
@@ -201,9 +301,14 @@ public class Item extends VBox implements Draggable {
 //            data.highlightItem(this);
 //            this.relocate(newTranslateX, newTranslateY);
         });
+//        this.setOnMouseReleased(e -> {
+//            data.getMemento().add(workspace.getDesignRenderer().getChildren());
+//            System.out.println("*****Init drag******");
+//        });
 
     }
 
+//    public void initPressed()
     @Override
     public void size(int x, int y) {
         throw new UnsupportedOperationException("Not supported yet."); //To change body of generated methods, choose Tools | Templates.

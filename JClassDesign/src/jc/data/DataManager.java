@@ -27,6 +27,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Polyline;
+import javafx.scene.shape.Shape;
 import javafx.scene.shape.StrokeLineCap;
 import javafx.scene.transform.Scale;
 import static jc.data.JClassDesignerState.SELECTING_CLASS;
@@ -178,6 +179,7 @@ public class DataManager implements AppDataComponent {
         workspace.getParentComboBox().getItems().add(newItem.getName());
         workspace.getDesignRenderer().getChildren().add(newItem);
 
+//        memento.add(workspace.getDesignRenderer().getChildren());
 //        Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
 //        memento.add(workspace);
@@ -247,8 +249,28 @@ public class DataManager implements AppDataComponent {
     }
 
     public void removeItem(Item itemToRemove) {
-        items.remove(itemToRemove);
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
+
+        for (Line l : itemToRemove.getParentLines()) {
+            workspace.getDesignRenderer().getChildren().remove(l);
+        }
+
+        for (Line l : itemToRemove.getChildLines()) {
+            workspace.getDesignRenderer().getChildren().remove(l);
+        }
+
+        for (Shape l : itemToRemove.getChildShapes()) {
+            workspace.getDesignRenderer().getChildren().remove(l);
+        }
+
+        for (Shape l : itemToRemove.getParentShapes()) {
+            workspace.getDesignRenderer().getChildren().remove(l);
+        }
+
+        itemToRemove.getChildLines().clear();
+        itemToRemove.getParentLines().clear();
+        items.remove(itemToRemove);
+
         workspace.getDesignRenderer().getChildren().remove(itemToRemove);
 //        Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
@@ -262,13 +284,17 @@ public class DataManager implements AppDataComponent {
 
 //        g.getChildren().add(i);
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        System.out.println("*********Item name test add to workspace******" + i.getName());
+        i.updateNameLabel();
         workspace.getDesignRenderer().getChildren().add(i);
+        System.out.println("*********Item name test add to workspace after******" + i.getName());
+
         workspace.getParentComboBox().getItems().add(i.getName());
         i.initHandler(this, workspace);
 //        Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
 //        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
+//        memento.add(workspace.getDesignRenderer().getChildren());
 
 //        memento.add(deepCopyDataManager());
 //        ((Workspace)app.getWorkspaceComponent()).getGroup().getChildren().add(i);
@@ -322,33 +348,34 @@ public class DataManager implements AppDataComponent {
 
     }
 
-    public void linkLines() {
-        ComboBox cb = ((Workspace) app.getWorkspaceComponent()).getParentComboBox();
-        Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
-        if (this.getSelectedItem() instanceof JClass) {
-//            if (this.getSelectedItem().getName().equals(cb.getValue())) {
-            for (Node n : p.getChildren()) {
-                Item i = (Item) n;
-                if (i.getName().equals(cb.getValue())) {
-                    JClass jC = (JClass) this.getSelectedItem();
-                    jC.addParent(i);
-                    buildLine(i);
-                    buildArrow(i.layoutXProperty(), i.layoutYProperty(), i);
-
-                }
-            }
-        }
-        Workspace workspace = (Workspace) app.getWorkspaceComponent();
-//        memento = new JClassDesignerMemento(workspace);
-//        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
-
-//        memento.add(deepCopyDataManager());
-    }
-
+//    public void linkLines() {
+//        ComboBox cb = ((Workspace) app.getWorkspaceComponent()).getParentComboBox();
+//        Pane p = ((Workspace) app.getWorkspaceComponent()).getDesignRenderer();
+//        if (this.getSelectedItem() instanceof JClass) {
+////            if (this.getSelectedItem().getName().equals(cb.getValue())) {
+//            for (Node n : p.getChildren()) {
+//                Item i = (Item) n;
+//                if (i.getName().equals(cb.getValue())) {
+//                    JClass jC = (JClass) this.getSelectedItem();
+//                    jC.addParent(i);
+//                    buildLine(i);
+//                    buildArrow(i.layoutXProperty(), i.layoutYProperty(), i);
+//
+//                }
+//            }
+//        }
+//        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+////        memento = new JClassDesignerMemento(workspace);
+////        memento.add(new WorkspaceData(workspace));
+//        memento.add(workspace.getDesignRenderer().getChildren());
+//
+////        memento.add(deepCopyDataManager());
+//    }
     public void buildLine(Item i) {
         Line line = new BoundLine(i.layoutXProperty(), i.layoutYProperty(),
                 this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
+        i.addParentLine(line);
+        this.getSelectedItem().addChildLine(line);
 //        line.setOnMousePressed(e -> {
 //            System.out.println("****Click line works******");
 //            Circle c = new Circle(5);
@@ -431,7 +458,7 @@ public class DataManager implements AppDataComponent {
         memento.add(((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren());
     }
 
-    public void buildArrow(DoubleProperty x, DoubleProperty y, Item i) {
+    public void buildArrow(Item p, Item i) {
 //        Circle point = new Circle(.5);
 //        point.centerXProperty().bind(x);
 //        point.centerYProperty().bind(y);
@@ -447,8 +474,11 @@ public class DataManager implements AppDataComponent {
             10.0, -10.0});
         arrow.setRotate(270);
 //        pl.getPoints().add(point.getCenterY())
-        arrow.layoutXProperty().bind(x);
-        arrow.layoutYProperty().bind(y);
+        arrow.layoutXProperty().bind(p.layoutXProperty());
+        arrow.layoutYProperty().bind(p.layoutYProperty());
+
+        p.addParentShape(arrow);
+        i.addChildShape(arrow);
 
 //        Line top = new BoundLine(point.centerXProperty(), point.centerYProperty(), topBottomX, topBottomY);
 //        Line bottom = new BoundLine(point.centerXProperty(), point.centerYProperty(), bottomX, bottomY);
@@ -474,6 +504,21 @@ public class DataManager implements AppDataComponent {
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(arrow);
     }
 
+    public void buildFeatheredArrow(DoubleProperty x, DoubleProperty y, Item i) {
+        Polyline pl = new Polyline();
+        pl.getPoints().addAll(new Double[]{
+            0.0, 10.0,
+            -10.0, -10.0,
+            10.0, -10.0});
+//        pl.setRotate(90);
+
+        pl.layoutXProperty().bind(x);
+        pl.layoutYProperty().bind(y);
+
+        ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(pl);
+
+    }
+
     public void buildDiamond(DoubleProperty x, DoubleProperty y, Item i) {
 //        double[] xh = {-.5, 0, .5, 0, 0, -.5, 0, .5};
 //        double[] yh = {0, -.5, 0, .5};
@@ -483,34 +528,30 @@ public class DataManager implements AppDataComponent {
             0.0, 10.0,
             -10.0, -10.0,
             0.0, -30.0,
-            10.0, -10.0,
-            
-            
-        });
-        
+            10.0, -10.0,});
+
         p.setRotate(90);
-        
+
         p.layoutXProperty().bind(x);
         p.layoutYProperty().bind(y);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(p);
 
     }
 
-    public void updateParentNames() {
-        Workspace workspace = (Workspace) app.getWorkspaceComponent();
-        workspace.getParentComboBox().getItems().clear();
-        for (Node n : workspace.getDesignRenderer().getChildren()) {
-            Item i = (Item) n;
-            workspace.getParentComboBox().getItems().add(i.getName());
-        }
+//    public void updateParentNames() {
 //        Workspace workspace = (Workspace) app.getWorkspaceComponent();
-//        memento = new JClassDesignerMemento(workspace);
-//        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
-
-//        memento.add(deepCopyDataManager());
-    }
-
+//        workspace.getParentComboBox().getItems().clear();
+//        for (Node n : workspace.getDesignRenderer().getChildren()) {
+//            Item i = (Item) n;
+//            workspace.getParentComboBox().getItems().add(i.getName());
+//        }
+////        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+////        memento = new JClassDesignerMemento(workspace);
+////        memento.add(new WorkspaceData(workspace));
+//        memento.add(workspace.getDesignRenderer().getChildren());
+//
+////        memento.add(deepCopyDataManager());
+//    }
     public void resize(Item i) {
         Circle c1 = new Circle(10);
         c1.centerXProperty().bind(i.layoutXProperty());
@@ -555,6 +596,18 @@ public class DataManager implements AppDataComponent {
         }
 
     }
+    
+    public void redo() {
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+        workspace.getDesignRenderer().getChildren().clear();
+        
+        ArrayList<Item> list = memento.getRedoState();
+        System.out.println("*******Memento get children in undo method : " + list.size());
+        for (Item i : list) {
+            addToWorkspace(i);
+//            workspace.getDesignRenderer().getChildren().add(i);
+        }
+    }
 
     public void snap() {
 
@@ -570,6 +623,10 @@ public class DataManager implements AppDataComponent {
                 n.setLayoutY(offY);
             }
         }
+    }
+
+    public JClassDesignerMemento getMemento() {
+        return memento;
     }
 
     public DataManager deepCopyDataManager() {

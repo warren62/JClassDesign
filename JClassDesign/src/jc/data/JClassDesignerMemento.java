@@ -21,7 +21,7 @@ public class JClassDesignerMemento {
     private Workspace workspace;
     BorderPane appPane;
     Stack<WorkspaceData> undoStack = new Stack();
-    Stack<Workspace> redoStack = new Stack();
+    Stack<ArrayList> redoStack = new Stack();
 
     Stack<DataManager> undoStackData = new Stack();
 
@@ -49,7 +49,13 @@ public class JClassDesignerMemento {
 //        return new WorkspaceData(undoStack.pop().workspace);
 //        System.out.println("*******Size of stack : " + undoStack.size());
 //        undoStackItems.pop();
-        return undoStackItems.pop();
+        ArrayList popped = undoStackItems.pop();
+        redoStack.add(popped);
+        return popped;
+    }
+    
+    public ArrayList getRedoState() {
+        return redoStack.pop();
     }
 
 //    public void add(WorkspaceData workspace) {
@@ -63,7 +69,7 @@ public class JClassDesignerMemento {
 //        undoStackData.add(dm);
 //    }
     public void add(ObservableList<Node> items) {
-        ArrayList<Item> list = new ArrayList();
+        ArrayList<Node> list = new ArrayList();
         for (Node n : items) {
            
             if(n instanceof JClass) {
@@ -74,6 +80,8 @@ public class JClassDesignerMemento {
                 Interface in = (Interface) n;
                 Interface copy = in.deepCopy();
                 list.add(copy);
+            } else {
+                list.add(n);
             }
             
         }

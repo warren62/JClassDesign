@@ -12,6 +12,7 @@ import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
@@ -19,6 +20,7 @@ import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Line;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import jc.data.DataManager;
@@ -53,6 +55,10 @@ public class MethodDialog extends Stage {
     HBox staticHB;
     HBox abstractHB;
     HBox accessHB;
+    HBox argsHB;
+    
+    Button plusBtn;
+    Button minusBtn;
 
     VBox mainVB;
 
@@ -80,6 +86,11 @@ public class MethodDialog extends Stage {
         abstractHB.setAlignment(Pos.CENTER);
         accessHB = new HBox(10);
         accessHB.setAlignment(Pos.CENTER);
+        argsHB =  new HBox();
+        argsHB.setAlignment(Pos.CENTER);
+        
+        plusBtn = new Button("Add Arg");
+        minusBtn = new Button("Delete Arg");
 
         nameField = new TextField();
         typeField = new TextField();
@@ -105,8 +116,16 @@ public class MethodDialog extends Stage {
         staticHB.getChildren().addAll(staticLbl, staticCheckBox);
         abstractHB.getChildren().addAll(abstractLbl, abstractCheckBox);
         accessHB.getChildren().addAll(accessLbl, accessComboBox);
+        argsHB.getChildren().addAll(plusBtn, minusBtn);
 
-        mainVB.getChildren().addAll(finalHB, staticHB, abstractHB, nameHB, typeHB, accessHB);
+        mainVB.getChildren().addAll(finalHB, staticHB, abstractHB, nameHB, typeHB, accessHB, argsHB);
+        plusBtn.setOnAction(e -> {
+            HBox hb = new HBox();
+            hb.getChildren().add(new TextField("Argument"));
+            hb.setAlignment(Pos.CENTER);
+            mainVB.getChildren().add(hb);
+        });
+        
         dialogScene = new Scene(mainVB, 300, 300);
         this.setScene(dialogScene);
     }
@@ -152,6 +171,8 @@ public class MethodDialog extends Stage {
 //            }
 //        }
 
+        
+
         if (i instanceof JClass) {
             ((JClass) i).addMethod(m);
 //            t.setItems((ObservableList) ((JClass) i).getMethods());
@@ -168,19 +189,19 @@ public class MethodDialog extends Stage {
 //        Field fi = new Field();
     }
 
-    public void addLines(ArrayList<Method> methodList, JClass jc, JClass j) {
-        DataManager data = (DataManager) app.getDataComponent();
-        for (Method me : methodList) {
-            System.out.println("*****for loop in add lines method in method dialog***** ");
-            System.out.println("*****Method get type and jc get name in add lines method of method dialog***** " + jc.getName() + "//" + me.getType());
-            if (me.getType().equals(jc.getName()) && !me.getType().equals("void")) {
-
-                data.buildLine(jc);
-                data.buildArrow(jc.layoutXProperty(), jc.layoutYProperty(), j);
-                System.out.println("*****Draw diamond in method dialog***** ");
-            }
-        }
-    }
+//    public void addLines(ArrayList<Method> methodList, JClass jc, JClass j) {
+//        DataManager data = (DataManager) app.getDataComponent();
+//        for (Method me : methodList) {
+//            System.out.println("*****for loop in add lines method in method dialog***** ");
+//            System.out.println("*****Method get type and jc get name in add lines method of method dialog***** " + jc.getName() + "//" + me.getType());
+//            if (me.getType().equals(jc.getName()) && !me.getType().equals("void")) {
+//
+//                data.buildLine(jc);
+//                data.buildArrow(jc.layoutXProperty(), jc.layoutYProperty(), j);
+//                System.out.println("*****Draw diamond in method dialog***** ");
+//            }
+//        }
+//    }
 
     public void generate(Item i) {
         Workspace w = (Workspace) app.getWorkspaceComponent();
@@ -191,10 +212,11 @@ public class MethodDialog extends Stage {
                 if (i instanceof JClass) {
                     JClass selJC = (JClass) i;
                     ArrayList<Method> list = ((JClass) i).getMethods();
-                    for(int z = 0; z < list.size(); z++) {
-                        if(list.get(z).getType().equals(jc.getName())) {
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(jc.getName())) {
                             data.buildLine(jc);
-                            data.buildDiamond(jc.layoutXProperty(), jc.layoutYProperty(), i);
+
+                            data.buildFeatheredArrow(jc.layoutXProperty(), jc.layoutYProperty(), i);
                         }
                     }
 

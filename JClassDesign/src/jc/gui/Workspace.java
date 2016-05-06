@@ -236,15 +236,13 @@ public class Workspace extends AppWorkspaceComponent {
         removeBtn.setMaxWidth(Double.MAX_VALUE);
         undoBtn = gui.initChildButton(editToolBar, UNDO_ICON.toString(), UNDO_TOOLTIP.toString(), false);
         undoBtn.setMaxWidth(Double.MAX_VALUE);
-        redoBtn = gui.initChildButton(editToolBar, REDO_ICON.toString(), REDO_TOOLTIP.toString(), true);
+        redoBtn = gui.initChildButton(editToolBar, REDO_ICON.toString(), REDO_TOOLTIP.toString(), false);
         redoBtn.setMaxWidth(Double.MAX_VALUE);
 
         zoomInBtn = gui.initChildButton(viewToolBar, ZOOM_IN_ICON.toString(), ZOOM_IN_TOOLTIP.toString(), false);
         zoomInBtn.setMaxWidth(Double.MAX_VALUE);
         zoomOutBtn = gui.initChildButton(viewToolBar, ZOOM_OUT_ICON.toString(), ZOOM_OUT_TOOLTIP.toString(), false);
         zoomOutBtn.setMaxWidth(Double.MAX_VALUE);
-        
-        
 
         gridCheckBox = new CheckBox("Grid");
         gridSnapCheckBox = new CheckBox("Snap");
@@ -323,7 +321,7 @@ public class Workspace extends AppWorkspaceComponent {
         componentToolBar.getChildren().addAll(classHBox, packageHBox, parentHBox, varHBox, varTableScroll, methodHBox, methTableScroll);
 
         grid = new GridPane();
-        
+
         designRenderer = new Pane();
         designRenderer.setStyle("-fx-background: black;");
         designRenderer.setMinSize(100, 100);
@@ -433,13 +431,13 @@ public class Workspace extends AppWorkspaceComponent {
             md.addData(data.getSelectedItem(), methodTable);
             md.generate(data.getSelectedItem());
         });
-        
+
         parentBtn.setOnAction(e -> {
             ParentDialog pd = new ParentDialog(gui.getWindow(), app);
             pd.populateDialog();
 //            pd.clearLines();
             pd.showDialog();
-            
+
             DataManager data = (DataManager) app.getDataComponent();
             pd.addData(data.getSelectedItem());
         });
@@ -450,30 +448,35 @@ public class Workspace extends AppWorkspaceComponent {
 
         });
 
-        parentComboBox.setOnAction(e -> {
-            editToolBarController.handleAddParent();
-        });
-
+//        parentComboBox.setOnAction(e -> {
+//            editToolBarController.handleAddParent();
+//        });
         packageField.textProperty().addListener((a, e, o) -> {
             editToolBarController.handlePackageName(o);
             System.out.println(packageField.getText());
 
         });
-        
+
         gridCheckBox.setOnAction(e -> {
-            if(gridCheckBox.isSelected()) {
+            if (gridCheckBox.isSelected()) {
                 this.addLines();
-                 gridSnapCheckBox.setDisable(false);
-            }else {
+                gridSnapCheckBox.setDisable(false);
+            } else {
                 this.clearLines();
                 gridSnapCheckBox.setDisable(true);
             }
-            
+
         });
-        
+
         gridSnapCheckBox.setOnAction(e -> {
             DataManager data = (DataManager) app.getDataComponent();
             data.snap();
+        });
+
+        redoBtn.setOnAction(e -> {
+            DataManager data = (DataManager) app.getDataComponent();
+            data.redo();
+
         });
 
         designRendererController = new DesignRendererController(app);
@@ -513,27 +516,25 @@ public class Workspace extends AppWorkspaceComponent {
     public TableView getVariableTable() {
         return variableTable;
     }
-    
+
     public boolean isSnap() {
         boolean b;
-        if(gridSnapCheckBox.isSelected()) {
+        if (gridSnapCheckBox.isSelected()) {
             b = true;
-        }else {
+        } else {
             b = false;
         }
         return b;
     }
 
-    
-    
     public ScrollPane getDesignRendererScroll() {
         return designRendererScroll;
     }
-    
+
     public void addLines() {
         designRenderer.getStyleClass().add("root");
     }
-    
+
     public void clearLines() {
         designRenderer.getStyleClass().clear();
     }

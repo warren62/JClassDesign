@@ -68,9 +68,9 @@ public class Interface extends Item {
         m2.addArg("int g");
         System.out.println("Test method to code: " + m.toCode());
         
-        this.setAccess("public");
-        this.addMethod(m);
-        this.addMethod(m2);
+//        this.setAccess("public");
+//        this.addMethod(m);
+//        this.addMethod(m2);
         System.out.println("Test class to code: " + this.toCode());
 
         this.setHeight(100);

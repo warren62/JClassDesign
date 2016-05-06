@@ -22,7 +22,7 @@ import saf.AppTemplate;
  * @author Steve
  */
 public class JClass extends Item {
-
+    
     AppTemplate app;
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
@@ -34,15 +34,13 @@ public class JClass extends Item {
     boolean hasSuperclass = false;
     boolean a = false;
     
-    
-
     VBox nameVBox, methodVBox, variableVBox;
     
     ArrayList<Method> methods = new ArrayList();
     ArrayList<Variable> variables = new ArrayList();
     ArrayList<Interface> parentInterfaces = new ArrayList();
     String parentClassName;
-
+    
     public JClass() {
 //        super(initApp);
 //        app = initApp;
@@ -56,9 +54,9 @@ public class JClass extends Item {
         nameVBox = new VBox();
         methodVBox = new VBox();
         variableVBox = new VBox();
-
+        
         nameVBox.getChildren().add(nameLbl);
-
+        
         nameVBox.getStyleClass().add("vbox");
         methodVBox.getStyleClass().add("vbox");
         methodVBox.setMinHeight(30);
@@ -69,19 +67,19 @@ public class JClass extends Item {
 //        initHandler();
 
         getChildren().addAll(nameVBox, variableVBox, methodVBox);
-
+        
         this.getStyleClass().add("vbox");
         this.setPrefSize(100, 100);
-
+        
         Variable v = new Variable();
         v.setAccess("public");
         v.setName("s");
         v.setF(true);
         v.setS(true);
-        v.setType("VBox"); 
+        v.setType("VBox");        
         System.out.println("Test variable to code: " + v.toCode());
         System.out.println("Test variable to uml: " + v.toUml());
-
+        
         Method m = new Method();
         m.setAccess("private");
         m.setType("String");
@@ -89,7 +87,7 @@ public class JClass extends Item {
         m.addArg("String b");
         m.addArg("String c");
         m.addArg("int g");
-
+        
         Method m2 = new Method();
         m2.setAccess("private");
         m2.setType("String");
@@ -115,16 +113,12 @@ public class JClass extends Item {
 //        i.setName("GG");
 //        i.setAccess("public");
 //        i.addMethod(m3);
-        
 //        JClass c = new JClass(app);
 //        c.setName("Ha");
 //        c.setAccess("public");
-        
-        
 //        this.addParent(i);
 //        
 //        this.setAccess("public");
-          
 //        this.addMethod(m);
 //        this.addMethod(m2);
 //        this.addVariable(v);
@@ -133,11 +127,10 @@ public class JClass extends Item {
 //        this.setHeight(100);
 //        this.setWidth(100);
     }
-    
+
 //    public JClass() {
 //        
 //    }
-
     public ArrayList<Interface> getParentInterfaces() {
         return parentInterfaces;
     }
@@ -211,9 +204,9 @@ public class JClass extends Item {
 //          
 
         });
-
+        
         this.setOnMousePressed(e -> {
-
+            
         });
     }
 
@@ -254,62 +247,58 @@ public class JClass extends Item {
         methods.add(method);
         methodVBox.getChildren().add(new Label(method.toUml()));
     }
-
+    
     public ArrayList<Method> getMethods() {
         return methods;
     }
-
+    
     public boolean isA() {
         return a;
     }
-
+    
     public void setA(boolean a) {
         this.a = a;
     }
     
-
     public void addVariable(Variable variable) {
         variables.add(variable);
         variableVBox.getChildren().add(new Label(variable.toUml()));
     }
-
+    
     public ArrayList<Variable> getVariables() {
         return variables;
     }
-
+    
     public String getAccess() {
         return access;
     }
-
+    
     public void setAccess(String access) {
         this.access = access;
     }
-
+    
     public boolean isImplementsInterface() {
         return implementsInterface;
     }
-
+    
     public void setImplementsInterface(boolean implementsInterface) {
         this.implementsInterface = implementsInterface;
     }
-
+    
     public boolean isHasSuperclass() {
         return hasSuperclass;
     }
-
+    
     public void setHasSuperclass(boolean hasSuperclass) {
         this.hasSuperclass = hasSuperclass;
     }
-    
-    
-    
+
 //    public void setLabelName(String n) {
 //       Label l = (Label) nameVBox.getChildren().get(0);
 //       l.setText(name);
 //       nameVBox.getChildren().clear();
 //       nameVBox.getChildren().add(l);
 //    }
-
     public String toCode() {
         String s = new String();
         String variables = loadVar();
@@ -317,63 +306,56 @@ public class JClass extends Item {
 //        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
 //                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
         if (isImplementsInterface() && isA()) {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" +  "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " implements " + loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
-
-        }else if (isImplementsInterface()) {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" +  "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " implements " +  loadInterfaces() + "{" + "\n" + "\n"
-                    + variables + "\n" + "\n" + methods + "\n" + "}";
-
-        }
-        
-        else if (this.isHasSuperclass() && isA()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " +  parentClassName + "{" + "\n" + "\n"
+        } else if (isImplementsInterface()) {
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " implements " + loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
-         
-        }else if (this.isHasSuperclass()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " +  parentClassName + "{" + "\n" + "\n"
+        } else if (this.isHasSuperclass() && isA()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " + parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
-         
-        } 
-        
-        else if (this.isHasSuperclass() && this.isImplementsInterface() && isA()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " +  parentClassName + "implements " +  loadInterfaces() + "{" + "\n" + "\n"
+        } else if (this.isHasSuperclass()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " + parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
-
-        }else if (this.isHasSuperclass() && this.isImplementsInterface()) {
             
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " +  parentClassName + "implements " +  loadInterfaces() + "{" + "\n" + "\n"
-                    + variables + "\n" + "\n" + methods + "\n" + "}"; 
-        
-        }else if(isA()) {
+        } else if (this.isHasSuperclass() && this.isImplementsInterface() && isA()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " + parentClassName + "implements " + loadInterfaces() + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";
+            
+        } else if (this.isHasSuperclass() && this.isImplementsInterface()) {
+            
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " + parentClassName + "implements " + loadInterfaces() + "{" + "\n" + "\n"
+                    + variables + "\n" + "\n" + methods + "\n" + "}";            
+            
+        } else if (isA()) {
             s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "  {" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
-        }
-        
-        else {
+        } else {
             s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
         }
         return s;
     }
-        
+    
     private String loadInterfaces() {
         String s = new String();
-        for(Interface i : parentInterfaces) {
-            if(parentInterfaces.size() <= 1) {
+        for (Interface i : parentInterfaces) {
+            if (parentInterfaces.size() <= 1) {
                 s += i.getName();
-            }else {
+            } else {
                 s += ", " + i.getName();
             }
         }
-            
         
         return s;
     }
-
+    
     private String loadVar() {
         String s = new String();
         for (Variable v : variables) {
@@ -381,7 +363,7 @@ public class JClass extends Item {
         }
         return s;
     }
-
+    
     private String loadMethods() {
         String s = new String();
         for (Method v : methods) {
@@ -389,11 +371,11 @@ public class JClass extends Item {
         }
         return s;
     }
-
+    
     private String getImports() {
         ArrayList<String> imported = new ArrayList();
         String s = new String();
-
+        
         for (Variable v : variables) {
             if (v.getType().equals("int") || v.getType().equals("double") || v.getType().equals("char") || v.getType().equals("String") || v.getType().equals("float")
                     || v.getType().equals("Integer") || v.getType().equals("Double") || v.getType().equals("Charachter") || v.getType().equals("Float")) {
@@ -402,7 +384,7 @@ public class JClass extends Item {
             if (this.name.equals(v.getType())) {
                 continue;
             }
-
+            
             boolean isImported = false;
             for (String i : imported) {
                 if (i.equals(v.getType())) {
@@ -410,15 +392,15 @@ public class JClass extends Item {
                     break;
                 }
             }
-
+            
             if (isImported) {
                 continue;
             }
-
+            
             imported.add(v.getType());
-
+            
         }
-
+        
         Package[] packages = Package.getPackages();
         for (String im : imported) {
             for (Package p : packages) {
@@ -429,7 +411,7 @@ public class JClass extends Item {
                 } catch (ClassNotFoundException ex) {
                     continue;
                 }
-
+                
             }
         }
         for (Method m : methods) {
@@ -439,7 +421,7 @@ public class JClass extends Item {
             if (this.name.equals(m.getType())) {
                 continue;
             }
-
+            
             boolean isImported = false;
             for (String i : imported) {
                 if (i.equals(m.getType())) {
@@ -447,13 +429,13 @@ public class JClass extends Item {
                     break;
                 }
             }
-
+            
             if (isImported) {
                 continue;
             }
-
+            
             imported.add(m.getType());
-
+            
         }
 
 //        Package[] packages = Package.getPackages();
@@ -466,24 +448,24 @@ public class JClass extends Item {
                 } catch (ClassNotFoundException ex) {
                     continue;
                 }
-
+                
             }
         }
-
+        
         return s;
     }
-
+    
     public Item getParentItem() {
         return parent;
     }
-
+    
     public void addParent(Item parent) {
         if (parent instanceof Interface) {
             this.setImplementsInterface(true);
             parentInterfaces.add((Interface) parent);
-            for(Interface i : parentInterfaces) {
+            for (Interface i : parentInterfaces) {
                 ArrayList<Method> methods = i.getMethods();
-                for(Method m : methods) {
+                for (Method m : methods) {
                     this.addMethod(m);
                 }
             }
@@ -497,20 +479,21 @@ public class JClass extends Item {
     
     public JClass deepCopy() {
         JClass j = new JClass();
+        j.setName(this.getName());
         j.setAccess(this.getAccess());
         j.setA(this.isA());
         j.setHasSuperclass(this.isHasSuperclass());
         j.setLayoutX(this.getLayoutX());
         j.setLayoutY(this.getLayoutY());
-        
+
 //        j.addParent(this.getParentItem().deepCopy());
 //        ArrayList<Method> m = new ArrayList();
-        for(Method me : this.getMethods()) {
+        for (Method me : this.getMethods()) {
             Method met = me.deepCopy();
             j.addMethod(met);
         }
         
-        for(Variable me : this.getVariables()) {
+        for (Variable me : this.getVariables()) {
             Variable met = me.deepCopy();
             j.addVariable(met);
         }

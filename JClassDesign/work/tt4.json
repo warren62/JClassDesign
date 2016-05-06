@@ -1,0 +1,16 @@
+
+{
+    "uml":[
+        {
+            "type":"Class",
+            "name":"A",
+            "package_name":"DefaultPackageName",
+            "x":1112.0,
+            "y":953.0,
+            "methods":[
+            ],
+            "variables":[
+            ]
+        }
+    ]
+}

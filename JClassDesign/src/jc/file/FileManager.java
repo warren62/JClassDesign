@@ -22,6 +22,8 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
+import javafx.scene.shape.Line;
+import javafx.scene.shape.Shape;
 import javax.json.Json;
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
@@ -437,7 +439,7 @@ public class FileManager implements AppFileComponent {
         boolean nested = false;
 
 //        ArrayList<Item> items = dm.getItems();
-        ObservableList<Node> items =  w.getDesignRenderer().getChildren();
+        ObservableList<Node> items = w.getDesignRenderer().getChildren();
 
         ArrayList<String> packages = new ArrayList();
 
@@ -452,33 +454,37 @@ public class FileManager implements AppFileComponent {
 
         for (Node n : items) {
             nested = false;
-            Item i = (Item) n;
+            if (n instanceof Shape) {
+                //do nothing
+            } else {
+                Item i = (Item) n;
 
-            if (i.getPackageName().contains(".")) {
-                String[] pkgSplit = i.getPackageName().split("\\.");
+                if (i.getPackageName().contains(".")) {
+                    String[] pkgSplit = i.getPackageName().split("\\.");
 //                for (String s : pkgSplit) {
-                String path = "";
-                for (int m = 0; m < pkgSplit.length; m++) {
-                    path += "\\" + pkgSplit[m];
-                    pkgFile = new File(fileTemp.getAbsolutePath() + path + "\\");
+                    String path = "";
+                    for (int m = 0; m < pkgSplit.length; m++) {
+                        path += "\\" + pkgSplit[m];
+                        pkgFile = new File(fileTemp.getAbsolutePath() + path + "\\");
+                        if (!pkgFile.exists()) {
+                            pkgFile.mkdir();
+                        }
+                    }
+
+                } else {
+                    pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + i.getPackageName() + "\\");
                     if (!pkgFile.exists()) {
                         pkgFile.mkdir();
                     }
                 }
 
-            } else {
-                pkgFile = new File(fileTemp.getAbsolutePath() + "\\" + i.getPackageName() + "\\");
-                if (!pkgFile.exists()) {
-                    pkgFile.mkdir();
+                if (i instanceof JClass) {
+                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+                    saveFile(((JClass) i).toCode(), classFile);
+                } else if (i instanceof Interface) {
+                    classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
+                    saveFile(((Interface) i).toCode(), classFile);
                 }
-            }
-
-            if (i instanceof JClass) {
-                classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                saveFile(((JClass) i).toCode(), classFile);
-            } else if (i instanceof Interface) {
-                classFile = new File(pkgFile.getAbsolutePath() + "\\" + i.getName() + ".java\\");
-                saveFile(((Interface) i).toCode(), classFile);
             }
         }
 //            for (String p : packages) {
@@ -679,6 +685,9 @@ public class FileManager implements AppFileComponent {
         return methodsJson;
     }
 
+//    public JsonObject makeJSONLineObject(Line l) {
+//        
+//    }
     public JsonObject makeJSONVariableObject(Variable v) {
         String name = v.getName();
         String type = v.getType();

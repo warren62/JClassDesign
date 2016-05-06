@@ -43,7 +43,6 @@ public class ParentDialog extends Stage {
         mainVB.setAlignment(Pos.CENTER);
 
 //        Workspace w = (Workspace) app.getWorkspaceComponent();
-
 //        if (w.getDesignRenderer().getChildren().size() > 1) {
 //            for (int z = 0; z < w.getDesignRenderer().getChildren().size(); z++) {
 //                if (w.getDesignRenderer().getChildren().get(z) instanceof Item) {
@@ -59,7 +58,6 @@ public class ParentDialog extends Stage {
 //                }
 //            }
 //        }
-
 //        addData(d.getSelectedItem());
         dialogScene = new Scene(mainVB, 300, 300);
         this.setScene(dialogScene);
@@ -79,10 +77,17 @@ public class ParentDialog extends Stage {
                     if (it.getName() == cb.getText()) {
                         if (i instanceof JClass) {
                             DataManager d = (DataManager) app.getDataComponent();
+                            Workspace w = (Workspace) app.getWorkspaceComponent();
+                            for (Line l : i.getChildLines()) {
+                                w.getDesignRenderer().getChildren().remove(l);
+                            }
 
+                            for (Line l : i.getParentLines()) {
+                                w.getDesignRenderer().getChildren().remove(l);
+                            }
                             ((JClass) i).addParent(it);
                             d.buildLine(it);
-                            d.buildArrow(it.layoutXProperty(), it.layoutYProperty(), i);
+                            d.buildArrow(it, i);
 
                         }
                     }
@@ -90,9 +95,9 @@ public class ParentDialog extends Stage {
             }
         }
     }
-    
+
     public void populateDialog() {
-        
+
         Workspace w = (Workspace) app.getWorkspaceComponent();
         if (w.getDesignRenderer().getChildren().size() > 1) {
             for (int z = 0; z < w.getDesignRenderer().getChildren().size(); z++) {
@@ -104,19 +109,17 @@ public class ParentDialog extends Stage {
 //
 //                hb.getChildren().addAll(new Label(i.getName()), new CheckBox());
                     mainVB.getChildren().add(new CheckBox(i.getName()));
-                } 
-                
-                else {
-                   clearLines();
+                } else {
+//                   clearLines();
                 }
             }
         }
     }
-    
+
     public void clearLines() {
         Workspace w = (Workspace) app.getWorkspaceComponent();
-        for(Node n : w.getDesignRenderer().getChildren()) {
-            if(n instanceof Line || n instanceof Polygon) {
+        for (Node n : w.getDesignRenderer().getChildren()) {
+            if (n instanceof Line || n instanceof Polygon) {
                 w.getDesignRenderer().getChildren().remove(n);
             }
         }
