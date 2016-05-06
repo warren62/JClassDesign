@@ -57,6 +57,7 @@ import jc.controller.DesignRendererController;
 import jc.controller.EditToolbarController;
 import jc.data.DataManager;
 import jc.data.Item;
+import jc.data.JClass;
 import jc.file.FileManager;
 import saf.AppTemplate;
 import saf.components.AppWorkspaceComponent;
@@ -423,6 +424,16 @@ public class Workspace extends AppWorkspaceComponent {
             vd.addData(data.getSelectedItem(), variableTable);
         });
 
+        minusVarBtn.setOnAction(e -> {
+            DataManager data = (DataManager) app.getDataComponent();
+            if (data.getSelectedItem() instanceof JClass) {
+                JClass j = (JClass) data.getSelectedItem();
+                if (j.getVariables().size() > 0) {
+                    j.getVariables().remove(j.getVariables().size() - 1);
+                }
+            }
+        });
+
         plusMethodBtn.setOnAction(e -> {
             MethodDialog md = new MethodDialog(gui.getWindow(), app);
             md.showDialog();
@@ -459,10 +470,10 @@ public class Workspace extends AppWorkspaceComponent {
 
         gridCheckBox.setOnAction(e -> {
             if (gridCheckBox.isSelected()) {
-                this.addLines();
+                designRenderer.getStyleClass().add("root");
                 gridSnapCheckBox.setDisable(false);
             } else {
-                this.clearLines();
+                designRenderer.getStyleClass().clear();
                 gridSnapCheckBox.setDisable(true);
             }
 
@@ -531,14 +542,12 @@ public class Workspace extends AppWorkspaceComponent {
         return designRendererScroll;
     }
 
-    public void addLines() {
-        designRenderer.getStyleClass().add("root");
-    }
-
-    public void clearLines() {
-        designRenderer.getStyleClass().clear();
-    }
-
+//    public void addLines() {
+//        designRenderer.getStyleClass().add("root");
+//    }
+//    public void clearLines() {
+//        designRenderer.getStyleClass().clear();
+//    }
     @Override
     public void reloadWorkspace() {
 //        designRenderer.getChildren().clear();

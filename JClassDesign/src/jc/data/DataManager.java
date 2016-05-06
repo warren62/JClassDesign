@@ -300,6 +300,17 @@ public class DataManager implements AppDataComponent {
 //        ((Workspace)app.getWorkspaceComponent()).getGroup().getChildren().add(i);
     }
 
+    public void addLineToWorkspace(BoundLine l) {
+
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
+
+        workspace.getDesignRenderer().getChildren().add(l);
+//        l.initHandler();
+        System.out.println("*******add node to workspace*******" + l.toString());
+
+//        workspace.getDesignRenderer().getChildren().add(n);
+    }
+
     public ArrayList getItems() {
         return items;
     }
@@ -588,23 +599,41 @@ public class DataManager implements AppDataComponent {
 //            addToWorkspace(i);
 //        }
 //        System.out.println("********** Workspace set in undo : ");
-        ArrayList<Item> list = memento.getSavedState();
-        System.out.println("*******Memento get children in undo method : " + list.size());
-        for (Item i : list) {
-            addToWorkspace(i);
+        ArrayList<Node> list = memento.getSavedState();
+        System.out.println("*******Memento get children in undo method : " + list.toString());
+
+        for (Node n : list) {
+            if (n instanceof Item) {
+                Item i = (Item) n;
+                addToWorkspace(i);
+            } else if (n instanceof BoundLine) {
+                BoundLine l = (BoundLine) n;
+                addLineToWorkspace(l);
+            }
 //            workspace.getDesignRenderer().getChildren().add(i);
         }
 
     }
-    
+
     public void redo() {
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
         workspace.getDesignRenderer().getChildren().clear();
-        
-        ArrayList<Item> list = memento.getRedoState();
-        System.out.println("*******Memento get children in undo method : " + list.size());
-        for (Item i : list) {
-            addToWorkspace(i);
+
+        ArrayList<Node> list = memento.getRedoState();
+        System.out.println("*******Memento get children in redo method : " + list.toString());
+
+        for (Node n : list) {
+            System.out.println("*******Node in redo method : " + n.toString());
+
+            if (n instanceof Item) {
+                Item i = (Item) n;
+                addToWorkspace(i);
+            } else if (n instanceof Line) {
+                BoundLine l = (BoundLine) n;
+                addLineToWorkspace(l);
+                System.out.println("*******Add BoundLine : " + workspace.getDesignRenderer().getChildren().toString());
+
+            }
 //            workspace.getDesignRenderer().getChildren().add(i);
         }
     }
@@ -880,7 +909,17 @@ public class DataManager implements AppDataComponent {
 
     class BoundLine extends Line {
 
+        DoubleProperty startX;
+        DoubleProperty startY;
+        DoubleProperty endX;
+        DoubleProperty endY;
+        ArrayList<Circle> circleList = new ArrayList();
+
         BoundLine(DoubleProperty startX, DoubleProperty startY, DoubleProperty endX, DoubleProperty endY) {
+            this.startX = startX;
+            this.startY = startY;
+            this.endX = endX;
+            this.endY = endY;
             startXProperty().bind(startX);
             startYProperty().bind(startY);
             endXProperty().bind(endX);
@@ -890,56 +929,46 @@ public class DataManager implements AppDataComponent {
             setStrokeLineCap(StrokeLineCap.BUTT);
             getStrokeDashArray().setAll(10.0, 5.0);
 
-            this.setOnMousePressed(e -> {
-                System.out.println("****Click line works******");
-                Circle c = new Circle(7);
+            initHandler();
 
-//            double midpointX = line.startXProperty().add(line.endXProperty()).divide(2);
-//            c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
-//            c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
-                c.setCenterX((this.getStartX() + this.getEndX()) / 2);
-                c.setCenterY((this.getStartY() + this.getEndY()) / 2);
-                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(this);
-                Line l = new BoundLine(startX, startY, c.centerXProperty(), c.centerYProperty());
-                Line l2 = new BoundLine(c.centerXProperty(), c.centerYProperty(), endX, endY);
-                System.out.println("******** line 1 *****" + l.toString());
-                System.out.println("******** line 2 *****" + l2.toString());
+//            setMouseTransparent(true);
+        }
 
-                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
+        public void initPointHandler(Circle c) {
 
-                c.setOnMousePressed(t -> {
-                    orgSceneX = t.getSceneX();
-                    orgSceneY = t.getSceneY();
-                    orgTranslateX = ((Circle) (t.getSource())).getCenterX();
-                    orgTranslateY = ((Circle) (t.getSource())).getCenterY();
+            c.setOnMousePressed(t -> {
+                orgSceneX = t.getSceneX();
+                orgSceneY = t.getSceneY();
+                orgTranslateX = ((Circle) (t.getSource())).getCenterX();
+                orgTranslateY = ((Circle) (t.getSource())).getCenterY();
 
-                });
+            });
 
-                c.setOnMouseDragged(t -> {
-                    double offsetX = t.getSceneX() - orgSceneX;
-                    double offsetY = t.getSceneY() - orgSceneY;
+            c.setOnMouseDragged(t -> {
+                double offsetX = t.getSceneX() - orgSceneX;
+                double offsetY = t.getSceneY() - orgSceneY;
 //                double newTranslateX = orgTranslateX + offsetX;
 //                double newTranslateY = orgTranslateY + offsetY;
-                    double newTranslateX = orgTranslateX + offsetX;
-                    double newTranslateY = orgTranslateY + offsetY;
+                double newTranslateX = orgTranslateX + offsetX;
+                double newTranslateY = orgTranslateY + offsetY;
 
 //                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().removeAll(l, l2);
 //                Line l3 = new BoundLine(i.layoutXProperty(), i.layoutYProperty(), c.centerXProperty(), c.centerYProperty());
 //                Line l4 = new BoundLine(c.centerXProperty(), c.centerYProperty(), this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
 //                ((Circle) (t.getSource())).setLayoutX(newTranslateX);
 //                ((Circle) (t.getSource())).setLayoutY(newTranslateY);
-                    ((Circle) (t.getSource())).setCenterX(newTranslateX);
-                    ((Circle) (t.getSource())).setCenterY(newTranslateY);
+                ((Circle) (t.getSource())).setCenterX(newTranslateX);
+                ((Circle) (t.getSource())).setCenterY(newTranslateY);
 
-                    System.out.println("t get scene x " + t.getSceneX());
-                    System.out.println("t get scene y " + t.getSceneY());
-                    System.out.println("orig scene x " + orgSceneX);
-                    System.out.println("orig scene y " + orgSceneY);
-                    System.out.println("orig Translate x " + orgTranslateX);
-                    System.out.println("orig Translate y " + orgTranslateY);
+                System.out.println("t get scene x " + t.getSceneX());
+                System.out.println("t get scene y " + t.getSceneY());
+                System.out.println("orig scene x " + orgSceneX);
+                System.out.println("orig scene y " + orgSceneY);
+                System.out.println("orig Translate x " + orgTranslateX);
+                System.out.println("orig Translate y " + orgTranslateY);
 
-                    System.out.println("******** circle 1 translate x*****" + ((Circle) (t.getSource())).getTranslateX());
-                    System.out.println("******** circle 1 translate y *****" + ((Circle) (t.getSource())).getTranslateY());
+                System.out.println("******** circle 1 translate x*****" + ((Circle) (t.getSource())).getTranslateX());
+                System.out.println("******** circle 1 translate y *****" + ((Circle) (t.getSource())).getTranslateY());
 
 //                c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
 //                c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
@@ -947,19 +976,103 @@ public class DataManager implements AppDataComponent {
 //                l.endYProperty().bind(c.translateYProperty());
 //                l2.startXProperty().bind(c.translateXProperty());
 //                l2.startYProperty().bind(c.translateYProperty());
-                    System.out.println("******** line 1 *****" + l.toString());
-                    System.out.println("******** line 2 *****" + l2.toString());
-                    System.out.println("******** circle 1 *****" + c.toString());
-
+//                    System.out.println("******** line 1 *****" + l.toString());
+//                    System.out.println("******** line 2 *****" + l2.toString());
+//                    System.out.println("******** circle 1 *****" + c.toString());
 //                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l3, l4);
-                });
+            });
+
+        }
+
+        public void initHandler() {
+
+            this.setOnMousePressed(e -> {
+                System.out.println("****Click line works******");
+                Circle c = new Circle(7);
+
+//            double midpointX = line.startXProperty().add(line.endXProperty()).divide(2);
+//            c.centerXProperty().bind(line.startXProperty().add(line.endXProperty()).divide(2));
+//            c.centerYProperty().bind(line.startYProperty().add(line.endYProperty()).divide(2));
+//                c.setCenterX((this.getStartX() + this.getEndX()) / 2);
+//                c.setCenterY((this.getStartY() + this.getEndY()) / 2);
+//                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(this);
+//                Line l = new BoundLine(startX, startY, c.centerXProperty(), c.centerYProperty());
+//                Line l2 = new BoundLine(c.centerXProperty(), c.centerYProperty(), endX, endY);
+//                System.out.println("******** line 1 *****" + l.toString());
+//                System.out.println("******** line 2 *****" + l2.toString());
+//
+//                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
+                initPointHandler(c);
+
+                this.addPoint(c);
+                Workspace workspace = (Workspace) app.getWorkspaceComponent();
+                memento.add(workspace.getDesignRenderer().getChildren());
+
+                System.out.println("****** BoundLine initHandler this.toString *****" + this.toString());
 
                 int clickCount = e.getClickCount();
                 if (clickCount == 2) {
                     System.out.println("****Double Click line works******");
                 }
             });
-//            setMouseTransparent(true);
+
+        }
+
+        public void setPoints(ArrayList<Circle> circleList) {
+
+            this.circleList = circleList;
+
+        }
+
+        public ArrayList<Circle> getCircleList() {
+            return circleList;
+        }
+
+        public void addPoint(Circle c) {
+            this.circleList.add(c);
+            System.out.println("****** BoundLine addPoint number of poinst *****" + this.toString());
+
+            bindPoints(c);
+        }
+
+        public void bindPoints(Circle c) {
+            c.setCenterX((this.getStartX() + this.getEndX()) / 2);
+            c.setCenterY((this.getStartY() + this.getEndY()) / 2);
+            ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(this);
+            Line l = new BoundLine(startX, startY, c.centerXProperty(), c.centerYProperty());
+            Line l2 = new BoundLine(c.centerXProperty(), c.centerYProperty(), endX, endY);
+            System.out.println("******** line 1 *****" + l.toString());
+            System.out.println("******** line 2 *****" + l2.toString());
+            ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
+        }
+
+        public BoundLine deepCopy() {
+            System.out.println("****** BoundLine deepCopy this.toString *****" + this.toString());
+
+            BoundLine l = new BoundLine(this.startX, this.startY, this.endX, this.endY);
+//            if (this.getCircleList().size() > 0) {
+            System.out.println("****** BoundLine deepCopy number of poinst before for loop *****" + this.getCircleList().size());
+
+            for (Circle c : this.getCircleList()) {
+
+                l.addPoint(c);
+                System.out.println("****** BoundLine deepCopy number of poinst *****" + l.getCircleList().size());
+
+//                l.bindPoints(c);
+            }
+
+//            }
+//            l.setPoints(this.getCircleList());
+//            l.initHandler();
+            return l;
+        }
+        
+        @Override
+        public String toString() {
+            String s = new String();
+            s = " Start x: " + startX.toString()  + "Start y: " + startY.toString() + "End x: " + endX + " End y: " + endY + "Mem adress: " + Integer.toHexString(System.identityHashCode(this)) +
+                    "Point List: " + this.circleList.size();
+            return s;
         }
     }
 

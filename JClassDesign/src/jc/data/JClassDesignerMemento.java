@@ -10,6 +10,8 @@ import java.util.Stack;
 import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.shape.Circle;
+import jc.data.DataManager.BoundLine;
 import jc.gui.Workspace;
 
 /**
@@ -53,9 +55,11 @@ public class JClassDesignerMemento {
         redoStack.add(popped);
         return popped;
     }
-    
+
     public ArrayList getRedoState() {
-        return redoStack.pop();
+        ArrayList popped = redoStack.pop();
+        System.out.println("*******ArrayList redo stack ******" + popped.toString());
+        return popped;
     }
 
 //    public void add(WorkspaceData workspace) {
@@ -71,19 +75,31 @@ public class JClassDesignerMemento {
     public void add(ObservableList<Node> items) {
         ArrayList<Node> list = new ArrayList();
         for (Node n : items) {
-           
-            if(n instanceof JClass) {
+
+            if (n instanceof JClass) {
                 JClass j = (JClass) n;
                 JClass copy = j.deepCopy();
                 list.add(copy);
-            } else if(n instanceof Interface){
+            } else if (n instanceof Interface) {
                 Interface in = (Interface) n;
                 Interface copy = in.deepCopy();
                 list.add(copy);
-            } else {
-                list.add(n);
+            } else if (n instanceof BoundLine) {
+                BoundLine l = (BoundLine) n;
+                BoundLine copy = l.deepCopy();
+                System.out.println("****** BoundLine in add memento l.toString() *****" + l.toString());
+
+                System.out.println("****** BoundLine in add memento copy.toString() *****" + copy.toString());
+
+                System.out.println("****** BoundLine in add memento *****" + copy.getCircleList().size());
+
+                list.add(copy);
+            } else if(n instanceof Circle) {
+                Circle c = (Circle) n;
+                
+                list.add(c);
             }
-            
+            System.out.println("****** nodes in ArrayList in undo stack *****" + list.toString());
         }
         undoStackItems.add(list);
     }
