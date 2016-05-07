@@ -14,6 +14,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Rectangle;
 import javax.lang.model.util.ElementFilter;
+import jc.data.DataManager.BoundLine;
 import jc.gui.Workspace;
 import saf.AppTemplate;
 
@@ -487,6 +488,15 @@ public class JClass extends Item {
         j.setHasSuperclass(this.isHasSuperclass());
         j.setLayoutX(this.getLayoutX());
         j.setLayoutY(this.getLayoutY());
+//        for (BoundLine l : this.getChildLines()) {
+//            BoundLine copy = l.deepCopy();
+//            copy.setChildNode(j);
+//        }
+//
+//        for (BoundLine l : this.getParentLines()) {
+//            BoundLine copy = l.deepCopy();
+//            copy.setParentNode(j);
+//        }
 
 //        j.addParent(this.getParentItem().deepCopy());
 //        ArrayList<Method> m = new ArrayList();

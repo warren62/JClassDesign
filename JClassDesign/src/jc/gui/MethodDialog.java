@@ -16,8 +16,11 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
@@ -122,14 +125,19 @@ public class MethodDialog extends Stage {
         argsHB.getChildren().addAll(plusBtn, minusBtn);
         
         mainVB.getChildren().addAll(finalHB, staticHB, abstractHB, nameHB, typeHB, accessHB, argsHB, argsVB);
+        
+        ScrollPane scroll = new ScrollPane();
+        scroll.setContent(mainVB);
+        
+        
         plusBtn.setOnAction(e -> {
-            HBox hb = new HBox();
-            hb.getChildren().add(new TextField("Argument"));
-            hb.setAlignment(Pos.CENTER);
-            argsVB.getChildren().add(hb);            
+//            HBox hb = new HBox();
+//            hb.getChildren().add(new TextField("Argument"));
+//            hb.setAlignment(Pos.CENTER);
+            argsVB.getChildren().add(new TextField("Argument"));            
         });
         
-        dialogScene = new Scene(mainVB, 300, 300);
+        dialogScene = new Scene(scroll, 300, 300);
         this.setScene(dialogScene);
     }
     
@@ -137,13 +145,14 @@ public class MethodDialog extends Stage {
         this.showAndWait();
     }
     
-    public void addData(Item i, TableView t) {
+    public void addData(Item i, TableView t, TableColumn tc) {
         boolean f = finalCheckBox.isSelected();
         boolean s = staticCheckBox.isSelected();
         boolean a = abstractCheckBox.isSelected();
         String type = typeField.getText();
         String name = nameField.getText();
         String access = accessComboBox.getValue().toString();
+        ArrayList<String> args = new ArrayList();
         
         Method m = new Method();
         m.setName(name);
@@ -153,8 +162,25 @@ public class MethodDialog extends Stage {
         m.setS(s);
         m.setAccess(access);
         
+        
         DataManager data = (DataManager) app.getDataComponent();
         Workspace w = (Workspace) app.getWorkspaceComponent();
+        
+        for(Node n : argsVB.getChildren()) {
+            TextField  tf = (TextField) n;
+            TableColumn c = new TableColumn("Arg");
+            
+            m.addArg(tf.getText());
+//            if(data.getSelectedItem() instanceof JClass) {
+//                JClass j = (JClass) data.getSelectedItem();
+//                for(int z = 0; z < j.getMethods().size(); z++) {
+//                    
+//                }
+//            }
+            c.setCellValueFactory(new PropertyValueFactory<ArrayList<String>, String>("args"));
+            t.getColumns().add(c);
+            
+        }
 //        JClass jc = new JClass();
 //        ArrayList<Method> methodList;
 //        ArrayList<JClass> classList = new ArrayList();
@@ -214,7 +240,7 @@ public class MethodDialog extends Stage {
                     ArrayList<Method> list = ((JClass) i).getMethods();
                     for (int z = 0; z < list.size(); z++) {
                         if (list.get(z).getType().equals(jc.getName())) {
-                            data.buildLine(jc);
+                            data.buildLine(jc, data.getSelectedItem());
                             
                             data.buildFeatheredArrow(jc.layoutXProperty(), jc.layoutYProperty(), i);
                         }

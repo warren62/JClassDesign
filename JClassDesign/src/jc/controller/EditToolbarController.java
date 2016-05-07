@@ -142,7 +142,7 @@ public class EditToolbarController {
         dataManager.getSelectedItem().updateNameLabel();
 //        dataManager.updateParentNames();
         Workspace workspace = (Workspace)app.getWorkspaceComponent();
-        dataManager.getMemento().add(workspace.getDesignRenderer().getChildren());
+        dataManager.getMemento().add(workspace.getDesignRenderer().getChildren(), dataManager.getSelectedItem());
         System.out.println(dataManager.getSelectedItem().getName());
         System.out.println(dataManager.getSelectedItem());
     }

@@ -86,7 +86,7 @@ public class ParentDialog extends Stage {
                                 w.getDesignRenderer().getChildren().remove(l);
                             }
                             ((JClass) i).addParent(it);
-                            d.buildLine(it);
+                            d.buildLine(it, d.getSelectedItem());
                             d.buildArrow(it, i);
 
                         }

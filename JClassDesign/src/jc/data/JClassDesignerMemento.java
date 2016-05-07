@@ -53,11 +53,12 @@ public class JClassDesignerMemento {
 //        undoStackItems.pop();
         ArrayList popped = undoStackItems.pop();
         redoStack.add(popped);
-        return popped;
+        return undoStackItems.get(undoStackItems.size() - 1);
     }
 
     public ArrayList getRedoState() {
         ArrayList popped = redoStack.pop();
+        undoStackItems.add(popped);
         System.out.println("*******ArrayList redo stack ******" + popped.toString());
         return popped;
     }
@@ -72,35 +73,69 @@ public class JClassDesignerMemento {
 //    public void add(DataManager dm) {
 //        undoStackData.add(dm);
 //    }
-    public void add(ObservableList<Node> items) {
+    public void add(ObservableList<Node> items, Node node) {
         ArrayList<Node> list = new ArrayList();
-        for (Node n : items) {
+        for(Node n : items) {
+            if(node != n) {
+                list.add(n);
+            }
+        }
+        JClass j = null;
+        Interface in;
+        BoundLine l = null;
+        JClass jCopy = null;
+        Interface inCopy;
+        BoundLine lCopy;
+        Node n = node;
+       // for (Node n : items) {
 
             if (n instanceof JClass) {
-                JClass j = (JClass) n;
-                JClass copy = j.deepCopy();
-                list.add(copy);
+                j = (JClass) n;
+
+                jCopy = j.deepCopy();
+                list.add(jCopy);
             } else if (n instanceof Interface) {
-                Interface in = (Interface) n;
-                Interface copy = in.deepCopy();
-                list.add(copy);
+                in = (Interface) n;
+
+                inCopy = in.deepCopy();
+                list.add(inCopy);
             } else if (n instanceof BoundLine) {
-                BoundLine l = (BoundLine) n;
-                BoundLine copy = l.deepCopy();
+                l = (BoundLine) n;
+//                lCopy = l.deepCopy();
+                
+//                if(l.getChildNode().getLayoutX() == j.getLayoutX()) {
+//                    lCopy.setChildNode(jCopy);
+//                }
+//                if(l.getParentNode().getLayoutX() == j.getLayoutX()) {
+//                    lCopy.setChildNode(jCopy);
+//                }
+
+//                for (int i = 0; i < j.getChildLines().size(); i++) {
+//                    if (j.getChildLines().get(i) == l) {
+//                        lCopy.setChildNode(jCopy);
+//                    }
+//                }
+//                
+//                for (int i = 0; i < j.getParentLines().size(); i++) {
+//                    if (j.getParentLines().get(i) == l) {
+//                        lCopy.setParentNode(jCopy);
+//                    }
+//                }
+
                 System.out.println("****** BoundLine in add memento l.toString() *****" + l.toString());
 
-                System.out.println("****** BoundLine in add memento copy.toString() *****" + copy.toString());
-
-                System.out.println("****** BoundLine in add memento *****" + copy.getCircleList().size());
-
-                list.add(copy);
-            } else if(n instanceof Circle) {
+//                System.out.println("****** BoundLine in add memento copy.toString() *****" + copy.toString());
+//
+//                System.out.println("****** BoundLine in add memento *****" + copy.getCircleList().size());
+                list.add(l);
+            } else if (n instanceof Circle) {
                 Circle c = (Circle) n;
-                
+
                 list.add(c);
             }
+
             System.out.println("****** nodes in ArrayList in undo stack *****" + list.toString());
-        }
+       //}
         undoStackItems.add(list);
     }
 

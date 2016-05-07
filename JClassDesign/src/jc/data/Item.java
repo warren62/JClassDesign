@@ -16,6 +16,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Shape;
 import javafx.scene.text.Text;
+import jc.data.DataManager.BoundLine;
 import jc.gui.Workspace;
 import saf.AppTemplate;
 
@@ -39,8 +40,8 @@ public class Item extends VBox implements Draggable {
     String name = "DefaultClassName";
     String pkg = "DefaultPackageName";
 
-    ArrayList<Line> parentLines = new ArrayList();
-    ArrayList<Line> childLines = new ArrayList();
+    ArrayList<BoundLine> parentLines = new ArrayList();
+    ArrayList<BoundLine> childLines = new ArrayList();
 
     ArrayList<Shape> parentShapes = new ArrayList();
     ArrayList<Shape> childShapes = new ArrayList();
@@ -110,27 +111,27 @@ public class Item extends VBox implements Draggable {
         return pkg;
     }
 
-    public ArrayList<Line> getParentLines() {
+    public ArrayList<BoundLine> getParentLines() {
         return parentLines;
     }
 
-    public void setParentLines(ArrayList<Line> parentLines) {
+    public void setParentLines(ArrayList<BoundLine> parentLines) {
         this.parentLines = parentLines;
     }
 
-    public ArrayList<Line> getChildLines() {
+    public ArrayList<BoundLine> getChildLines() {
         return childLines;
     }
 
-    public void setChildLines(ArrayList<Line> childLines) {
+    public void setChildLines(ArrayList<BoundLine> childLines) {
         this.childLines = childLines;
     }
 
-    public void addParentLine(Line l) {
+    public void addParentLine(BoundLine l) {
         parentLines.add(l);
     }
 
-    public void addChildLine(Line l) {
+    public void addChildLine(BoundLine l) {
         childLines.add(l);
     }
 
@@ -285,7 +286,7 @@ public class Item extends VBox implements Draggable {
                 orgSceneY = e.getSceneY();
             }
             this.setOnMouseReleased(t -> {
-                data.getMemento().add(workspace.getDesignRenderer().getChildren());
+                data.getMemento().add(workspace.getDesignRenderer().getChildren(), this);
                 System.out.println("*****Init drag******");
             });
 

@@ -151,7 +151,7 @@ public class Workspace extends AppWorkspaceComponent {
     TableColumn methFinalColumn = new TableColumn("Final");
     TableColumn methAbstractColumn = new TableColumn("Abstract");
     TableColumn methAccessColumn = new TableColumn("Access");
-    TableColumn methArg1Column = new TableColumn("Arg1");
+    TableColumn methArgColumn = new TableColumn("Arg");
     TableColumn methArg2Column = new TableColumn("Arg2");
 
     Pane designRenderer;
@@ -268,6 +268,7 @@ public class Workspace extends AppWorkspaceComponent {
         packageField = new TextField();
 
         parentComboBox = new ComboBox();
+        
 
         classHBox.getChildren().addAll(classNameLbl, classNameField);
         classHBox.setAlignment(Pos.CENTER);
@@ -439,7 +440,7 @@ public class Workspace extends AppWorkspaceComponent {
             md.showDialog();
 //            System.out.println(dataManager.getSelectedItem() == null);
             DataManager data = (DataManager) app.getDataComponent();
-            md.addData(data.getSelectedItem(), methodTable);
+            md.addData(data.getSelectedItem(), methodTable, methArgColumn);
             md.generate(data.getSelectedItem());
         });
 

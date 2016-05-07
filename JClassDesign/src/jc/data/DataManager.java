@@ -134,7 +134,7 @@ public class DataManager implements AppDataComponent {
         System.out.println("*******memento add workspace in start new class : " + workspace == null);
         System.out.println("*******memento add workspace in start new class for app : " + app == null);
 //        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
+        memento.add(workspace.getDesignRenderer().getChildren(), newItem);
 
 //        memento.add(deepCopyDataManager());
 //        memento = new JClassDesignerMemento(app.getGUI().getAppPane());
@@ -149,7 +149,7 @@ public class DataManager implements AppDataComponent {
         initNewItem();
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //       memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
+        memento.add(workspace.getDesignRenderer().getChildren(), newItem);
 
 //       memento.add(deepCopyDataManager());
 //        memento = new JClassDesignerMemento(app.getGUI().getAppPane());
@@ -275,7 +275,7 @@ public class DataManager implements AppDataComponent {
 //        Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
 //        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
+//        memento.add(workspace.getDesignRenderer().getChildren());
 
 //        memento.add(deepCopyDataManager());
     }
@@ -382,11 +382,10 @@ public class DataManager implements AppDataComponent {
 //
 ////        memento.add(deepCopyDataManager());
 //    }
-    public void buildLine(Item i) {
-        Line line = new BoundLine(i.layoutXProperty(), i.layoutYProperty(),
-                this.getSelectedItem().layoutXProperty(), this.getSelectedItem().layoutYProperty());
-        i.addParentLine(line);
-        this.getSelectedItem().addChildLine(line);
+    public void buildLine(Item parent, Item child) {
+        BoundLine line = new BoundLine(parent, child);
+        parent.addParentLine(line);
+        child.addChildLine(line);
 //        line.setOnMousePressed(e -> {
 //            System.out.println("****Click line works******");
 //            Circle c = new Circle(5);
@@ -466,7 +465,7 @@ public class DataManager implements AppDataComponent {
 //        line.setStartX(startX);
 //        line.setStartY(startY);
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(line);
-        memento.add(((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren());
+        memento.add(((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren(), line);
     }
 
     public void buildArrow(Item p, Item i) {
@@ -580,7 +579,7 @@ public class DataManager implements AppDataComponent {
         Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
 //        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren());
+        memento.add(workspace.getDesignRenderer().getChildren(), i);
 //        memento.add(deepCopyDataManager());
 
     }
@@ -608,7 +607,12 @@ public class DataManager implements AppDataComponent {
                 addToWorkspace(i);
             } else if (n instanceof BoundLine) {
                 BoundLine l = (BoundLine) n;
+                
                 addLineToWorkspace(l);
+            } else if (n instanceof Circle) {
+                Circle c = (Circle) n;
+
+                workspace.getDesignRenderer().getChildren().add(c);
             }
 //            workspace.getDesignRenderer().getChildren().add(i);
         }
@@ -633,6 +637,10 @@ public class DataManager implements AppDataComponent {
                 addLineToWorkspace(l);
                 System.out.println("*******Add BoundLine : " + workspace.getDesignRenderer().getChildren().toString());
 
+            } else if (n instanceof Circle) {
+                Circle c = (Circle) n;
+
+                workspace.getDesignRenderer().getChildren().add(c);
             }
 //            workspace.getDesignRenderer().getChildren().add(i);
         }
@@ -914,12 +922,29 @@ public class DataManager implements AppDataComponent {
         DoubleProperty endX;
         DoubleProperty endY;
         ArrayList<Circle> circleList = new ArrayList();
+        Node parent;
+        Node child;
 
-        BoundLine(DoubleProperty startX, DoubleProperty startY, DoubleProperty endX, DoubleProperty endY) {
-            this.startX = startX;
-            this.startY = startY;
-            this.endX = endX;
-            this.endY = endY;
+        BoundLine(Node parent, Node child) {
+
+            if (parent instanceof Circle) {
+                this.startX = ((Circle) parent).centerXProperty();
+                this.startY = ((Circle) parent).centerYProperty();
+            } else {
+                this.startX = parent.layoutXProperty();
+                this.startY = parent.layoutYProperty();
+            }
+
+            if (child instanceof Circle) {
+                this.endX = ((Circle) child).centerXProperty();
+                this.endY = ((Circle) child).centerYProperty();
+            } else {
+                this.endX = child.layoutXProperty();
+                this.endY = child.layoutYProperty();
+            }
+
+            this.child = child;
+            this.parent = parent;
             startXProperty().bind(startX);
             startYProperty().bind(startY);
             endXProperty().bind(endX);
@@ -1006,7 +1031,7 @@ public class DataManager implements AppDataComponent {
 
                 this.addPoint(c);
                 Workspace workspace = (Workspace) app.getWorkspaceComponent();
-                memento.add(workspace.getDesignRenderer().getChildren());
+                memento.add(workspace.getDesignRenderer().getChildren(), this);
 
                 System.out.println("****** BoundLine initHandler this.toString *****" + this.toString());
 
@@ -1024,6 +1049,24 @@ public class DataManager implements AppDataComponent {
 
         }
 
+        public Node getParentNode() {
+            return parent;
+        }
+
+        public void setParentNode(Node parent) {
+            this.parent = parent;
+        }
+
+        public Node getChildNode() {
+            return child;
+        }
+
+        public void setChildNode(Node child) {
+            this.child = child;
+        }
+        
+        
+
         public ArrayList<Circle> getCircleList() {
             return circleList;
         }
@@ -1039,17 +1082,64 @@ public class DataManager implements AppDataComponent {
             c.setCenterX((this.getStartX() + this.getEndX()) / 2);
             c.setCenterY((this.getStartY() + this.getEndY()) / 2);
             ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(this);
-            Line l = new BoundLine(startX, startY, c.centerXProperty(), c.centerYProperty());
-            Line l2 = new BoundLine(c.centerXProperty(), c.centerYProperty(), endX, endY);
+            BoundLine l = new BoundLine(parent, c);
+            BoundLine l2 = new BoundLine(c, child);
+            if (parent instanceof JClass) {
+                JClass j = (JClass) parent;
+                j.addParentLine(l);
+                j.addParentLine(l2);
+            } else if (parent instanceof Interface) {
+                Interface i = (Interface) parent;
+                i.addParentLine(l);
+                i.addParentLine(l2);
+            }
+
+            if (child instanceof JClass) {
+                JClass j = (JClass) child;
+                j.addChildLine(l);
+                j.addChildLine(l2);
+            } else if (child instanceof Interface) {
+                Interface i = (Interface) child;
+                i.addChildLine(l);
+                i.addChildLine(l2);
+            }
             System.out.println("******** line 1 *****" + l.toString());
             System.out.println("******** line 2 *****" + l2.toString());
             ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
+        }
+        
+        public void reBind(DoubleProperty startX, DoubleProperty startY, DoubleProperty endX, DoubleProperty endY) {
+            this.startXProperty().bind(startX);
+            this.startYProperty().bind(startY);
+            this.endXProperty().bind(endX);
+            this.endYProperty().bind(endY);
         }
 
         public BoundLine deepCopy() {
             System.out.println("****** BoundLine deepCopy this.toString *****" + this.toString());
 
-            BoundLine l = new BoundLine(this.startX, this.startY, this.endX, this.endY);
+            BoundLine l = new BoundLine(this.parent, this.child);
+            if (l.parent instanceof Circle) {
+                l.startX = ((Circle) parent).centerXProperty();
+                l.startY = ((Circle) parent).centerYProperty();
+            } else {
+                l.startX = parent.layoutXProperty();
+                l.startY = parent.layoutYProperty();
+            }
+
+            if (l.child instanceof Circle) {
+                l.endX = ((Circle) child).centerXProperty();
+                l.endY = ((Circle) child).centerYProperty();
+            } else {
+                l.endX = child.layoutXProperty();
+                l.endY = child.layoutYProperty();
+            }
+            
+            l.startXProperty().bind(startX);
+            l.startYProperty().bind(startY);
+            l.endXProperty().bind(endX);
+            l.endYProperty().bind(endY);
+            
 //            if (this.getCircleList().size() > 0) {
             System.out.println("****** BoundLine deepCopy number of poinst before for loop *****" + this.getCircleList().size());
 
@@ -1066,12 +1156,12 @@ public class DataManager implements AppDataComponent {
 //            l.initHandler();
             return l;
         }
-        
+
         @Override
         public String toString() {
             String s = new String();
-            s = " Start x: " + startX.toString()  + "Start y: " + startY.toString() + "End x: " + endX + " End y: " + endY + "Mem adress: " + Integer.toHexString(System.identityHashCode(this)) +
-                    "Point List: " + this.circleList.size();
+            s = " Start x: " + startX.toString() + "Start y: " + startY.toString() + "End x: " + endX + " End y: " + endY + "Mem adress: " + Integer.toHexString(System.identityHashCode(this))
+                    + "Point List: " + this.circleList.size();
             return s;
         }
     }
