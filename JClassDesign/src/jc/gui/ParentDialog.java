@@ -69,6 +69,16 @@ public class ParentDialog extends Stage {
     }
 
     public void addData(Item i) {
+        DataManager d = (DataManager) app.getDataComponent();
+                            Workspace w = (Workspace) app.getWorkspaceComponent();
+        
+        for (Line l : i.getChildLines()) {
+            w.getDesignRenderer().getChildren().remove(l);
+        }
+
+        for (Line l : i.getParentLines()) {
+            w.getDesignRenderer().getChildren().remove(l);
+        }
         for (Node n : mainVB.getChildren()) {
             CheckBox cb = (CheckBox) n;
             if (cb.isSelected()) {
@@ -76,17 +86,10 @@ public class ParentDialog extends Stage {
                     Item it = itemList.get(z);
                     if (it.getName() == cb.getText()) {
                         if (i instanceof JClass) {
-                            DataManager d = (DataManager) app.getDataComponent();
-                            Workspace w = (Workspace) app.getWorkspaceComponent();
-                            for (Line l : i.getChildLines()) {
-                                w.getDesignRenderer().getChildren().remove(l);
-                            }
+                            
 
-                            for (Line l : i.getParentLines()) {
-                                w.getDesignRenderer().getChildren().remove(l);
-                            }
                             ((JClass) i).addParent(it);
-                            d.buildLine(it, d.getSelectedItem());
+                            d.buildLine(it, i);
                             d.buildArrow(it, i);
 
                         }

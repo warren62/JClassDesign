@@ -75,6 +75,19 @@ public class FileManager implements AppFileComponent {
                 JsonArray parentInterfaceArray = makeJOSNParentInterfaceArray(parentInterfaces);
                 JsonArray methodJson = makeJOSNMethodArray(methods);
                 JsonArray variableJson = makeJOSNVariableArray(variables);
+                JClass parent = (JClass) c.getParent();
+                String pType = "Class";
+                String pName = parent.getName();
+                String pPackageName = parent.getPackageName();
+                double pX = parent.getLayoutX();
+                double pY = parent.getLayoutY();
+                ArrayList<Variable> pVariables = parent.getVariables();
+                ArrayList<Method> pMethods = parent.getMethods();
+                ArrayList<Interface> pParentInterfaces = parent.getParentInterfaces();
+                JsonArray pParentInterfaceArray = makeJOSNParentInterfaceArray(pParentInterfaces);
+                JsonArray pMethodJson = makeJOSNMethodArray(pMethods);
+                JsonArray pVariableJson = makeJOSNVariableArray(pVariables);
+                
 
                 JsonObject classJson = Json.createObjectBuilder()
                         .add("type", type)
@@ -84,7 +97,8 @@ public class FileManager implements AppFileComponent {
                         .add("y", y)
                         .add("methods", methodJson)
                         .add("variables", variableJson)
-                        //                        .add("parentInterfaces", parentInterfaceArray)
+                        .add("parentInterfaces", parentInterfaceArray)
+//                        .add("parentItem", )
                         .build();
                 arrayBuilder.add(classJson);
             } else if (i instanceof Interface) {
@@ -231,6 +245,34 @@ public class FileManager implements AppFileComponent {
                 c.addMethod(m);
 
 //                System.out.println(j.toString() + "       break");
+            }
+
+            for (JsonValue j : parentInterfaceJsonArray) {
+                JsonObject o = (JsonObject) j;
+                Interface in = new Interface();
+                String n = o.getString("name");
+                String a = o.getString("access");
+                JsonArray mArr = o.getJsonArray("methods");
+                for (JsonValue v : mArr) {
+                    Method m = new Method();
+                    JsonObject oj = (JsonObject) v;
+                    String na = oj.getString("mname");
+                    String ac = oj.getString("access");
+                    String t = oj.getString("mtype");
+                    System.out.println("load method type test  : " + o.getString("mtype"));
+                    boolean f = oj.getBoolean("final");
+                    boolean s = oj.getBoolean("static");
+//                String f = o.getString("final");
+//                String s = o.getString("static");
+                    m.setAccess(ac);
+                    m.setName(na);
+                    m.setType(t);
+                    m.setF(f);
+                    m.setS(s);
+                    in.addMethod(m);
+
+                }
+                in.setName(name);
             }
             for (JsonValue j : variableJsonArray) {
                 Variable v = new Variable();
@@ -717,11 +759,13 @@ public class FileManager implements AppFileComponent {
 
     public JsonObject makeJSONParentInterfaceObject(Interface i) {
         String name = i.getName();
+        String access = i.getAccess();
         ArrayList<Method> methods = i.getMethods();
         JsonArray methodJsonArray = makeJOSNMethodArray(methods);
 
         JsonObject parentInterfaceJson = Json.createObjectBuilder()
                 .add("name", name)
+                .add("access", access)
                 .add("methods", methodJsonArray)
                 .build();
         return parentInterfaceJson;

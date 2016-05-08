@@ -607,7 +607,7 @@ public class DataManager implements AppDataComponent {
                 addToWorkspace(i);
             } else if (n instanceof BoundLine) {
                 BoundLine l = (BoundLine) n;
-                
+
                 addLineToWorkspace(l);
             } else if (n instanceof Circle) {
                 Circle c = (Circle) n;
@@ -1031,7 +1031,7 @@ public class DataManager implements AppDataComponent {
 
                 this.addPoint(c);
                 Workspace workspace = (Workspace) app.getWorkspaceComponent();
-                memento.add(workspace.getDesignRenderer().getChildren(), this);
+                memento.add(workspace.getDesignRenderer().getChildren(), c);
 
                 System.out.println("****** BoundLine initHandler this.toString *****" + this.toString());
 
@@ -1064,8 +1064,6 @@ public class DataManager implements AppDataComponent {
         public void setChildNode(Node child) {
             this.child = child;
         }
-        
-        
 
         public ArrayList<Circle> getCircleList() {
             return circleList;
@@ -1106,8 +1104,16 @@ public class DataManager implements AppDataComponent {
             System.out.println("******** line 1 *****" + l.toString());
             System.out.println("******** line 2 *****" + l2.toString());
             ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
+
+//            c.setOnMousePressed(e -> {
+//                if(e.getClickCount() == 2) {
+//                    ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().removeAll(l, l2, c);
+//                    Line l3 = new BoundLine(l.parent, l2.child);
+//                    ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(l3);
+//                }
+//            });
         }
-        
+
         public void reBind(DoubleProperty startX, DoubleProperty startY, DoubleProperty endX, DoubleProperty endY) {
             this.startXProperty().bind(startX);
             this.startYProperty().bind(startY);
@@ -1134,12 +1140,12 @@ public class DataManager implements AppDataComponent {
                 l.endX = child.layoutXProperty();
                 l.endY = child.layoutYProperty();
             }
-            
+
             l.startXProperty().bind(startX);
             l.startYProperty().bind(startY);
             l.endXProperty().bind(endX);
             l.endYProperty().bind(endY);
-            
+
 //            if (this.getCircleList().size() > 0) {
             System.out.println("****** BoundLine deepCopy number of poinst before for loop *****" + this.getCircleList().size());
 
