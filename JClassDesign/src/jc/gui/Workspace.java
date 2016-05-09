@@ -56,6 +56,7 @@ import static jc.PropertyType.ZOOM_OUT_TOOLTIP;
 import jc.controller.DesignRendererController;
 import jc.controller.EditToolbarController;
 import jc.data.DataManager;
+import jc.data.Interface;
 import jc.data.Item;
 import jc.data.JClass;
 import jc.file.FileManager;
@@ -268,7 +269,6 @@ public class Workspace extends AppWorkspaceComponent {
         packageField = new TextField();
 
         parentComboBox = new ComboBox();
-        
 
         classHBox.getChildren().addAll(classNameLbl, classNameField);
         classHBox.setAlignment(Pos.CENTER);
@@ -349,6 +349,8 @@ public class Workspace extends AppWorkspaceComponent {
 //        variableTable.setItems(designRenderer.getChildren());
 //        methodTable.setItems(designRenderer.getChildren());
         DataManager data = (DataManager) app.getDataComponent();
+        
+        
 //	data.addClass(redoBtn);
 
         workspace = new BorderPane();
@@ -419,10 +421,11 @@ public class Workspace extends AppWorkspaceComponent {
         });
 
         plusVarBtn.setOnAction(e -> {
-            VariableDialog vd = new VariableDialog(gui.getWindow());
+            VariableDialog vd = new VariableDialog(gui.getWindow(), app);
             vd.showDialog();
             DataManager data = (DataManager) app.getDataComponent();
             vd.addData(data.getSelectedItem(), variableTable);
+            vd.generate(data.getSelectedItem());
         });
 
         minusVarBtn.setOnAction(e -> {
@@ -431,6 +434,7 @@ public class Workspace extends AppWorkspaceComponent {
                 JClass j = (JClass) data.getSelectedItem();
                 if (j.getVariables().size() > 0) {
                     j.getVariables().remove(j.getVariables().size() - 1);
+                    j.getVariableVBox().getChildren().remove(j.getVariableVBox().getChildren().size() - 1);
                 }
             }
         });
@@ -442,6 +446,24 @@ public class Workspace extends AppWorkspaceComponent {
             DataManager data = (DataManager) app.getDataComponent();
             md.addData(data.getSelectedItem(), methodTable, methArgColumn);
             md.generate(data.getSelectedItem());
+        });
+
+        minusMethodBtn.setOnAction(e -> {
+            DataManager data = (DataManager) app.getDataComponent();
+            if (data.getSelectedItem() instanceof JClass) {
+                JClass j = (JClass) data.getSelectedItem();
+                if (j.getMethods().size() > 0) {
+                    j.getMethods().remove(j.getMethods().size() - 1);
+                    j.getMethodVBox().getChildren().remove(j.getMethodVBox().getChildren().size() - 1);
+                }
+            } else if (data.getSelectedItem() instanceof Interface) {
+                Interface j = (Interface) data.getSelectedItem();
+                if (j.getMethods().size() > 0) {
+                    j.getMethods().remove(j.getMethods().size() - 1);
+                    j.getMethodVBox().getChildren().remove(j.getMethodVBox().getChildren().size() - 1);
+                }
+            }
+
         });
 
         parentBtn.setOnAction(e -> {

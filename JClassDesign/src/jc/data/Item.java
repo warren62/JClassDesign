@@ -208,6 +208,7 @@ public class Item extends VBox implements Draggable {
 //            workspace.setPackageNameText(data.getSelectedClass().getPackageName());
             workspace.setClassNameText(this.getName());
             workspace.setPackageNameText(this.getPackageName());
+//            data.getMemento().add(workspace.getDesignRenderer().getChildren(), this);
             if (this instanceof JClass) {
                 JClass j = (JClass) this;
                 ObservableList<Method> ol = FXCollections.observableArrayList(((JClass) this).getMethods());

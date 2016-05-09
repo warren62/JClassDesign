@@ -24,9 +24,9 @@ public class Method {
     public final String FINAL_STRING = "static";
     public final String STATIC_STRING = "final";
     public final String ABSTRACT_STRING = "abstract";
-    private boolean f;
-    private boolean s;
-    private boolean a;
+    private boolean f = false;
+    private boolean s = false;
+    private boolean a = false;
 
     
      public ArrayList<String> getArgs() {
@@ -72,6 +72,18 @@ public class Method {
     }
 
     public void setAccess(String access) {
+        String s = new String();
+        if (access.equals("public")) {
+            accessUML += "+";
+        } else if (access.equals("private")) {
+            accessUML += "-";
+        } else if (access.equals("protected")) {
+            accessUML += "#";
+        } else {
+            System.out.println("incorrect access type");
+        }
+        
+        
         this.access = access;
     }
 
@@ -129,6 +141,8 @@ public class Method {
                     + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
                     + "}";
         }
+        
+        
 
         return access + " " + type + " " + name + "(" + argsString() + ")" + "  {" + "\n"
                 + "   throw new UnsupportedOperationException(\"Not supported yet.\"); //To change body of generated methods, choose Tools | Templates." + "\n"
@@ -150,7 +164,11 @@ public class Method {
     }
 
     public String toUml() {
-        return accessUML + " " + name + " : " + type;
+        if(isS()) {
+            return "$" + accessUML + " " + name + " : " + type;
+        }
+        
+        return accessUML + " " + name + "(" + argsString() + ")"+" : " + type;
     }
     
     public Method deepCopy() {

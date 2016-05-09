@@ -69,24 +69,25 @@ public class FileManager implements AppFileComponent {
                 String packageName = c.getPackageName();
                 double x = c.getLayoutX();
                 double y = c.getLayoutY();
+                boolean a = c.isA();
                 ArrayList<Variable> variables = c.getVariables();
                 ArrayList<Method> methods = c.getMethods();
                 ArrayList<Interface> parentInterfaces = c.getParentInterfaces();
                 JsonArray parentInterfaceArray = makeJOSNParentInterfaceArray(parentInterfaces);
                 JsonArray methodJson = makeJOSNMethodArray(methods);
                 JsonArray variableJson = makeJOSNVariableArray(variables);
-                JClass parent = (JClass) c.getParent();
-                String pType = "Class";
-                String pName = parent.getName();
-                String pPackageName = parent.getPackageName();
-                double pX = parent.getLayoutX();
-                double pY = parent.getLayoutY();
-                ArrayList<Variable> pVariables = parent.getVariables();
-                ArrayList<Method> pMethods = parent.getMethods();
-                ArrayList<Interface> pParentInterfaces = parent.getParentInterfaces();
-                JsonArray pParentInterfaceArray = makeJOSNParentInterfaceArray(pParentInterfaces);
-                JsonArray pMethodJson = makeJOSNMethodArray(pMethods);
-                JsonArray pVariableJson = makeJOSNVariableArray(pVariables);
+//                JClass parent = (JClass) c.getParent();
+//                String pType = "Class";
+//                String pName = parent.getName();
+//                String pPackageName = parent.getPackageName();
+//                double pX = parent.getLayoutX();
+//                double pY = parent.getLayoutY();
+//                ArrayList<Variable> pVariables = parent.getVariables();
+//                ArrayList<Method> pMethods = parent.getMethods();
+//                ArrayList<Interface> pParentInterfaces = parent.getParentInterfaces();
+//                JsonArray pParentInterfaceArray = makeJOSNParentInterfaceArray(pParentInterfaces);
+//                JsonArray pMethodJson = makeJOSNMethodArray(pMethods);
+//                JsonArray pVariableJson = makeJOSNVariableArray(pVariables);
                 
 
                 JsonObject classJson = Json.createObjectBuilder()
@@ -98,6 +99,7 @@ public class FileManager implements AppFileComponent {
                         .add("methods", methodJson)
                         .add("variables", variableJson)
                         .add("parentInterfaces", parentInterfaceArray)
+                        .add("abstract", a)
 //                        .add("parentItem", )
                         .build();
                 arrayBuilder.add(classJson);
@@ -213,6 +215,7 @@ public class FileManager implements AppFileComponent {
             JClass c = new JClass();
             String name = jsonItem.getString("name");
             String packageName = jsonItem.getString("package_name");
+            boolean abs = jsonItem.getBoolean("abstract");
             ArrayList<Method> methods = new ArrayList();
             ArrayList<Variable> variables = new ArrayList();
             ArrayList<String> args = new ArrayList();
@@ -228,6 +231,7 @@ public class FileManager implements AppFileComponent {
                 System.out.println("load method type test  : " + o.getString("mtype"));
                 boolean f = o.getBoolean("final");
                 boolean s = o.getBoolean("static");
+                boolean ab = o.getBoolean("abstract");
 //                String f = o.getString("final");
 //                String s = o.getString("static");
                 m.setAccess(a);
@@ -235,6 +239,7 @@ public class FileManager implements AppFileComponent {
                 m.setType(t);
                 m.setF(f);
                 m.setS(s);
+                m.setA(ab);
 
                 JsonArray argsJsonArray = o.getJsonArray("args");
                 for (JsonValue jv : argsJsonArray) {
@@ -282,11 +287,14 @@ public class FileManager implements AppFileComponent {
                 String t = o.getString("vtype");
                 boolean f = o.getBoolean("final");
                 boolean s = o.getBoolean("static");
+                boolean ab = o.getBoolean("abstract");
+                
                 v.setAccess(a);
                 v.setName(n);
                 v.setType(t);
                 v.setF(f);
                 v.setS(s);
+                v.setA(ab);
                 c.addVariable(v);
             }
 //            for(int z = 0; z < methodJsonArray.size(); z++) {
@@ -299,6 +307,8 @@ public class FileManager implements AppFileComponent {
             c.setPackage(packageName);
             c.setLayoutX(x);
             c.setLayoutY(y);
+            c.setA(abs);
+            
             System.out.println("To code after load test: " + c.toCode());
             i = c;
 
@@ -318,6 +328,7 @@ public class FileManager implements AppFileComponent {
                 System.out.println("load method type test  : " + o.getString("mtype"));
                 boolean f = o.getBoolean("final");
                 boolean s = o.getBoolean("static");
+                boolean ab = o.getBoolean("abstract");
 //                String f = o.getString("final");
 //                String s = o.getString("static");
                 m.setAccess(a);
@@ -325,6 +336,7 @@ public class FileManager implements AppFileComponent {
                 m.setType(t);
                 m.setF(f);
                 m.setS(s);
+                m.setA(ab);
 
                 JsonArray argsJsonArray = o.getJsonArray("args");
                 for (JsonValue jv : argsJsonArray) {
@@ -401,11 +413,14 @@ public class FileManager implements AppFileComponent {
                 String t = o.getString("vtype");
                 boolean f = o.getBoolean("final");
                 boolean s = o.getBoolean("static");
+                boolean ab = o.getBoolean("abstract");
+                
                 v.setAccess(a);
                 v.setName(n);
                 v.setType(t);
                 v.setF(f);
                 v.setS(s);
+                v.setA(ab);
                 c.addVariable(v);
             }
 //            for(int z = 0; z < methodJsonArray.size(); z++) {
@@ -437,6 +452,7 @@ public class FileManager implements AppFileComponent {
                 System.out.println("load method type test  : " + o.getString("mtype"));
                 boolean f = o.getBoolean("final");
                 boolean s = o.getBoolean("static");
+                boolean ab = o.getBoolean("abstract");
 //                String f = o.getString("final");
 //                String s = o.getString("static");
                 m.setAccess(a);
@@ -444,6 +460,7 @@ public class FileManager implements AppFileComponent {
                 m.setType(t);
                 m.setF(f);
                 m.setS(s);
+                m.setA(ab);
 
                 JsonArray argsJsonArray = o.getJsonArray("args");
                 for (JsonValue jv : argsJsonArray) {
@@ -695,6 +712,7 @@ public class FileManager implements AppFileComponent {
         String access = m.getAccess();
         boolean f = m.isF();
         boolean s = m.isS();
+        boolean a = m.isA();
 //        String f = new String();
 //        String s = new String();
 
@@ -713,6 +731,7 @@ public class FileManager implements AppFileComponent {
                 .add("access", access)
                 .add("final", f)
                 .add("static", s)
+                .add("abstract", a)
                 .add("args", argsJsonArray)
                 .build();
 
@@ -738,6 +757,7 @@ public class FileManager implements AppFileComponent {
 //       String s = new String();
         boolean f = v.isF();
         boolean s = v.isS();
+        boolean a = v.isA();
 
 //       if(v.isF()) {
 //           f += "final";
@@ -752,6 +772,7 @@ public class FileManager implements AppFileComponent {
                 .add("access", access)
                 .add("final", f)
                 .add("static", s)
+                .add("abstract", a)
                 .build();
 
         return variableJson;

@@ -21,7 +21,7 @@ public class Interface extends Item {
     double orgSceneX, orgSceneY;
     double orgTranslateX, orgTranslateY;
     VBox nameVBox, methodVBox;
-    String access;
+    String access = "public";
 
 //    Label name = new Label("DefaultClassName");
 //    Label pkg = new Label("DefaultPackageName");
@@ -35,12 +35,17 @@ public class Interface extends Item {
         orgSceneY = 0;
 
         nameVBox = new VBox();
+        nameVBox.setMinHeight(this.getHeight()/3);
+        nameVBox.setMinWidth(this.getWidth()/3);
         methodVBox = new VBox();
+        methodVBox.setMinHeight(this.getHeight()/3);
+        methodVBox.setMinWidth(this.getWidth()/3);
+        
 
         nameVBox.getStyleClass().add("vbox");
         methodVBox.getStyleClass().add("vbox");
-        methodVBox.setMinHeight(30);
-        methodVBox.setMinWidth(30);
+//        methodVBox.setMinHeight(30);
+//        methodVBox.setMinWidth(30);
         
         nameLbl = new Label(name);
 
@@ -76,6 +81,16 @@ public class Interface extends Item {
         this.setHeight(100);
         this.setWidth(100);
     }
+
+    public VBox getNameVBox() {
+        return nameVBox;
+    }
+
+    public VBox getMethodVBox() {
+        return methodVBox;
+    }
+    
+    
 
 //    @Override
 //    public void start(int x, int y) {

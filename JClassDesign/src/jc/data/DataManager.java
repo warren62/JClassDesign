@@ -307,6 +307,7 @@ public class DataManager implements AppDataComponent {
         workspace.getDesignRenderer().getChildren().add(l);
 //        l.initHandler();
         System.out.println("*******add node to workspace*******" + l.toString());
+//        memento.add(((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren(), l);
 
 //        workspace.getDesignRenderer().getChildren().add(n);
     }
@@ -563,25 +564,24 @@ public class DataManager implements AppDataComponent {
 ////        memento.add(deepCopyDataManager());
 //    }
     public void resize(Item i) {
+        Workspace workspace = (Workspace) app.getWorkspaceComponent();
         Circle c1 = new Circle(10);
         c1.centerXProperty().bind(i.layoutXProperty());
         c1.centerYProperty().bind(i.layoutYProperty());
         c1.setOnMouseDragged(e -> {
             i.setPrefHeight(e.getSceneY());
             i.setPrefWidth(e.getSceneX());
+            c1.setOnMouseReleased(t -> {
+                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(c1);
+            });
         });
+        memento.add(workspace.getDesignRenderer().getChildren(), i);
 
         ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(c1);
 
-        c1.setOnMouseDragReleased(e -> {
-            ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(c1);
-        });
-        Workspace workspace = (Workspace) app.getWorkspaceComponent();
 //        memento = new JClassDesignerMemento(workspace);
 //        memento.add(new WorkspaceData(workspace));
-        memento.add(workspace.getDesignRenderer().getChildren(), i);
 //        memento.add(deepCopyDataManager());
-
     }
 
     public void undo() {
@@ -955,17 +955,26 @@ public class DataManager implements AppDataComponent {
             getStrokeDashArray().setAll(10.0, 5.0);
 
             initHandler();
+            Workspace w = (Workspace) app.getWorkspaceComponent();
 
+//            memento.add(w.getDesignRenderer().getChildren(), this);
 //            setMouseTransparent(true);
         }
 
-        public void initPointHandler(Circle c) {
+        public void initPointHandler(Circle c, BoundLine line, BoundLine line2) {
 
             c.setOnMousePressed(t -> {
                 orgSceneX = t.getSceneX();
                 orgSceneY = t.getSceneY();
                 orgTranslateX = ((Circle) (t.getSource())).getCenterX();
                 orgTranslateY = ((Circle) (t.getSource())).getCenterY();
+
+                if (t.getClickCount() == 2) {
+                    ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().removeAll(c, line, line2);
+
+                    BoundLine newLine = new BoundLine(line.parent, line2.child);
+                    ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().add(newLine);
+                }
 
             });
 
@@ -1027,8 +1036,7 @@ public class DataManager implements AppDataComponent {
 //                System.out.println("******** line 2 *****" + l2.toString());
 //
 //                ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().addAll(l, l2, c);
-                initPointHandler(c);
-
+//                initPointHandler(c);
                 this.addPoint(c);
                 Workspace workspace = (Workspace) app.getWorkspaceComponent();
                 memento.add(workspace.getDesignRenderer().getChildren(), c);
@@ -1082,24 +1090,29 @@ public class DataManager implements AppDataComponent {
             ((Workspace) app.getWorkspaceComponent()).getDesignRenderer().getChildren().remove(this);
             BoundLine l = new BoundLine(parent, c);
             BoundLine l2 = new BoundLine(c, child);
+            this.initPointHandler(c, l, l2);
             if (parent instanceof JClass) {
                 JClass j = (JClass) parent;
                 j.addParentLine(l);
                 j.addParentLine(l2);
+                j.addParentShape(c);
             } else if (parent instanceof Interface) {
                 Interface i = (Interface) parent;
                 i.addParentLine(l);
                 i.addParentLine(l2);
+                i.addParentShape(c);
             }
 
             if (child instanceof JClass) {
                 JClass j = (JClass) child;
                 j.addChildLine(l);
                 j.addChildLine(l2);
+                j.addChildShape(c);
             } else if (child instanceof Interface) {
                 Interface i = (Interface) child;
                 i.addChildLine(l);
                 i.addChildLine(l2);
+                i.addChildShape(c);
             }
             System.out.println("******** line 1 *****" + l.toString());
             System.out.println("******** line 2 *****" + l2.toString());

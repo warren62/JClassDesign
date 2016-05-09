@@ -5,9 +5,11 @@
  */
 package jc.gui;
 
+import java.util.ArrayList;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
@@ -18,11 +20,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import jc.data.DataManager;
 import jc.data.Interface;
 import jc.data.Item;
 import jc.data.JClass;
 import jc.data.Method;
 import jc.data.Variable;
+import saf.AppTemplate;
 
 /**
  *
@@ -51,8 +55,11 @@ public class VariableDialog extends Stage {
     HBox accessHB;
 
     VBox mainVB;
+    
+    AppTemplate app;
 
-    public VariableDialog(Stage stage) {
+    public VariableDialog(Stage stage, AppTemplate initApp) {
+        app = initApp;
         initModality(Modality.WINDOW_MODAL);
         initOwner(stage);
 
@@ -134,6 +141,61 @@ public class VariableDialog extends Stage {
 //        Class c = this.getClass();
 //        c.getField("name").getType().getPackage();
 //        Field fi = new Field();
+        
+    }
+    
+    public void generate(Item i) {
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+        DataManager data = (DataManager) app.getDataComponent();
+        for (Node n : w.getDesignRenderer().getChildren()) {
+            if (n instanceof JClass) {
+                JClass jc = (JClass) n;
+                if (i instanceof JClass) {
+                    JClass selJC = (JClass) i;
+                    ArrayList<Variable> list = ((JClass) i).getVariables();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(jc.getName())) {
+                            data.buildLine(jc, data.getSelectedItem());
+                            
+                            data.buildDiamond(jc.layoutXProperty(), jc.layoutYProperty(), i);
+                        }
+                    }
+                    
+                }else if(i instanceof Interface) {
+                    ArrayList<Method> list = ((Interface) i).getMethods();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(jc.getName())) {
+                            data.buildLine(jc, data.getSelectedItem());
+                            
+                            data.buildFeatheredArrow(jc.layoutXProperty(), jc.layoutYProperty(), i);
+                        }
+                    }
+                }
+                
+            }else if(n instanceof Interface) {
+                Interface in = (Interface) n;
+                if(i instanceof Interface) {
+                    
+                    ArrayList<Method> list = ((Interface) i).getMethods();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(in.getName())) {
+                            data.buildLine(in, data.getSelectedItem());
+                            
+                            data.buildFeatheredArrow(in.layoutXProperty(), in.layoutYProperty(), i);
+                        }
+                    }
+                }else if(i instanceof JClass) {
+                    ArrayList<Variable> list = ((JClass) i).getVariables();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(in.getName())) {
+                            data.buildLine(in, data.getSelectedItem());
+                            
+                            data.buildDiamond(in.layoutXProperty(), in.layoutYProperty(), i);
+                        }
+                    }
+                }
+            }
+        }
         
     }
 }

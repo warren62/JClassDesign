@@ -12,14 +12,14 @@ package jc.data;
 public class Variable {
 
     private String access = "";
-    private String accessUML;
+    private String accessUML = "";
     public String name = "";
     public String type = "";
     public final String FINAL_STRING = "static";
     public final String STATIC_STRING = "final";
-    private boolean f;
-    private boolean s;
-    private boolean a;
+    private boolean f = false;
+    private boolean s = false;
+    private boolean a = false;
 
     private boolean fUML;
     private boolean sUML;
@@ -107,6 +107,9 @@ public class Variable {
     }
 
     public String toUml() {
+        if(isS()) {
+            return "$" + accessUML + " " + name + " : " + type;
+        }
         return accessUML + " " + name + " : " + type;
     }
 

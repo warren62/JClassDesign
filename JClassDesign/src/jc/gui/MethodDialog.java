@@ -246,8 +246,39 @@ public class MethodDialog extends Stage {
                         }
                     }
                     
+                }else if(i instanceof Interface) {
+                    ArrayList<Method> list = ((Interface) i).getMethods();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(jc.getName())) {
+                            data.buildLine(jc, data.getSelectedItem());
+                            
+                            data.buildFeatheredArrow(jc.layoutXProperty(), jc.layoutYProperty(), i);
+                        }
+                    }
                 }
                 
+            }else if(n instanceof Interface) {
+                Interface in = (Interface) n;
+                if(i instanceof Interface) {
+                    
+                    ArrayList<Method> list = ((Interface) i).getMethods();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(in.getName())) {
+                            data.buildLine(in, data.getSelectedItem());
+                            
+                            data.buildFeatheredArrow(in.layoutXProperty(), in.layoutYProperty(), i);
+                        }
+                    }
+                }else if(i instanceof JClass) {
+                    ArrayList<Method> list = ((JClass) i).getMethods();
+                    for (int z = 0; z < list.size(); z++) {
+                        if (list.get(z).getType().equals(in.getName())) {
+                            data.buildLine(in, data.getSelectedItem());
+                            
+                            data.buildFeatheredArrow(in.layoutXProperty(), in.layoutYProperty(), i);
+                        }
+                    }
+                }
             }
         }
         

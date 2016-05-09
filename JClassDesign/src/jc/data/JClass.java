@@ -53,15 +53,21 @@ public class JClass extends Item {
 //        Label pkgLbl = new Label(pkg);
 
         nameVBox = new VBox();
+        nameVBox.setMinHeight(this.getHeight()/3);
+        nameVBox.setMinWidth(this.getWidth()/3);
         methodVBox = new VBox();
+        methodVBox.setMinHeight(this.getHeight()/3);
+        methodVBox.setMinWidth(this.getWidth()/3);
         variableVBox = new VBox();
+        variableVBox.setMinHeight(this.getHeight()/3);
+        variableVBox.setMinWidth(this.getWidth()/3);
 
         nameVBox.getChildren().add(nameLbl);
 
         nameVBox.getStyleClass().add("vbox");
         methodVBox.getStyleClass().add("vbox");
-        methodVBox.setMinHeight(30);
-        methodVBox.setMinWidth(30);
+//        methodVBox.setMinHeight(30);
+//        methodVBox.setMinWidth(30);
         variableVBox.getStyleClass().add("vbox");
 //        variableVBox.setMinHeight(30);
 //        variableVBox.setMinWidth(30);
@@ -70,8 +76,10 @@ public class JClass extends Item {
         getChildren().addAll(nameVBox, variableVBox, methodVBox);
 
         this.getStyleClass().add("vbox");
-        this.setPrefSize(100, 100);
+//        this.setPrefSize(100, 100);
 
+        this.setMinHeight(100);
+        this.setMinWidth(100);
         Variable v = new Variable();
         v.setAccess("public");
         v.setName("s");
@@ -135,6 +143,16 @@ public class JClass extends Item {
     public ArrayList<Interface> getParentInterfaces() {
         return parentInterfaces;
     }
+
+    public VBox getMethodVBox() {
+        return methodVBox;
+    }
+
+    public VBox getVariableVBox() {
+        return variableVBox;
+    }
+    
+    
 
 //    @Override
 //    public void start(int x, int y) {
@@ -254,6 +272,17 @@ public class JClass extends Item {
     }
 
     public boolean isA() {
+        for(Method m : this.getMethods()) {
+            if(m.isA()) {
+                this.a = true;
+            }
+        }
+        
+        for(Variable v : this.getVariables()) {
+            if(v.isA()) {
+                this.a = true;
+            }
+        }
         return a;
     }
 

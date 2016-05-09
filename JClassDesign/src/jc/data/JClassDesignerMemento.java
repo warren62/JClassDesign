@@ -73,6 +73,16 @@ public class JClassDesignerMemento {
 //    public void add(DataManager dm) {
 //        undoStackData.add(dm);
 //    }
+
+    public Stack<ArrayList> getRedoStack() {
+        return redoStack;
+    }
+
+    public Stack<ArrayList> getUndoStackItems() {
+        return undoStackItems;
+    }
+    
+    
     public void add(ObservableList<Node> items, Node node) {
         ArrayList<Node> list = new ArrayList();
         for(Node n : items) {
