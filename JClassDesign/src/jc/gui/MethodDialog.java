@@ -122,7 +122,7 @@ public class MethodDialog extends Stage {
         staticHB.getChildren().addAll(staticLbl, staticCheckBox);
         abstractHB.getChildren().addAll(abstractLbl, abstractCheckBox);
         accessHB.getChildren().addAll(accessLbl, accessComboBox);
-        argsHB.getChildren().addAll(plusBtn, minusBtn);
+        argsHB.getChildren().addAll(plusBtn);
         
         mainVB.getChildren().addAll(finalHB, staticHB, abstractHB, nameHB, typeHB, accessHB, argsHB, argsVB);
         
@@ -229,6 +229,21 @@ public class MethodDialog extends Stage {
 //            }
 //        }
 //    }
+    
+    public void buildClassFromType() {
+        Workspace w = (Workspace) app.getWorkspaceComponent();
+        DataManager data = (DataManager) app.getDataComponent();
+        for(Node n : w.getDesignRenderer().getChildren()) {
+            if(n instanceof Item) {
+                if(((Item) n).getName() != typeField.getText()) {
+                    JClass jc = new JClass();
+                    jc.initHandler(data, w);
+                    jc.setName(typeField.getText());
+                    w.getDesignRenderer().getChildren().add(jc);
+                }
+            }
+        }
+    }
     public void generate(Item i) {
         Workspace w = (Workspace) app.getWorkspaceComponent();
         DataManager data = (DataManager) app.getDataComponent();

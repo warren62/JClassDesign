@@ -336,38 +336,38 @@ public class JClass extends Item {
 //        s += getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "/n" + "/n" +
 //                loadVar() + "\n" + "\n" + loadMethods() + "\n" + "}";
         if (isImplementsInterface() && isA()) {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " implements " + loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " implements " + loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else if (isImplementsInterface()) {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " implements " + loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " implements " + loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else if (this.isHasSuperclass() && isA()) {
 
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " + parentClassName + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " + parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else if (this.isHasSuperclass()) {
 
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " + parentClassName + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " + parentClassName + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else if (this.isHasSuperclass() && this.isImplementsInterface() && isA()) {
 
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " + parentClassName + "implements " + loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + " extends " + parentClassName + "implements " + loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else if (this.isHasSuperclass() && this.isImplementsInterface()) {
 
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " + parentClassName + "implements " + loadInterfaces() + "{" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + " extends " + parentClassName + "implements " + loadInterfaces() + "{" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
 
         } else if (isA()) {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "  {" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " abstract" + " class" + " " + name + "  {" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
         } else {
-            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + getImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "\n" + "\n"
+            s += "package " + this.getPackageName() + ";" + "\n" + "\n" + "\n" + this.generateImports() + "\n" + "\n" + "\n" + "\n" + "\n" + access + " class" + " " + name + "  {" + "\n" + "\n"
                     + variables + "\n" + "\n" + methods + "\n" + "}";
         }
         return s;

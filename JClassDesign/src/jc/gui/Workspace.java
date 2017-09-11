@@ -119,6 +119,7 @@ public class Workspace extends AppWorkspaceComponent {
     Button plusMethodBtn;
     Button minusMethodBtn;
     Button parentBtn;
+    Button addPackage;
 
     Label classNameLbl;
     Label packageLbl;
@@ -205,6 +206,7 @@ public class Workspace extends AppWorkspaceComponent {
         minusMethodBtn.setMaxWidth(Double.MAX_VALUE);
         parentBtn = new Button("Edit Parents");
         parentBtn.setMaxWidth(Double.MAX_VALUE);
+        addPackage = new Button("Add Package");
 
         newBtn = gui.getNewButton();
         newBtn.setMaxWidth(Double.MAX_VALUE);
@@ -274,7 +276,7 @@ public class Workspace extends AppWorkspaceComponent {
         classHBox.setAlignment(Pos.CENTER);
         packageHBox.getChildren().addAll(packageLbl, packageField);
         packageHBox.setAlignment(Pos.CENTER);
-        parentHBox.getChildren().addAll(parentLbl, parentBtn);
+        parentHBox.getChildren().addAll(parentLbl, parentBtn, addPackage);
         parentHBox.setAlignment(Pos.CENTER);
         varHBox.getChildren().addAll(variableLbl, plusVarBtn, minusVarBtn);
         varHBox.setAlignment(Pos.CENTER);
@@ -415,6 +417,14 @@ public class Workspace extends AppWorkspaceComponent {
                 Logger.getLogger(Workspace.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
+        
+        addPackage.setOnAction(e -> {
+            ImportDialog id = new ImportDialog(gui.getWindow(), app);
+            id.showDialog();
+            DataManager data = (DataManager) app.getDataComponent();
+            data.getSelectedItem().addImport(id.getText());
+            
+        });
 
         photoBtn.setOnAction(e -> {
             editToolBarController.handleSnapshot();
@@ -445,6 +455,7 @@ public class Workspace extends AppWorkspaceComponent {
 //            System.out.println(dataManager.getSelectedItem() == null);
             DataManager data = (DataManager) app.getDataComponent();
             md.addData(data.getSelectedItem(), methodTable, methArgColumn);
+            md.buildClassFromType();
             md.generate(data.getSelectedItem());
         });
 

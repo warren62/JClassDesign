@@ -45,6 +45,8 @@ public class Item extends VBox implements Draggable {
 
     ArrayList<Shape> parentShapes = new ArrayList();
     ArrayList<Shape> childShapes = new ArrayList();
+    
+    ArrayList<String> imports = new ArrayList();
 
     Item parent;
 
@@ -158,6 +160,27 @@ public class Item extends VBox implements Draggable {
     public void addChildShape(Shape s) {
         childShapes.add(s);
     }
+
+    public ArrayList<String> getImportsItem() {
+        return imports;
+    }
+
+    public void setImportsItem(ArrayList<String> imports) {
+        this.imports = imports;
+    }
+    
+    public void addImport(String s) {
+        imports.add("import " + s +";");
+    }
+    
+    public String generateImports() {
+        String y = new String();
+        for(String s : imports) {
+            y += s + "\n";
+        }
+        return y;
+    }
+    
 
     @Override
     public void start(int x, int y) {
